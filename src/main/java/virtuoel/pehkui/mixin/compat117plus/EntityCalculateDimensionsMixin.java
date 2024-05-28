@@ -16,6 +16,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
+import virtuoel.pehkui.util.ReflectionUtils;
 
 @Mixin(Entity.class)
 public abstract class EntityCalculateDimensionsMixin
@@ -26,20 +27,22 @@ public abstract class EntityCalculateDimensionsMixin
 		final Entity self = (Entity) (Object) this;
 		final World world = self.getEntityWorld();
 		
-		/* // TODO 1.17
-		if (world.isClient && self.getType() == EntityType.PLAYER && current.width > previous.width)
+		final float currentWidth = ReflectionUtils.getDimensionsWidth(current);
+		final float previousWidth = ReflectionUtils.getDimensionsWidth(previous);
+		if (world.isClient && self.getType() == EntityType.PLAYER && currentWidth > previousWidth)
 		{
-			final double prevW = Math.min(previous.width, 4.0D);
-			final double prevH = Math.min(previous.height, 4.0D);
-			final double currW = Math.min(current.width, 4.0D);
-			final double currH = Math.min(current.height, 4.0D);
+			final double prevW = Math.min(previousWidth, 4.0D);
+			final double prevH = Math.min(ReflectionUtils.getDimensionsHeight(previous), 4.0D);
+			final double currW = Math.min(currentWidth, 4.0D);
+			final double currH = Math.min(ReflectionUtils.getDimensionsHeight(current), 4.0D);
 			final Vec3d lastCenter = self.getPos().add(0.0D, prevH / 2.0D, 0.0D);
 			final double w = Math.max(0.0F, currW - prevW) + 1.0E-6D;
 			final double h = Math.max(0.0F, currH - prevH) + 1.0E-6D;
+			/* // TODO 1.17
 			final VoxelShape voxelShape = VoxelShapes.cuboid(Box.of(lastCenter, w, h, w));
 			world.findClosestCollision(self, voxelShape, lastCenter, currW, currH, currW)
 				.ifPresent(vec -> self.setPosition(vec.add(0.0D, -currH / 2.0D, 0.0D)));
+			*/
 		}
-		*/
 	}
 }

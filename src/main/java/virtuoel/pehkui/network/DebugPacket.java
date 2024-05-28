@@ -72,8 +72,8 @@ public class DebugPacket
 		ctx.get().setPacketHandled(true);
 	}
 	
-	public void encode(PacketByteBuf buf)
+	public void write(final PacketByteBuf buf)
 	{
-		buf.writeEnumConstant(type);
+		buf.writeEnumConstant(this.type);
 	}
 }

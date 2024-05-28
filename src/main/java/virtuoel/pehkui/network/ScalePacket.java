@@ -1,8 +1,12 @@
 package virtuoel.pehkui.network;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
@@ -17,42 +21,46 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 public class ScalePacket
 {
-	final int id, quantity;
-	final Identifier[] typeIds;
+	public final int entityId;
+	public final Collection<ScaleData> scales = new ArrayList<>();
+	public final Map<Identifier, NbtCompound> syncedScales = new HashMap<>();
 	
-	NbtCompound[] nbt = null;
-	
-	ScaleData[] scaleData = null;
-	
-	public ScalePacket(Entity entity, Collection<ScaleData> scales)
+	public ScalePacket(final Entity entity, final Collection<ScaleData> scales)
 	{
-		this.id = entity.getEntityId();
-		this.quantity = scales.size();
+		entityId = entity.getEntityId();
+		this.scales.addAll(scales);
 		
-		this.scaleData = scales.toArray(new ScaleData[quantity]);
-		this.typeIds = new Identifier[quantity];
-		this.nbt = new NbtCompound[quantity];
-		
-		for (int i = 0; i < quantity; i++)
+		for (final ScaleData s : scales)
 		{
-			this.typeIds[i] = ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, this.scaleData[i].getScaleType());
-			this.scaleData[i].writeNbt(this.nbt[i] = new NbtCompound());
+			final Identifier typeId = ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, s.getScaleType());
+			
+			syncedScales.put(typeId, s.writeNbt(new NbtCompound()));
 		}
 	}
 	
-	protected ScalePacket(PacketByteBuf buf)
+	public ScalePacket(final PacketByteBuf buf)
 	{
-		this.id = buf.readVarInt();
-		this.quantity = buf.readInt();
+		entityId = buf.readVarInt();
 		
-		this.typeIds = new Identifier[quantity];
-		this.nbt = new NbtCompound[quantity];
-		
-		for (int i = 0; i < quantity; i++)
+		for (int i = buf.readInt(); i > 0; i--)
 		{
-			this.typeIds[i] = buf.readIdentifier();
+			final Identifier typeId = buf.readIdentifier();
 			
-			this.nbt[i] = ScaleUtils.buildScaleNbtFromPacketByteBuf(buf);
+			final NbtCompound scaleData = ScaleUtils.buildScaleNbtFromPacketByteBuf(buf);
+			
+			syncedScales.put(typeId, scaleData);
+		}
+	}
+	
+	public void write(final PacketByteBuf buf)
+	{
+		buf.writeVarInt(entityId);
+		((ByteBuf) buf).writeInt(scales.size());
+		
+		for (final ScaleData s : scales)
+		{
+			buf.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, s.getScaleType()));
+			s.toPacket(buf);
 		}
 	}
 	
@@ -63,33 +71,21 @@ public class ScalePacket
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
 			{
 				final MinecraftClient client = MinecraftClient.getInstance();
-				final Entity entity = client.world.getEntityById(msg.id);
+				final Entity entity = client.world.getEntityById(msg.entityId);
 				
 				if (entity != null)
 				{
-					for (int i = 0; i < msg.quantity; i++)
+					msg.syncedScales.forEach((typeId, scaleData) ->
 					{
-						if (ScaleRegistries.SCALE_TYPES.containsKey(msg.typeIds[i]))
+						if (ScaleRegistries.SCALE_TYPES.containsKey(typeId))
 						{
-							ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, msg.typeIds[i]).getScaleData(entity).readNbt(msg.nbt[i]);
+							ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, typeId).getScaleData(entity).readNbt(scaleData);
 						}
-					}
+					});
 				}
 			});
 		});
 		
 		ctx.get().setPacketHandled(true);
-	}
-	
-	public void encode(PacketByteBuf buf)
-	{
-		buf.writeVarInt(id);
-		buf.writeInt(quantity);
-		
-		for (int i = 0; i < quantity; i++)
-		{
-			buf.writeIdentifier(typeIds[i]);
-			scaleData[i].toPacket(buf);
-		}
 	}
 }

@@ -1,5 +1,5 @@
 plugins {
-	id "dev.architectury.loom" version "1.5.+"
+	id "dev.architectury.loom" version "1.6.+"
 	id "eclipse"
 	id "maven-publish"
 	id "com.github.johnrengelman.shadow" version "8.1.1" apply false
@@ -56,13 +56,13 @@ else if(project.hasProperty("forge_version")) {
 	
 	loom {
 		forge {
-			mixinConfig "${archives_base_name.replaceAll( /([A-Z])/, /_$1/ ).toLowerCase().replaceAll( /^_/, '' )}.mixins.json"
+			mixinConfig "${archives_base_name.replaceAll(/([a-z])([A-Z])/, /$1_$2/).replaceAll(/([A-Z])([A-Z][a-z])/, /$1_$2/).toLowerCase()}.mixins.json"
 		}
 	}
 	
-	if (project.hasProperty("mixin_extras_version")) {
+	if(project.hasProperty("mixin_extras_version")) {
 		def minor = (minecraft_version.split(/\./, -1)[1] as Integer)
-		if (minor < 18) {
+		if(minor < 18) {
 			apply plugin: "com.github.johnrengelman.shadow"
 			
 			configurations {
@@ -85,7 +85,7 @@ else if(project.hasProperty("forge_version")) {
 }
 
 loom {
-	def access_widener_file = file("src/main/resources/${archives_base_name.replaceAll( /([A-Z])/, /_$1/ ).toLowerCase().replaceAll( /^_/, '' )}.accesswidener")
+	def access_widener_file = file("src/main/resources/${archives_base_name.replaceAll(/([a-z])([A-Z])/, /$1_$2/).replaceAll(/([A-Z])([A-Z][a-z])/, /$1_$2/).toLowerCase()}.accesswidener")
 	if(access_widener_file.exists()) {
 		accessWidenerPath = access_widener_file
 	}
@@ -129,9 +129,9 @@ dependencies {
 			forge "net.minecraftforge:forge:${forge_version}"
 		}
 		
-		if (project.hasProperty("mixin_extras_version")) {
+		if(project.hasProperty("mixin_extras_version")) {
 			def minor = (minecraft_version.split(/\./, -1)[1] as Integer)
-			if (minor >= 18) {
+			if(minor >= 18) {
 				compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
 				implementation(include("io.github.llamalad7:mixinextras-forge:${mixin_extras_version}"))
 			}
@@ -197,11 +197,11 @@ dependencies {
 processResources {
 	inputs.property "version", project.version
 	
-	filesMatching("fabric.mod.json") {
+	filesMatching("*.mod.json") {
 		expand "version": project.version
 	}
 	
-	filesMatching("META-INF/mods.toml") {
+	filesMatching("META-INF/*mods.toml") {
 		expand "file": [ jarVersion: project.version ]
 	}
 }
@@ -215,13 +215,14 @@ eclipse {
 	}
 	if(!proj.hasProperty("neoforge_version") && !proj.hasProperty("forge_version")) {
 		jdt {
-			javaRuntimeName = "JavaSE-17"
+			javaRuntimeName = "JavaSE-21"
 		}
 	}
 	else {
 		def minor = (minecraft_version.split(/\./, -1)[1] as Integer)
+		def patch = (minecraft_version.split(/\./, -1)[1] as Integer)
 		jdt {
-			javaRuntimeName = "JavaSE-${minor >= 18 ? 17 : minor >= 17 ? 16 : 1.8}"
+			javaRuntimeName = "JavaSE-${minor > 20 || (minor == 20 && patch >= 5) ? 21 : minor >= 18 ? 17 : minor >= 17 ? 16 : 1.8}"
 		}
 	}
 }
@@ -231,7 +232,7 @@ tasks.withType(JavaCompile) {
 	options.compilerArgs += [ "-Xmaxwarns", "0" ]
 	
 	javaCompiler = javaToolchains.compilerFor {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -249,7 +250,12 @@ java {
 	}
 	else {
 		def minor = (minecraft_version.split(/\./, -1)[1] as Integer)
-		if(minor >= 18) {
+		def patch = (minecraft_version.split(/\./, -1)[1] as Integer)
+		if(minor > 20 || (minor == 20 && patch >= 5)) {
+			sourceCompatibility = JavaVersion.VERSION_21
+			targetCompatibility = JavaVersion.VERSION_21
+		}
+		else if(minor >= 18) {
 			sourceCompatibility = JavaVersion.VERSION_17
 			targetCompatibility = JavaVersion.VERSION_17
 		}
@@ -269,8 +275,8 @@ jar {
 }
 
 tasks.named("sourcesJar") {
-	exclude "fabric.mod.json"
-	exclude "META-INF/mods.toml"
+	exclude "*.mod.json"
+	exclude "META-INF/*mods.toml"
 }
 
 publishing {

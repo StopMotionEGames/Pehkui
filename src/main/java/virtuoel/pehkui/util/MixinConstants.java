@@ -126,7 +126,7 @@ public class MixinConstants
 	
 	// 1.15 Client
 	public static final String RENDER_SHADOW_PART = METHOD_23163;
-	public static final String RENDER_LABEL_IF_PRESENT = METHOD_3926 + "(L" + CLASS_1297 + ";Ljava/lang/String;L" + CLASS_4587 + ";L" + CLASS_4597 + ";I)V";
+	public static final String RENDER_LABEL_STRING_IF_PRESENT = METHOD_3926 + "(L" + CLASS_1297 + ";Ljava/lang/String;L" + CLASS_4587 + ";L" + CLASS_4597 + ";I)V";
 	
 	// 1.15 Minus
 	public static final String ON_COLLISION = METHOD_7492 + "(L" + CLASS_239 + ";)V";
@@ -164,93 +164,131 @@ public class MixinConstants
 	// 1.15 Minus Client
 	public static final String GET_HEIGHT = "L" + CLASS_1297 + ";" + METHOD_17682 + "()F";
 	
+	// ----COMMIT_READY_START----
+	
 	// 1.15 Plus 1.16 Minus
-	public static final String DROP_XP = "dropXp"; // COMMIT_READY
+	public static final String DROP_XP = "dropXp";
 	
 	// 1.15 Plus 1.16 Minus Client
-	public static final String RENDER_ITEM = "renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;II)V"; // COMMIT_READY
+	public static final String RENDER_ITEM = "renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;II)V";
 	
 	// 1.15 Plus 1.19.2 Minus Client
-	public static final String GET_BASIC_PROJECTION_MATRIX = "getBasicProjectionMatrix"; // COMMIT_READY
+	public static final String GET_BASIC_PROJECTION_MATRIX = "getBasicProjectionMatrix";
+	
+	// 1.15 Plus 1.20.4 Minus Client
+	public static final String SHULKER_ENTITY_SETUP_TRANSFORMS = "setupTransforms";
 	
 	// 1.16
-	public static final String IS_INSIDE_WALL = "isInsideWall()Z"; // COMMIT_READY
+	public static final String IS_INSIDE_WALL = "isInsideWall()Z";
 	
 	// 1.16 Minus
-	public static final String ON_OPEN = "onOpen(Lnet/minecraft/entity/player/PlayerEntity;)V"; // COMMIT_READY
-	public static final String ON_CLOSE = "onClose(Lnet/minecraft/entity/player/PlayerEntity;)V"; // COMMIT_READY
-	public static final String COUNT_VIEWERS = "countViewers(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/LockableContainerBlockEntity;III)I"; // COMMIT_READY
+	public static final String ON_OPEN = "onOpen(Lnet/minecraft/entity/player/PlayerEntity;)V";
+	public static final String ON_CLOSE = "onClose(Lnet/minecraft/entity/player/PlayerEntity;)V";
+	public static final String COUNT_VIEWERS = "countViewers(Lnet/minecraft/world/World;Lnet/minecraft/block/entity/LockableContainerBlockEntity;III)I";
 	public static final String GET_BOUNDING_BOX = "Lnet/minecraft/entity/Entity;getBoundingBox()Lnet/minecraft/util/math/Box;";
-	public static final String FALL = "fall"; // COMMIT_READY
-	public static final String ON_LANDED_UPON = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V"; // COMMIT_READY
-	public static final String SPAWN_ENTITY = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"; // COMMIT_READY
-	public static final String REMOVE = "remove"; // COMMIT_READY
+	public static final String FALL = "fall";
+	public static final String ON_LANDED_UPON = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V";
+	public static final String SPAWN_ENTITY = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z";
+	public static final String REMOVE = "remove";
 	
 	// 1.16 Minus Client
-	public static final String RENDER_STATUS_BARS = "renderStatusBars"; // COMMIT_READY
-	public static final String GET_ABSORPTION_AMOUNT = "Lnet/minecraft/entity/player/PlayerEntity;getAbsorptionAmount()F"; // COMMIT_READY
-	public static final String PROJECTILE_RAYCAST = "raycast"; // COMMIT_READY
+	public static final String RENDER_STATUS_BARS = "renderStatusBars";
+	public static final String GET_ABSORPTION_AMOUNT = "Lnet/minecraft/entity/player/PlayerEntity;getAbsorptionAmount()F";
+	public static final String PROJECTILE_RAYCAST = "raycast";
 	
 	// 1.16.2 - 1.16.5 Client
-	public static final String ON_PLAYER_RESPAWN = "onPlayerRespawn"; // COMMIT_READY
-	public static final String AFTER_SPAWN = "Lnet/minecraft/client/network/ClientPlayerEntity;afterSpawn()V"; // COMMIT_READY
+	public static final String ON_PLAYER_RESPAWN = "onPlayerRespawn";
+	public static final String AFTER_SPAWN = "Lnet/minecraft/client/network/ClientPlayerEntity;afterSpawn()V";
 	
 	// 1.16 Plus 1.18 Minus
-	public static final String GIVE_TO_VEC3D = "give(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/math/Vec3d;)V"; // COMMIT_READY
+	public static final String GIVE_TO_VEC3D = "give(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/math/Vec3d;)V";
 	
 	// 1.16 Plus 1.19 Minus
-	public static final String GET_COLLISION = "getCollision(Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;)Lnet/minecraft/util/hit/HitResult;"; // COMMIT_READY
+	public static final String GET_COLLISION = "getCollision(Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;)Lnet/minecraft/util/hit/HitResult;";
 	
 	// 1.16 Plus 1.19.3 Minus
-	public static final String UPDATE_LIMBS = "method_29242(Lnet/minecraft/entity/LivingEntity;Z)V"; // COMMIT_READY
+	public static final String UPDATE_LIMBS = "method_29242(Lnet/minecraft/entity/LivingEntity;Z)V";
 	
 	// 1.16 Plus 1.20.2 Minus
-	public static final String GET_COLLISION_FROM_POSITION = "getCollision(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/World;)Lnet/minecraft/util/hit/HitResult;"; // COMMIT_READY
+	public static final String GET_COLLISION_FROM_POSITION = "getCollision(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/World;)Lnet/minecraft/util/hit/HitResult;";
 	
 	// 1.17 Plus 1.19.3 Minus Client
-	public static final String RENDER_ITEM_WITH_SEED = "renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;III)V"; // COMMIT_READY
+	public static final String RENDER_ITEM_WITH_SEED = "renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Mode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;III)V";
 	
 	// 1.17 Plus 1.20.1 Minus
-	public static final String SQUARED_ATTACK_RANGE = "squaredAttackRange"; // COMMIT_READY
+	public static final String SQUARED_ATTACK_RANGE = "squaredAttackRange";
 	
 	// 1.18 Minus
-	public static final String PROCESS_BLOCK_BREAKING_ACTION = "processBlockBreakingAction"; // COMMIT_READY
+	public static final String PROCESS_BLOCK_BREAKING_ACTION = "processBlockBreakingAction";
 	
 	// 1.18 Plus 1.19.2 Minus
-	public static final String FOR_EACH = "forEach(Lnet/minecraft/util/math/Box;Ljava/util/function/Consumer;)V"; // COMMIT_READY
-	public static final String FOR_EACH_FILTERED = "forEach(Lnet/minecraft/util/TypeFilter;Lnet/minecraft/util/math/Box;Ljava/util/function/Consumer;)V"; // COMMIT_READY
+	public static final String FOR_EACH = "forEach(Lnet/minecraft/util/math/Box;Ljava/util/function/Consumer;)V";
+	public static final String FOR_EACH_FILTERED = "forEach(Lnet/minecraft/util/TypeFilter;Lnet/minecraft/util/math/Box;Ljava/util/function/Consumer;)V";
 	
 	// 1.19 Minus
-	public static final String UPDATE_PASSENGER_POSITION = "updatePassengerPosition"; // COMMIT_READY
+	public static final String UPDATE_PASSENGER_POSITION = "updatePassengerPosition";
+	
+	// 1.19 Plus 1.20.4 Minus
+	public static final String MAX_BREAK_SQUARED_DISTANCE = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;MAX_BREAK_SQUARED_DISTANCE:D";
 	
 	// 1.19.2 Minus
-	public static final String CREATE_EXPLOSION = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/world/explosion/Explosion$DestructionType;)Lnet/minecraft/world/explosion/Explosion;"; // COMMIT_READY
-	public static final String CREATE_EXPLOSION_OPTIONAL_FIRE = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFZLnet/minecraft/world/explosion/Explosion$DestructionType;)Lnet/minecraft/world/explosion/Explosion;"; // COMMIT_READY
+	public static final String CREATE_EXPLOSION = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/world/explosion/Explosion$DestructionType;)Lnet/minecraft/world/explosion/Explosion;";
+	public static final String CREATE_EXPLOSION_OPTIONAL_FIRE = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFZLnet/minecraft/world/explosion/Explosion$DestructionType;)Lnet/minecraft/world/explosion/Explosion;";
 	
 	// 1.19.3 Minus
-	public static final String DRAW_ENTITY_MOUSE_LOOK = "drawEntity(IIIFFLnet/minecraft/entity/LivingEntity;)V"; // COMMIT_READY
+	public static final String DRAW_ENTITY_MOUSE_LOOK = "drawEntity(IIIFFLnet/minecraft/entity/LivingEntity;)V";
+	public static final String CAN_PLAYER_USE = "canPlayerUse";
+	public static final String ENDER_CHEST_CAN_PLAYER_USE = "canPlayerUse";
+	public static final String STEP_HEIGHT = "Lnet/minecraft/entity/Entity;stepHeight:F";
 	
 	// 1.19.3 Plus 1.20.2 Minus
-	public static final String CREATE_EXPLOSION_TYPED = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/World$ExplosionSourceType;)Lnet/minecraft/world/explosion/Explosion;"; // COMMIT_READY
+	public static final String CREATE_EXPLOSION_TYPED = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/World$ExplosionSourceType;)Lnet/minecraft/world/explosion/Explosion;";
 	
 	// 1.19.4
-	public static final String DRAW_ENTITY_ROTATED = "drawEntity(Lnet/minecraft/client/util/math/MatrixStack;IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V"; // COMMIT_READY
+	public static final String DRAW_ENTITY_ROTATED = "drawEntity(Lnet/minecraft/client/util/math/MatrixStack;IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V";
 	
 	// 1.20 - 1.20.1
-	public static final String DRAW_ENTITY_NO_TRANSLATION = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V"; // COMMIT_READY
+	public static final String DRAW_ENTITY_NO_TRANSLATION = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V";
 	
 	// 1.20.1 Minus
-	public static final String GET_MOUNTED_HEIGHT_OFFSET = "getMountedHeightOffset()D"; // COMMIT_READY
-	public static final String GET_PASSENGER_ATTACHMENT_Y = "getPassengerAttachmentY(ZF)D"; // COMMIT_READY
-	public static final String GET_HEIGHT_OFFSET = "getHeightOffset()D"; // COMMIT_READY
-	public static final String ON_PLAYER_CONNECT = "onPlayerConnect"; // COMMIT_READY
+	public static final String GET_MOUNTED_HEIGHT_OFFSET = "getMountedHeightOffset()D";
+	public static final String GET_PASSENGER_ATTACHMENT_Y = "getPassengerAttachmentY(ZF)D";
+	public static final String GET_HEIGHT_OFFSET = "getHeightOffset()D";
+	public static final String ON_PLAYER_CONNECT = "onPlayerConnect";
 	
 	// 1.20.2 Minus
-	public static final String PERSISTENT_PROJECTILE_ENTITY_INIT = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;)V"; // COMMIT_READY
+	public static final String PERSISTENT_PROJECTILE_ENTITY_INIT = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;)V";
 	
 	// 1.16 Plus 1.20.2 Minus
-	public static final String EXPLOSION_WITH_DAMAGE_SOURCE_INIT = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/explosion/Explosion$DestructionType;)V"; // COMMIT_READY
+	public static final String EXPLOSION_WITH_DAMAGE_SOURCE_INIT = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/explosion/Explosion$DestructionType;)V";
 	
 	// 1.20 Plus 1.20.2 Minus
-	public static final String GET_HIT_RESULT = "getHitResult(Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/util/hit/HitResult;"; // COMMIT_READY
+	public static final String GET_HIT_RESULT = "getHitResult(Lnet/minecraft/entity/LivingEntity;)Lnet/minecraft/util/hit/HitResult;";
+	
+	// 1.20.2 Plus 1.20.4 Minus
+	public static final String GET_RIDING_OFFSET = "getRidingOffset";
+	
+	// 1.20.2 Plus 1.20.4 Minus Client
+	public static final String DRAW_ENTITY_WITH_OFFSET = "drawEntity(Lnet/minecraft/client/gui/DrawContext;FFILorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V";
+	
+	// 1.20.4 Minus
+	public static final String GET_IN_RANGE_VIEWER_COUNT = "getInRangeViewerCount";
+	public static final String SHOOT = "shoot";
+	public static final String GET_EYE_HEIGHT = "getEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F";
+	public static final String GET_ACTIVE_EYE_HEIGHT = "getActiveEyeHeight(Lnet/minecraft/entity/EntityPose;Lnet/minecraft/entity/EntityDimensions;)F";
+	public static final String GET_ACTIVE_EYE_HEIGHT_TARGET = "Lnet/minecraft/entity/LivingEntity;" + GET_ACTIVE_EYE_HEIGHT;
+	public static final String GET_DIMENSIONS = "getDimensions(Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;";
+	public static final String APPLY_SPLASH_POTION = "applySplashPotion";
+	public static final String APPLY_LINGERING_POTION = "applyLingeringPotion";
+	public static final String GET_PASSENGER_ATTACHMENT_POS = "Lnet/minecraft/entity/Entity;getPassengerAttachmentPos(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/EntityDimensions;F)Lorg/joml/Vector3f;";
+	public static final String LIVING_ENTITY_GET_PASSENGER_ATTACHMENT_POS = "Lnet/minecraft/entity/LivingEntity;getPassengerAttachmentPos(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/EntityDimensions;F)Lorg/joml/Vector3f;";
+	public static final String PERSISTENT_PROJECTILE_ENTITY_SET_VELOCITY = "Lnet/minecraft/entity/projectile/PersistentProjectileEntity;setVelocity(DDD)V";
+	public static final String THROWN_ENTITY_SET_VELOCITY = "Lnet/minecraft/entity/projectile/thrown/ThrownEntity;setVelocity(DDD)V";
+	public static final String GET_NAME_LABEL_HEIGHT = "Lnet/minecraft/entity/Entity;getNameLabelHeight()F";
+	public static final String EXPLOSION_WITH_PARTICLES_AND_SOUND_INIT = "<init>(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/explosion/Explosion$DestructionType;Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/particle/ParticleEffect;Lnet/minecraft/sound/SoundEvent;)V";
+	
+	// 1.20.4 Minus Client
+	public static final String GET_REACH_DISTANCE = "getReachDistance";
+	public static final String RENDER_WORLD = "renderWorld";
+	public static final String RENDER_LABEL_IF_PRESENT = "renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";
 }
