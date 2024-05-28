@@ -87,7 +87,7 @@ public class DebugCommand
 						{
 							final Packet<?> packet;
 							
-							packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(DebugPacket.Type.GARBAGE_COLLECT), NetworkDirection.PLAY_TO_CLIENT);
+							packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.GARBAGE_COLLECT), NetworkDirection.PLAY_TO_CLIENT);
 							
 							ReflectionUtils.sendPacket(context.getSource().getPlayer().networkHandler, packet);
 							
@@ -183,6 +183,13 @@ public class DebugCommand
 		return 1;
 	}
 	
+	public static enum PacketType
+	{
+		MIXIN_AUDIT,
+		GARBAGE_COLLECT
+		;
+	}
+	
 	private static int runMixinTests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
 	{
 		final Entity executor = context.getSource().getEntity();
@@ -190,7 +197,7 @@ public class DebugCommand
 		{
 			final Packet<?> packet;
 			
-			packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(DebugPacket.Type.MIXIN_AUDIT), NetworkDirection.PLAY_TO_CLIENT);
+			packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.MIXIN_AUDIT), NetworkDirection.PLAY_TO_CLIENT);
 			
 			ReflectionUtils.sendPacket(((ServerPlayerEntity) executor).networkHandler, packet);
 		}

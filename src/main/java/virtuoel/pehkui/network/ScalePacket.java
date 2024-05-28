@@ -64,7 +64,7 @@ public class ScalePacket
 		}
 	}
 	
-	public static void handle(ScalePacket msg, Supplier<NetworkEvent.Context> ctx)
+	public static void handle(final ScalePacket msg, final Supplier<NetworkEvent.Context> ctx)
 	{
 		ctx.get().enqueueWork(() ->
 		{
