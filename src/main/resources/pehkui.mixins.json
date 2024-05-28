@@ -89,7 +89,6 @@
 		"compat116plus.DragonFireballEntityMixin",
 		"compat116plus.EggEntityMixin",
 		"compat116plus.EnderPearlEntityMixin",
-		"compat116plus.EntityMixin",
 		"compat116plus.FishingBobberEntityMixin",
 		"compat116plus.FoxEntityMateGoalMixin",
 		"compat116plus.MobEntityMixin",
