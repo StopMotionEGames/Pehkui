@@ -1,5 +1,6 @@
 package virtuoel.pehkui.mixin.reach.compat1204minus;
 
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -13,6 +14,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(ScreenHandler.class)
 public class ScreenHandlerMixin
 {
+	@Dynamic
 	@ModifyExpressionValue(method = { "method_17696", "func_216960_a", "m_38913_" }, require = 0, expect = 0, at = @At(value = "CONSTANT", args = "doubleValue=64.0D"))
 	private static double pehkui$canUse$distance(double value, Block block, PlayerEntity player)
 	{

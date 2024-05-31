@@ -17,6 +17,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class CamelEntityMixin
 {
 	// TODO 1.19.3
+	@Dynamic
 	@ModifyReturnValue(method = MixinConstants.GET_DIMENSIONS, at = @At("RETURN"))
 	private EntityDimensions pehkui$getDimensions(EntityDimensions original, EntityPose pose)
 	{
