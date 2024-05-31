@@ -20,7 +20,7 @@ public class GameRendererMixin
 	MinecraftClient client;
 	
 	@ModifyExpressionValue(method = "updateTargetedEntity", require = 0, expect = 0, at = @At(value = "CONSTANT", args = "doubleValue=3.0D"))
-	private double pehkui$updateTargetedEntity$distance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$distance(double value, float tickDelta)
 	{
 		final Entity entity = client.getCameraEntity();
 		

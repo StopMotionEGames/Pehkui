@@ -9,31 +9,25 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+import virtuoel.pehkui.server.command.DebugCommand;
 import virtuoel.pehkui.util.I18nUtils;
 
 public class DebugPacket
 {
-	public static enum Type
-	{
-		MIXIN_AUDIT,
-		GARBAGE_COLLECT
-		;
-	}
+	public final DebugCommand.PacketType type;
 	
-	private final Type type;
-	
-	public DebugPacket(Type type)
+	public DebugPacket(final DebugCommand.PacketType type)
 	{
 		this.type = type;
 	}
 	
-	protected DebugPacket(PacketByteBuf buf)
+	public DebugPacket(final PacketByteBuf buf)
 	{
-		Type read;
+		DebugCommand.PacketType read;
 		
 		try
 		{
-			read = buf.readEnumConstant(Type.class);
+			read = buf.readEnumConstant(DebugCommand.PacketType.class);
 		}
 		catch (Exception e)
 		{
@@ -43,9 +37,14 @@ public class DebugPacket
 		this.type = read;
 	}
 	
-	public static void handle(DebugPacket msg, Supplier<NetworkEvent.Context> ctx)
+	public void write(final PacketByteBuf buf)
 	{
-		final Type type = msg.type;
+		buf.writeEnumConstant(this.type);
+	}
+	
+	public static void handle(final DebugPacket msg, final Supplier<NetworkEvent.Context> ctx)
+	{
+		final DebugCommand.PacketType type = msg.type;
 		
 		ctx.get().enqueueWork(() ->
 		{
@@ -70,10 +69,5 @@ public class DebugPacket
 		});
 		
 		ctx.get().setPacketHandled(true);
-	}
-	
-	public void encode(PacketByteBuf buf)
-	{
-		buf.writeEnumConstant(type);
 	}
 }

@@ -17,7 +17,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class EntityRendererMixin
 {
 	@Dynamic
-	@WrapOperation(method = MixinConstants.RENDER_LABEL_IF_PRESENT, at = @At(value = "INVOKE", target = MixinConstants.GET_HEIGHT))
+	@WrapOperation(method = MixinConstants.RENDER_LABEL_STRING_IF_PRESENT, at = @At(value = "INVOKE", target = MixinConstants.GET_HEIGHT))
 	private float pehkui$renderLabelIfPresent$getHeight(Entity entity, Operation<Float> original)
 	{
 		final float delta = MinecraftClient.getInstance().getTickDelta();

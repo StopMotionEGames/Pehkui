@@ -13,7 +13,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -25,20 +24,6 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin
 {
-	@ModifyReturnValue(method = "getDimensions", at = @At("RETURN"))
-	private EntityDimensions pehkui$getDimensions(EntityDimensions original)
-	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
-		
-		if (widthScale != 1.0F || heightScale != 1.0F)
-		{
-			return original.scaled(widthScale, heightScale);
-		}
-		
-		return original;
-	}
-	
 	@Inject(at = @At("RETURN"), method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;")
 	private void pehkui$dropItem(ItemStack stack, boolean spread, boolean thrown, CallbackInfoReturnable<ItemEntity> info)
 	{

@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,6 +24,11 @@ import virtuoel.pehkui.api.PehkuiConfig;
 
 public class ScaleRenderUtils
 {
+	public static boolean hasExtendedReach(final ClientPlayerInteractionManager interactionManager)
+	{
+		return interactionManager.hasExtendedReach();
+	}
+	
 	public static boolean wasPlayerAlive(final PlayerRespawnS2CPacket packet)
 	{
 		return packet.shouldKeepPlayerAttributes();
