@@ -10,7 +10,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-// import net.minecraft.server.world.ServerEntityManager;
+import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import virtuoel.pehkui.Pehkui;
@@ -20,15 +20,14 @@ import virtuoel.pehkui.api.ScaleType;
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin
 {
-	// @Shadow @Final @Mutable
-	// ServerEntityManager<Entity> entityManager;
+	@Shadow @Final @Mutable
+	ServerEntityManager<Entity> entityManager;
 	
 	@ModifyReturnValue(method = "getDebugString", at = @At("RETURN"))
 	private String pehkui$getDebugString(String value)
 	{
 		String additional = "";
 		
-		/* // TODO 1.17
 		for (final Entity entity : entityManager.getLookup().iterate())
 		{
 			float maxScale = 1.0F;
@@ -56,7 +55,6 @@ public class ServerWorldMixin
 				additional += "\"" + entity.getUuidAsString() + "\":\"" + EntityType.getId(entity.getType()) + "\",\"" + idString + "\":" + maxScale;
 			}
 		}
-		*/
 		
 		return additional.isEmpty() ? value : (value + additional + "}]}");
 	}
