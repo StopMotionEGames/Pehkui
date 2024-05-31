@@ -15,6 +15,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin
 {
+	/*
 	@WrapOperation(method = "onPlayerInteractEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;squaredDistanceTo(Lnet/minecraft/util/math/Vec3d;)D"))
 	private double pehkui$onPlayerInteractEntity$squaredDistanceTo(Entity entity, Vec3d eyePos, Operation<Double> original)
 	{
@@ -80,4 +81,5 @@ public class ServerPlayNetworkHandlerMixin
 		
 		return eyePos.squaredDistanceTo(nearestX, nearestY, nearestZ);
 	}
+	*/
 }
