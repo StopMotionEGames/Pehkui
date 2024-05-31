@@ -12,6 +12,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin
 {
+	/* // TODO 1.20.5
 	@ModifyReturnValue(method = "getStepHeight()F", at = @At("RETURN"))
 	private float pehkui$getStepHeight(float original)
 	{
@@ -19,4 +20,5 @@ public abstract class LivingEntityMixin
 		
 		return scale != 1.0F ? original * scale : original;
 	}
+	*/
 }

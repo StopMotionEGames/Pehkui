@@ -20,8 +20,8 @@ public interface InventoryMixin
 	 * instead of to the center of the block
 	 */
 	@Dynamic
-	@Overwrite // UNMAPPED_METHOD
-	public static boolean method_49106(BlockEntity blockEntity, PlayerEntity player, int range)
+	@Overwrite
+	public static boolean canPlayerUse(BlockEntity blockEntity, PlayerEntity player, int range)
 	{
 		World world = blockEntity.getWorld();
 		BlockPos pos = blockEntity.getPos();

@@ -15,7 +15,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class ThrownEntityMixin
 {
 	@Dynamic @Shadow
-	protected abstract float method_7490(); // UNMAPPED_METHOD
+	protected abstract float getGravity();
 	
 	@Dynamic
 	@ModifyArg(method = "tick()V", index = 1, at = @At(value = "INVOKE", target = MixinConstants.THROWN_ENTITY_SET_VELOCITY))
@@ -25,7 +25,7 @@ public abstract class ThrownEntityMixin
 		
 		if (scale != 1.0F)
 		{
-			return value + ((1.0F - scale) * method_7490());
+			return value + ((1.0F - scale) * getGravity());
 		}
 		
 		return value;

@@ -15,6 +15,7 @@ public class ServerPlayNetworkHandlerMixin
 {
 	@Shadow ServerPlayerEntity player;
 	
+	/*
 	@ModifyExpressionValue(method = "onPlayerInteractBlock", at = @At(value = "CONSTANT", args = "doubleValue=64.0D"))
 	private double pehkui$onPlayerInteractBlock$distance(double value)
 	{
@@ -22,4 +23,5 @@ public class ServerPlayNetworkHandlerMixin
 		
 		return scale != 1.0F ? scale * scale * value : value;
 	}
+	*/
 }

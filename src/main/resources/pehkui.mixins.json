@@ -273,7 +273,6 @@
 		"client.compat1194plus.ItemRendererMixin",
 		"client.compat119minus.compat116plus.EntityRendererMixin",
 		"client.compat1201minus.compat120plus.InventoryScreenMixin",
-		"client.compat1202plus.InventoryScreenMixin",
 		"client.compat1204minus.compat115plus.ShulkerEntityRendererMixin",
 		"client.compat1204minus.compat1193plus.GameRendererMixin",
 		"client.compat1204minus.compat1202plus.InventoryScreenMixin",
