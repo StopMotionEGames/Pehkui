@@ -3,12 +3,14 @@ package virtuoel.pehkui.mixin;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 
+import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.util.ModLoaderUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
@@ -38,6 +40,9 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 		return null;
 	}
 	
+	@ApiStatus.Experimental
+	private static final boolean DISABLE_THREAD_SAFETY = Boolean.parseBoolean(System.getProperty("pehkui.disableThreadSafety"));
+	
 	private static final boolean REACH_ATTRIBUTES_LOADED = ModLoaderUtils.isModLoaded("reach-entity-attributes");
 	private static final boolean STEP_HEIGHT_ATTRIBUTES_LOADED = ModLoaderUtils.isModLoaded("step-height-entity-attribute");
 	private static final boolean IDENTITY_LOADED = ModLoaderUtils.isModLoaded("identity");
@@ -62,6 +67,19 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 		if (mixinClassName.endsWith("InGameOverlayRendererMixin"))
 		{
 			return OPTIFABRIC_LOADED == mixinClassName.contains(".optifine.compat.");
+		}
+		else if (mixinClassName.endsWith("ThreadSafeScaledEntityMixin"))
+		{
+			return !DISABLE_THREAD_SAFETY;
+		}
+		else if (mixinClassName.endsWith("ThreadUnsafeScaledEntityMixin"))
+		{
+			if (DISABLE_THREAD_SAFETY)
+			{
+				Pehkui.LOGGER.warn("Found property -Dpehkui.disableThreadSafety=true. The synchronized() blocks in scale getters have been disabled.");
+			}
+			
+			return DISABLE_THREAD_SAFETY;
 		}
 		
 		if (mixinClassName.startsWith(MIXIN_PACKAGE + ".reach"))

@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.predicate.NumberRange;
@@ -26,6 +27,21 @@ public final class ReflectionUtils
 	public static double getMountedHeightOffset(final Entity entity)
 	{
 		return entity.getMountedHeightOffset();
+	}
+	
+	public static float getDimensionsWidth(final EntityDimensions dimensions)
+	{
+		return dimensions.width;
+	}
+	
+	public static float getDimensionsHeight(final EntityDimensions dimensions)
+	{
+		return dimensions.height;
+	}
+	
+	public static void setOnGround(final Entity entity, final boolean onGround)
+	{
+		entity.setOnGround(onGround);
 	}
 	
 	public static void sendPacket(final ServerPlayNetworkHandler handler, final Packet<?> packet)
