@@ -20,6 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,6 +36,7 @@ import virtuoel.pehkui.network.PehkuiPacketHandler;
 import virtuoel.pehkui.util.CommandUtils;
 import virtuoel.pehkui.util.I18nUtils;
 import virtuoel.pehkui.util.NbtCompoundExtensions;
+import virtuoel.pehkui.util.ReflectionUtils;
 
 public class DebugCommand
 {
@@ -83,9 +85,11 @@ public class DebugCommand
 					.then(CommandManager.literal("garbage_collect")
 						.executes(context ->
 						{
-							context.getSource().getPlayer().networkHandler.sendPacket(
-								PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(DebugPacket.Type.GARBAGE_COLLECT), NetworkDirection.PLAY_TO_CLIENT)
-							);
+							final Packet<?> packet;
+							
+							packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.GARBAGE_COLLECT), NetworkDirection.PLAY_TO_CLIENT);
+							
+							ReflectionUtils.sendPacket(context.getSource().getPlayer().networkHandler, packet);
 							
 							System.gc();
 							
@@ -179,14 +183,23 @@ public class DebugCommand
 		return 1;
 	}
 	
+	public static enum PacketType
+	{
+		MIXIN_AUDIT,
+		GARBAGE_COLLECT
+		;
+	}
+	
 	private static int runMixinTests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
 	{
 		final Entity executor = context.getSource().getEntity();
 		if (executor instanceof ServerPlayerEntity)
 		{
-			((ServerPlayerEntity) executor).networkHandler.sendPacket(
-				PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(DebugPacket.Type.MIXIN_AUDIT), NetworkDirection.PLAY_TO_CLIENT)
-			);
+			final Packet<?> packet;
+			
+			packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.MIXIN_AUDIT), NetworkDirection.PLAY_TO_CLIENT);
+			
+			ReflectionUtils.sendPacket(((ServerPlayerEntity) executor).networkHandler, packet);
 		}
 		
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.audit.start", "Starting Mixin environment audit..."), false);
