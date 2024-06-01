@@ -9,6 +9,7 @@ import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(value = {
@@ -18,7 +19,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 }, priority = 1010)
 public abstract class BlockEntityUseDistanceMixin
 {
-	@ModifyExpressionValue(method = "canPlayerUse", require = 0, expect = 0, at = @At(value = "CONSTANT", args = "doubleValue=64.0D"))
+	@ModifyExpressionValue(method = MixinConstants.CAN_PLAYER_USE, require = 0, expect = 0, at = @At(value = "CONSTANT", args = "doubleValue=64.0D"))
 	private double pehkui$canPlayerUse$distance(double value, PlayerEntity player)
 	{
 		final float scale = ScaleUtils.getBlockReachScale(player);

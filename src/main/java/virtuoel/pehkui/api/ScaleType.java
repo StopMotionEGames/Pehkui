@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 import net.minecraft.entity.Entity;
 import virtuoel.pehkui.util.PehkuiEntityExtensions;
+import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
 public class ScaleType
@@ -233,35 +234,15 @@ public class ScaleType
 		{
 			final ScaleType type = new ScaleType(this);
 			
-			if (this.affectsDimensions)
+			if (this.affectsDimensions || !this.dependentModifiers.isEmpty())
 			{
-				type.getScaleChangedEvent().add(Builder::calculateDimensions);
-			}
-			
-			if (!this.dependentModifiers.isEmpty())
-			{
-				type.getScaleChangedEvent().add(createModifiedDataSyncEvent(this.dependentModifiers));
+				type.getScaleChangedEvent().add(createScaleChangedEvent(this.dependentModifiers));
 			}
 			
 			return type;
 		}
 		
-		private static void calculateDimensions(ScaleData s)
-		{
-			final Entity e = s.getEntity();
-			
-			if (e != null)
-			{
-				final PehkuiEntityExtensions en = (PehkuiEntityExtensions) e;
-				final boolean onGround = en.pehkui_getOnGround();
-				
-				e.calculateDimensions();
-				
-				en.pehkui_setOnGround(onGround);
-			}
-		}
-		
-		private static ScaleEventCallback createModifiedDataSyncEvent(final Collection<ScaleModifier> modifiers)
+		private static ScaleEventCallback createScaleChangedEvent(final Collection<ScaleModifier> modifiers)
 		{
 			return s ->
 			{
@@ -269,15 +250,32 @@ public class ScaleType
 				
 				if (e != null)
 				{
-					ScaleData data;
-					for (ScaleType scaleType : ScaleRegistries.SCALE_TYPES.values())
+					boolean recalculateDimensions = s.getScaleType().getAffectsDimensions();
+					
+					if (!modifiers.isEmpty())
 					{
-						data = scaleType.getScaleData(e);
-						
-						if (!Collections.disjoint(modifiers, data.getBaseValueModifiers()))
+						ScaleData data;
+						for (ScaleType scaleType : ScaleRegistries.SCALE_TYPES.values())
 						{
-							data.markForSync(true);
+							data = scaleType.getScaleData(e);
+							
+							if (!Collections.disjoint(modifiers, data.getBaseValueModifiers()))
+							{
+								data.invalidateCachedScales();
+								data.markForSync(true);
+								recalculateDimensions |= scaleType.getAffectsDimensions();
+							}
 						}
+					}
+					
+					if (recalculateDimensions)
+					{
+						final PehkuiEntityExtensions en = (PehkuiEntityExtensions) e;
+						final boolean onGround = en.pehkui_getOnGround();
+						
+						e.calculateDimensions();
+						
+						ReflectionUtils.setOnGround(e, onGround);
 					}
 				}
 			};
