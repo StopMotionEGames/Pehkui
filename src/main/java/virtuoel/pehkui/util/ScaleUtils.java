@@ -249,6 +249,7 @@ public class ScaleUtils
 		if (!syncedScales.isEmpty())
 		{
 			packetSender.accept(new CustomPayloadS2CPacket(new ScalePacket(entity, syncedScales)));
+			
 			syncedScales.clear();
 		}
 	}

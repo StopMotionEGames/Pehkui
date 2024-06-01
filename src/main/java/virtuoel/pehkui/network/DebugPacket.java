@@ -10,31 +10,25 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import virtuoel.pehkui.Pehkui;
+import virtuoel.pehkui.server.command.DebugCommand;
 import virtuoel.pehkui.util.I18nUtils;
 
 public class DebugPacket implements CustomPayload
 {
-	public static enum Type
-	{
-		MIXIN_AUDIT,
-		GARBAGE_COLLECT
-		;
-	}
+	public final DebugCommand.PacketType type;
 	
-	private final Type type;
-	
-	public DebugPacket(Type type)
+	public DebugPacket(final DebugCommand.PacketType type)
 	{
 		this.type = type;
 	}
 	
-	protected DebugPacket(PacketByteBuf buf)
+	public DebugPacket(final PacketByteBuf buf)
 	{
-		Type read;
+		DebugCommand.PacketType read;
 		
 		try
 		{
-			read = buf.readEnumConstant(Type.class);
+			read = buf.readEnumConstant(DebugCommand.PacketType.class);
 		}
 		catch (Exception e)
 		{
@@ -44,9 +38,21 @@ public class DebugPacket implements CustomPayload
 		this.type = read;
 	}
 	
-	public static void handle(DebugPacket msg, PlayPayloadContext ctx)
+	@Override
+	public void write(final PacketByteBuf buf)
 	{
-		final Type type = msg.type;
+		buf.writeEnumConstant(this.type);
+	}
+	
+	@Override
+	public Identifier id()
+	{
+		return Pehkui.DEBUG_PACKET;
+	}
+	
+	public static void handle(final DebugPacket msg, final PlayPayloadContext ctx)
+	{
+		final DebugCommand.PacketType type = msg.type;
 		
 		ctx.workHandler().execute(() ->
 		{
@@ -69,17 +75,5 @@ public class DebugPacket implements CustomPayload
 				}
 			}
 		});
-	}
-	
-	@Override
-	public Identifier id()
-	{
-		return Pehkui.DEBUG_PACKET;
-	}
-	
-	@Override
-	public void write(PacketByteBuf buf)
-	{
-		buf.writeEnumConstant(type);
 	}
 }

@@ -20,6 +20,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -82,9 +84,11 @@ public class DebugCommand
 					.then(CommandManager.literal("garbage_collect")
 						.executes(context ->
 						{
-							PacketDistributor.PLAYER.with(context.getSource().getPlayer()).send(
-								new DebugPacket(DebugPacket.Type.GARBAGE_COLLECT)
-							);
+							final Packet<?> packet;
+							
+							packet = new CustomPayloadS2CPacket(new DebugPacket(PacketType.GARBAGE_COLLECT));
+							
+							PacketDistributor.PLAYER.with(context.getSource().getPlayer()).send(packet);
 							
 							System.gc();
 							
@@ -178,14 +182,23 @@ public class DebugCommand
 		return 1;
 	}
 	
+	public static enum PacketType
+	{
+		MIXIN_AUDIT,
+		GARBAGE_COLLECT
+		;
+	}
+	
 	private static int runMixinTests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
 	{
 		final Entity executor = context.getSource().getEntity();
 		if (executor instanceof ServerPlayerEntity)
 		{
-			PacketDistributor.PLAYER.with((ServerPlayerEntity) executor).send(
-				new DebugPacket(DebugPacket.Type.MIXIN_AUDIT)
-			);
+			final Packet<?> packet;
+			
+			packet = new CustomPayloadS2CPacket(new DebugPacket(PacketType.MIXIN_AUDIT));
+			
+			PacketDistributor.PLAYER.with((ServerPlayerEntity) executor).send(packet);
 		}
 		
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.audit.start", "Starting Mixin environment audit..."), false);
