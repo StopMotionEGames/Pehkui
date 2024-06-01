@@ -60,14 +60,14 @@ public class CommandUtils
 		<T extends ArgumentType<?>> void register(Identifier id, Class<T> argClass, Supplier<T> supplier);
 	}
 	
-	public static boolean testFloatRange(NumberRange.DoubleRange range, float value)
-	{
-		return range.test(value);
-	}
-	
 	public static void sendFeedback(ServerCommandSource source, Supplier<Text> text, boolean broadcastToOps)
 	{
 		source.sendFeedback(text, broadcastToOps);
+	}
+	
+	public static boolean testFloatRange(NumberRange.DoubleRange range, float value)
+	{
+		return range.test(value);
 	}
 	
 	public static <T extends ArgumentType<?>> void registerConstantArgumentType(Identifier id, Class<T> argClass, Supplier<T> supplier)

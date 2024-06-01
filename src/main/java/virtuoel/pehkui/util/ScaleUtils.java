@@ -250,6 +250,7 @@ public class ScaleUtils
 		if (!syncedScales.isEmpty())
 		{
 			packetSender.accept(PehkuiPacketHandler.INSTANCE.toVanillaPacket(new ScalePacket(entity, syncedScales), PlayNetworkDirection.PLAY_TO_CLIENT));
+			
 			syncedScales.clear();
 		}
 	}
