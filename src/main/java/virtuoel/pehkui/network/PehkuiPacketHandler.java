@@ -11,7 +11,7 @@ public class PehkuiPacketHandler
 	public static void register(final RegisterPayloadHandlerEvent event)
 	{
 		final IPayloadRegistrar registrar = event.registrar(Pehkui.MOD_ID).versioned("3.0.0");
-		registrar.play(Pehkui.SCALE_PACKET, ScalePacket::new, ScalePacket::handle);
-		registrar.play(Pehkui.DEBUG_PACKET, DebugPacket::new, DebugPacket::handle);
+		registrar.play(Pehkui.SCALE_PACKET, ScalePayload::new, ScalePayload::handle);
+		registrar.play(Pehkui.DEBUG_PACKET, DebugPayload::new, DebugPayload::handle);
 	}
 }

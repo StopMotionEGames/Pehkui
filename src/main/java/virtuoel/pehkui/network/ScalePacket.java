@@ -6,21 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.util.ScaleUtils;
 
-public class ScalePacket implements CustomPayload
+public class ScalePacket
 {
 	public final int entityId;
 	public final Collection<ScaleData> scales = new ArrayList<>();
@@ -53,7 +47,6 @@ public class ScalePacket implements CustomPayload
 		}
 	}
 	
-	@Override
 	public void write(final PacketByteBuf buf)
 	{
 		buf.writeVarInt(entityId);
@@ -64,34 +57,5 @@ public class ScalePacket implements CustomPayload
 			buf.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, s.getScaleType()));
 			s.toPacket(buf);
 		}
-	}
-	
-	@Override
-	public Identifier id()
-	{
-		return Pehkui.SCALE_PACKET;
-	}
-	
-	public static void handle(final ScalePacket msg, final PlayPayloadContext ctx)
-	{
-		ctx.workHandler().execute(() ->
-		{
-			if (FMLEnvironment.dist == Dist.CLIENT)
-			{
-				final MinecraftClient client = MinecraftClient.getInstance();
-				final Entity entity = client.world.getEntityById(msg.entityId);
-				
-				if (entity != null)
-				{
-					msg.syncedScales.forEach((typeId, scaleData) ->
-					{
-						if (ScaleRegistries.SCALE_TYPES.containsKey(typeId))
-						{
-							ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, typeId).getScaleData(entity).readNbt(scaleData);
-						}
-					});
-				}
-			}
-		});
 	}
 }
