@@ -3,14 +3,13 @@ package virtuoel.pehkui.api;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import virtuoel.pehkui.Pehkui;
@@ -92,7 +91,7 @@ public class PehkuiConfig
 		public final ForgeConfigSpec.BooleanValue scaledProjectiles;
 		public final ForgeConfigSpec.BooleanValue scaledExplosions;
 		public final ForgeConfigSpec.BooleanValue keepAllScalesOnRespawn;
-		public final ConfigValue<List<? extends String>> scalesKeptOnRespawn;
+		public final ForgeConfigSpec.ConfigValue<List<? extends String>> scalesKeptOnRespawn;
 		public final ForgeConfigSpec.BooleanValue accurateNetherPortals;
 		public final ForgeConfigSpec.BooleanValue enableCommands;
 		public final ForgeConfigSpec.BooleanValue enableDebugCommands;
@@ -184,7 +183,7 @@ public class PehkuiConfig
 			ScaleType type;
 			double defaultMin, defaultMax;
 			ForgeConfigSpec.DoubleValue min, max;
-			for (final Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
+			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
 			{
 				id = entry.getKey();
 				namespace = id.getNamespace();
