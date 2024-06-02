@@ -108,13 +108,18 @@ if(project.hasProperty("fabric_version")) {
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	if(!project.yarn_mappings.contains(", ")) {
-		mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+	//	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+		mappings loom.layered {
+			mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+			mappings "dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3"
+		}
 	}
 	else {
 		mappings loom.layered {
 			project.yarn_mappings.split(", ").each { String mapping ->
 				mappings "net.fabricmc:yarn:${mapping}:v2"
 			}
+			mappings "dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3"
 		}
 	}
 	
