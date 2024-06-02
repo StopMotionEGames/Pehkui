@@ -10,7 +10,7 @@ public class PehkuiPacketHandler
 	public static void register(final RegisterPayloadHandlersEvent event)
 	{
 		final PayloadRegistrar registrar = event.registrar("3.0.0");
-		registrar.playToClient(ScalePayload.ID, ScalePayload.CODEC, ScalePacket::handle);
-		registrar.playToClient(DebugPayload.ID, DebugPayload.CODEC, DebugPacket::handle);
+		registrar.playToClient(ScalePayload.ID, ScalePayload.CODEC, ScalePayload::handle);
+		registrar.playToClient(DebugPayload.ID, DebugPayload.CODEC, DebugPayload::handle);
 	}
 }
