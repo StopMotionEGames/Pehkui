@@ -14,7 +14,7 @@ public class PehkuiPacketHandler
 	public static void init()
 	{
 		int regId = 0;
-		INSTANCE.registerMessage(regId++, ScalePacket.class, ScalePacket::write, ScalePacket::new, ScalePacket::handle);
-		INSTANCE.registerMessage(regId++, DebugPacket.class, DebugPacket::write, DebugPacket::new, DebugPacket::handle);
+		INSTANCE.registerMessage(regId++, ScalePayload.class, ScalePayload::write, ScalePayload::new, ScalePayload::handle);
+		INSTANCE.registerMessage(regId++, DebugPayload.class, DebugPayload::write, DebugPayload::new, DebugPayload::handle);
 	}
 }
