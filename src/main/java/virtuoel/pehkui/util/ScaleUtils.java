@@ -30,7 +30,7 @@ import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
 import virtuoel.pehkui.api.ScaleTypes;
 import virtuoel.pehkui.network.PehkuiPacketHandler;
-import virtuoel.pehkui.network.ScalePacket;
+import virtuoel.pehkui.network.ScalePayload;
 
 public class ScaleUtils
 {
@@ -249,7 +249,7 @@ public class ScaleUtils
 		
 		if (!syncedScales.isEmpty())
 		{
-			packetSender.accept(PehkuiPacketHandler.INSTANCE.toVanillaPacket(new ScalePacket(entity, syncedScales), NetworkDirection.PLAY_TO_CLIENT));
+			packetSender.accept(PehkuiPacketHandler.INSTANCE.toVanillaPacket(new ScalePayload(entity, syncedScales), NetworkDirection.PLAY_TO_CLIENT));
 			
 			syncedScales.clear();
 		}
