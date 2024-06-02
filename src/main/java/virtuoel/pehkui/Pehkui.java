@@ -41,9 +41,9 @@ public class Pehkui
 		final ModLoadingContext ctx = ModLoadingContext.get();
 		ctx.getActiveContainer().getEventBus().register(PehkuiConfig.class);
 		
-		ctx.registerConfig(ModConfig.Type.CLIENT, PehkuiConfig.clientSpec);
-		ctx.registerConfig(ModConfig.Type.SERVER, PehkuiConfig.serverSpec);
-		ctx.registerConfig(ModConfig.Type.COMMON, PehkuiConfig.commonSpec);
+		ctx.getActiveContainer().registerConfig(ModConfig.Type.CLIENT, PehkuiConfig.clientSpec);
+		ctx.getActiveContainer().registerConfig(ModConfig.Type.SERVER, PehkuiConfig.serverSpec);
+		ctx.getActiveContainer().registerConfig(ModConfig.Type.COMMON, PehkuiConfig.commonSpec);
 		
 		CommandUtils.registerArgumentTypes(ctx);
 		
