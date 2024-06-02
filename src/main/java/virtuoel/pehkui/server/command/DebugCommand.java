@@ -30,9 +30,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.network.PacketDistributor;
 import virtuoel.pehkui.api.PehkuiConfig;
-import virtuoel.pehkui.network.DebugPacket;
+import virtuoel.pehkui.network.DebugPayload;
 import virtuoel.pehkui.util.CommandUtils;
 import virtuoel.pehkui.util.I18nUtils;
 import virtuoel.pehkui.util.NbtCompoundExtensions;
@@ -86,9 +85,9 @@ public class DebugCommand
 						{
 							final Packet<?> packet;
 							
-							packet = new CustomPayloadS2CPacket(new DebugPacket(PacketType.GARBAGE_COLLECT));
+							packet = new CustomPayloadS2CPacket(new DebugPayload(PacketType.GARBAGE_COLLECT));
 							
-							PacketDistributor.PLAYER.with(context.getSource().getPlayer()).send(packet);
+							context.getSource().getPlayer().networkHandler.send(packet);
 							
 							System.gc();
 							
@@ -196,9 +195,9 @@ public class DebugCommand
 		{
 			final Packet<?> packet;
 			
-			packet = new CustomPayloadS2CPacket(new DebugPacket(PacketType.MIXIN_AUDIT));
+			packet = new CustomPayloadS2CPacket(new DebugPayload(PacketType.MIXIN_AUDIT));
 			
-			PacketDistributor.PLAYER.with((ServerPlayerEntity) executor).send(packet);
+			((ServerPlayerEntity) executor).networkHandler.send(packet);
 		}
 		
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.audit.start", "Starting Mixin environment audit..."), false);

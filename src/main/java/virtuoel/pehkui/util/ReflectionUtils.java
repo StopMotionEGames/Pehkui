@@ -26,17 +26,17 @@ public final class ReflectionUtils
 	
 	public static double getMountedHeightOffset(final Entity entity)
 	{
-		return entity.getDimensions(entity.getPose()).height * 0.75;
+		return entity.getDimensions(entity.getPose()).height() * 0.75;
 	}
 	
 	public static float getDimensionsWidth(final EntityDimensions dimensions)
 	{
-		return dimensions.width;
+		return dimensions.width();
 	}
 	
 	public static float getDimensionsHeight(final EntityDimensions dimensions)
 	{
-		return dimensions.height;
+		return dimensions.height();
 	}
 	
 	public static void setOnGround(final Entity entity, final boolean onGround)
@@ -46,7 +46,7 @@ public final class ReflectionUtils
 	
 	public static void sendPacket(final ServerPlayNetworkHandler handler, final Packet<?> packet)
 	{
-		handler.sendPacket(packet);
+		handler.send(packet);
 	}
 	
 	public static boolean isDummy(final NumberRange<?> range)

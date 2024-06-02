@@ -26,7 +26,7 @@ public class ScaleRenderUtils
 {
 	public static boolean hasExtendedReach(final ClientPlayerInteractionManager interactionManager)
 	{
-		return interactionManager.hasExtendedReach();
+		return interactionManager.getCurrentGameMode().isCreative();
 	}
 	
 	public static boolean wasPlayerAlive(final PlayerRespawnS2CPacket packet)

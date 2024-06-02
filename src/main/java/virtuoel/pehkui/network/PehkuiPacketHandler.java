@@ -1,17 +1,16 @@
 package virtuoel.pehkui.network;
 
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
-import virtuoel.pehkui.Pehkui;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class PehkuiPacketHandler
 {
 	@SubscribeEvent
-	public static void register(final RegisterPayloadHandlerEvent event)
+	public static void register(final RegisterPayloadHandlersEvent event)
 	{
-		final IPayloadRegistrar registrar = event.registrar(Pehkui.MOD_ID).versioned("3.0.0");
-		registrar.play(Pehkui.SCALE_PACKET, ScalePacket::new, ScalePacket::handle);
-		registrar.play(Pehkui.DEBUG_PACKET, DebugPacket::new, DebugPacket::handle);
+		final PayloadRegistrar registrar = event.registrar("3.0.0");
+		registrar.playToClient(ScalePayload.ID, ScalePayload.CODEC, ScalePacket::handle);
+		registrar.playToClient(DebugPayload.ID, DebugPayload.CODEC, DebugPacket::handle);
 	}
 }
