@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PlayNetworkDirection;
 import virtuoel.pehkui.api.PehkuiConfig;
-import virtuoel.pehkui.network.DebugPacket;
+import virtuoel.pehkui.network.DebugPayload;
 import virtuoel.pehkui.network.PehkuiPacketHandler;
 import virtuoel.pehkui.util.CommandUtils;
 import virtuoel.pehkui.util.I18nUtils;
@@ -87,7 +87,7 @@ public class DebugCommand
 						{
 							final Packet<?> packet;
 							
-							packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.GARBAGE_COLLECT), PlayNetworkDirection.PLAY_TO_CLIENT);
+							packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPayload(PacketType.GARBAGE_COLLECT), PlayNetworkDirection.PLAY_TO_CLIENT);
 							
 							ReflectionUtils.sendPacket(context.getSource().getPlayer().networkHandler, packet);
 							
@@ -197,7 +197,7 @@ public class DebugCommand
 		{
 			final Packet<?> packet;
 			
-			packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPacket(PacketType.MIXIN_AUDIT), PlayNetworkDirection.PLAY_TO_CLIENT);
+			packet = PehkuiPacketHandler.INSTANCE.toVanillaPacket(new DebugPayload(PacketType.MIXIN_AUDIT), PlayNetworkDirection.PLAY_TO_CLIENT);
 			
 			ReflectionUtils.sendPacket(((ServerPlayerEntity) executor).networkHandler, packet);
 		}

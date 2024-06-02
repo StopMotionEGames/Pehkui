@@ -1,0 +1,53 @@
+package virtuoel.pehkui.network;
+
+import org.spongepowered.asm.mixin.MixinEnvironment;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.PacketByteBuf;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
+import virtuoel.pehkui.server.command.DebugCommand;
+import virtuoel.pehkui.util.I18nUtils;
+
+public class DebugPayload extends DebugPacket
+{
+	public DebugPayload(final DebugCommand.PacketType type)
+	{
+		super(type);
+	}
+	
+	public DebugPayload(final PacketByteBuf buf)
+	{
+		super(buf);
+	}
+	
+	public static void handle(final DebugPayload msg, final NetworkEvent.Context ctx)
+	{
+		final DebugCommand.PacketType type = msg.type;
+		
+		ctx.enqueueWork(() ->
+		{
+			if (FMLEnvironment.dist == Dist.CLIENT)
+			{
+				final MinecraftClient client = MinecraftClient.getInstance();
+				
+				switch (type)
+				{
+					case MIXIN_AUDIT:
+						client.player.sendMessage(I18nUtils.translate("commands.pehkui.debug.audit.start.client", "Starting Mixin environment audit (client)..."), false);
+						MixinEnvironment.getCurrentEnvironment().audit();
+						client.player.sendMessage(I18nUtils.translate("commands.pehkui.debug.audit.end.client", "Mixin environment audit (client) complete!"), false);
+						break;
+					case GARBAGE_COLLECT:
+						System.gc();
+						break;
+					default:
+						break;
+				}
+			}
+		});
+		
+		ctx.setPacketHandled(true);
+	}
+}
