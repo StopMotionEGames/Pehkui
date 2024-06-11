@@ -21,7 +21,6 @@ public class MixinConstants
 	private static final String METHOD_3178 = "method_3178";
 	private static final String METHOD_3206 = "method_3206";
 	private static final String METHOD_4016 = "method_4016";
-	private static final String METHOD_4073 = "method_4073";
 	private static final String METHOD_4058 = "method_4058";
 	private static final String METHOD_7469 = "method_7469";
 	private static final String METHOD_5992 = "method_5992";
@@ -50,8 +49,6 @@ public class MixinConstants
 	private static final String METHOD_12210 = "method_12210";
 	private static final String METHOD_18029 = "method_18029";
 	private static final String METHOD_1348 = "method_1348";
-	private static final String METHOD_3956 = "method_3956";
-	
 	private static final String CLASS_4019$CLASS_4024 = "net.minecraft.class_4019$class_4024";
 	
 	private static final String CLASS_1937 = "net/minecraft/class_1937";
@@ -84,8 +81,6 @@ public class MixinConstants
 	private static final String CLASS_1799 = "net/minecraft/class_1799";
 	private static final String CLASS_238 = "net/minecraft/class_238";
 	private static final String CLASS_289 = "net/minecraft/class_289";
-	private static final String CLASS_898 = "net/minecraft/class_898";
-	
 	private static final String CLASS_809$CLASS_811 = "net/minecraft/class_809$class_811";
 	private static final String CLASS_1927$CLASS_4179 = "net/minecraft/class_1927$class_4179";
 	private static final String CLASS_3959$CLASS_242 = "net/minecraft/class_3959$class_242";
@@ -100,7 +95,7 @@ public class MixinConstants
 	public static final String RENDER = METHOD_3954 + "(L" + CLASS_1297 + ";DDDFFZ)V";
 	public static final String RENDER_IN_WORLD = "L" + CLASS_897 + ";" + METHOD_3936 + "(L" + CLASS_1297 + ";DDDFF)V";
 	public static final String TESSELATOR_GET_INSTANCE = "L" + CLASS_289 + ";" + METHOD_1348 + "()L" + CLASS_289 + ";";
-	public static final String RENDER_HITBOX = "L" + CLASS_898 + ";" + METHOD_3956 + "(L" + CLASS_1297 + ";DDDFF)V";
+	public static final String RENDER_HITBOX = "renderHitbox";
 	public static final String RENDER_LABEL = METHOD_3923 + "(L" + CLASS_1297 + ";Ljava/lang/String;DDDI)V";
 	public static final String POST_RENDER = METHOD_3939 + "(L" + CLASS_1297 + ";DDDFF)V";
 	public static final String RENDER_SHADOW = "L" + CLASS_897 + ";" + METHOD_3934 + "(L" + CLASS_1297 + ";DDDFF)V";
@@ -117,7 +112,7 @@ public class MixinConstants
 	public static final String BUILD_GEOMETRY = METHOD_3074 + "(L" + CLASS_287 + ";L" + CLASS_4184 + ";FFFFFF)V";
 	public static final String LERP = "L" + CLASS_3532 + ";" + METHOD_16436 + "(DDD)D";
 	public static final String RENDER_HELD_ITEM = METHOD_4016 + "(L" + CLASS_1799 + ";L" + CLASS_1309 + ";L" + CLASS_809$CLASS_811 + ";Z)V";
-	public static final String RENDER_LEASH = METHOD_4073;
+	public static final String RENDER_LEASH = "renderLeash";
 	public static final String SETUP_TRANSFORMS = METHOD_4058;
 	
 	// 1.15
@@ -291,4 +286,19 @@ public class MixinConstants
 	public static final String GET_REACH_DISTANCE = "getReachDistance";
 	public static final String RENDER_WORLD = "renderWorld";
 	public static final String RENDER_LABEL_IF_PRESENT = "renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V";
+	
+	// 1.20.6 Minus
+	public static final String UPDATE_ATTACHMENT_POSITION = "updateAttachmentPosition";
+	public static final String EXPLOSIVE_PROJECTILE_ENTITY_INIT = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;DDDLnet/minecraft/world/World;)V";
+	public static final String CALCULATE_DIMENSIONS = "calculateDimensions";
+	public static final String TICK = "tick";
+	
+	// 1.20.6 Minus Client
+	public static final String CLIP_TO_SPACE = "clipToSpace";
+	
+	// 1.20.6 Minus 1.20.3 Plus
+	public static final String PERSISTENT_PROJECTILE_ENTITY_WITH_STACK_INIT = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)V";
+	
+	// 1.20.6 Minus 1.20.5 Plus
+	public static final String RENDER_LABEL_IF_PRESENT_WITH_DELTA = "renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V";
 }

@@ -5,15 +5,39 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 
 public final class ReflectionUtils
 {
+	public static Identifier constructIdentifier(final String id)
+	{
+		return new Identifier(id);
+	}
+	
+	public static Identifier constructIdentifier(final String namespace, final String path)
+	{
+		return new Identifier(namespace, path);
+	}
+	
+	public static @Nullable Entity getHoldingEntity(final Entity leashed)
+	{
+		if (leashed instanceof MobEntity)
+		{
+			return ((MobEntity) leashed).getHoldingEntity();
+		}
+		
+		return null;
+	}
+	
 	public static float getFlyingSpeed(final LivingEntity entity)
 	{
 		throw new NoSuchMethodError();

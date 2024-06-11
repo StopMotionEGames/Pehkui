@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
@@ -24,6 +25,11 @@ import virtuoel.pehkui.api.PehkuiConfig;
 
 public class ScaleRenderUtils
 {
+	public static float getTickDelta(final MinecraftClient client)
+	{
+		return client.getTickDelta();
+	}
+	
 	public static boolean hasExtendedReach(final ClientPlayerInteractionManager interactionManager)
 	{
 		return interactionManager.getCurrentGameMode().isCreative();

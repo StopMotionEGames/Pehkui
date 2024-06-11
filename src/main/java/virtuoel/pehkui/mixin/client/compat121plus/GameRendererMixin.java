@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.client.compat1205plus;
+package virtuoel.pehkui.mixin.client.compat121plus;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
+import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(GameRenderer.class)
@@ -28,13 +30,13 @@ public class GameRendererMixin
 	boolean pehkui$isBobbing = false;
 	
 	@Inject(method = "renderWorld", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-	private void pehkui$renderWorld$before(float tickDelta, long limitTime, CallbackInfo info)
+	private void pehkui$renderWorld$before(RenderTickCounter tickCounter, CallbackInfo info)
 	{
 		pehkui$isBobbing = true;
 	}
 	
 	@Inject(method = "renderWorld", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/client/render/GameRenderer;bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-	private void pehkui$renderWorld$after(float tickDelta, long limitTime, CallbackInfo info)
+	private void pehkui$renderWorld$after(RenderTickCounter tickCounter, CallbackInfo info)
 	{
 		pehkui$isBobbing = false;
 	}
@@ -44,7 +46,7 @@ public class GameRendererMixin
 	{
 		if (pehkui$isBobbing)
 		{
-			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), client.getTickDelta());
+			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));
 			
 			if (scale != 1.0F)
 			{
