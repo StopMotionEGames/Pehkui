@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.Leashable;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -20,19 +20,19 @@ public final class ReflectionUtils
 {
 	public static Identifier constructIdentifier(final String id)
 	{
-		return new Identifier(id);
+		return Identifier.of(id);
 	}
 	
 	public static Identifier constructIdentifier(final String namespace, final String path)
 	{
-		return new Identifier(namespace, path);
+		return Identifier.of(namespace, path);
 	}
 	
 	public static @Nullable Entity getHoldingEntity(final Entity leashed)
 	{
-		if (leashed instanceof MobEntity)
+		if (leashed instanceof Leashable)
 		{
-			return ((MobEntity) leashed).getHoldingEntity();
+			return ((Leashable) leashed).getLeashHolder();
 		}
 		
 		return null;

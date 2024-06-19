@@ -27,8 +27,8 @@ public abstract class ExplosiveProjectileEntityMixin
 		
 		if (scale != 1.0F)
 		{
-		//	self.accelerationPower *= scale; // TODO 1.21
-		//	setVelocityWithAcceleration(velocity, self.accelerationPower);
+			self.accelerationPower *= scale;
+			setVelocityWithAcceleration(velocity, self.accelerationPower);
 		}
 	}
 }

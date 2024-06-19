@@ -6,10 +6,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// import net.minecraft.entity.decoration.BlockAttachedEntity;
+import net.minecraft.entity.decoration.BlockAttachedEntity;
 
 @Mixin({
-//	BlockAttachedEntity.class // TODO 1.21
+	BlockAttachedEntity.class
 })
 public abstract class BlockAttachedEntityMixin
 {

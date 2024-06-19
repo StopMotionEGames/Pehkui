@@ -27,7 +27,7 @@ public class ScaleRenderUtils
 {
 	public static float getTickDelta(final MinecraftClient client)
 	{
-		return client.getTickDelta();
+		return client.getRenderTickCounter().getTickDelta(false);
 	}
 	
 	public static boolean hasExtendedReach(final ClientPlayerInteractionManager interactionManager)

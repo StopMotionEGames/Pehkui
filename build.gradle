@@ -126,8 +126,13 @@ dependencies {
 			project.yarn_mappings.split(", ").each { String mapping ->
 				mappings "net.fabricmc:yarn:${mapping}:v2"
 			}
-			if(project.hasProperty("neoforge_version") && (minor > 20 || (minor == 20 && patch >= 5))) {
-				mappings "dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3"
+			if(project.hasProperty("neoforge_version")) {
+				if(minor > 20) {
+					mappings "dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4"
+				}
+				else if(minor == 20 && patch >= 5) {
+					mappings "dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3"
+				}
 			}
 		}
 	}

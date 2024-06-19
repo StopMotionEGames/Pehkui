@@ -14,6 +14,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.util.ClampingScaleModifier;
+import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
@@ -143,7 +144,7 @@ public class PehkuiConfig
 					{
 						try
 						{
-							final Identifier id = new Identifier(String.valueOf(s));
+							final Identifier id = ReflectionUtils.constructIdentifier(String.valueOf(s));
 							final ScaleType scaleType = ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, id);
 							
 							final Identifier defaultId = ScaleRegistries.getDefaultId(ScaleRegistries.SCALE_TYPES);
