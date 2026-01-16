@@ -432,7 +432,7 @@ public class ScaleCommand
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 								final ScaleData data = type.getScaleData(EntityArgumentType.getEntity(context, "entity"));
 								
-								final String modifierString = String.join(", ", data.getBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.toList()));
+								final String modifierString = data.getBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.joining(", "));
 								
 								CommandUtils.sendFeedback(context.getSource(), () -> modifierText(modifierString), false);
 								
@@ -443,7 +443,7 @@ public class ScaleCommand
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 							
-							final String modifierString = String.join(", ", type.getDefaultBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.toList()));
+							final String modifierString = type.getDefaultBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.joining(", "));
 							
 							CommandUtils.sendFeedback(context.getSource(), () -> modifierText(modifierString), false);
 							

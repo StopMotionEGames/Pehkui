@@ -21,12 +21,12 @@ import virtuoel.pehkui.api.ScaleType;
 public class ServerWorldMixin
 {
 	@Shadow @Final @Mutable
-	ServerEntityManager<Entity> entityManager;
+	private ServerEntityManager<Entity> entityManager;
 	
 	@ModifyReturnValue(method = "getDebugString", at = @At("RETURN"))
 	private String pehkui$getDebugString(String value)
 	{
-		String additional = "";
+		StringBuilder additional = new StringBuilder();
 		
 		for (final Entity entity : entityManager.getLookup().iterate())
 		{
@@ -46,16 +46,16 @@ public class ServerWorldMixin
 			
 			if (maxType != null)
 			{
-				additional += additional.isEmpty() ? ", pehkui:scaled_entities: {[{" : "}, {";
+				additional.append((additional.isEmpty()) ? ", pehkui:scaled_entities: {[{" : "}, {");
 				
 				final Identifier id = ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, maxType);
 				
 				final String idString = Pehkui.MOD_ID.equals(id.getNamespace()) ? id.getPath() : id.toString();
 				
-				additional += "\"" + entity.getUuidAsString() + "\":\"" + EntityType.getId(entity.getType()) + "\",\"" + idString + "\":" + maxScale;
+				additional.append("\"").append(entity.getUuidAsString()).append("\":\"").append(EntityType.getId(entity.getType())).append("\",\"").append(idString).append("\":").append(maxScale);
 			}
 		}
 		
-		return additional.isEmpty() ? value : (value + additional + "}]}");
+		return (additional.length() == 0) ? value : (value + additional + "}]}");
 	}
 }

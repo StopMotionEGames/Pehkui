@@ -7,16 +7,14 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonPart;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(EnderDragonEntity.class)
 public class EnderDragonEntityMixin
 {
-	@ModifyArg(method = "crystalDestroyed", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/boss/dragon/EnderDragonEntity;damagePart(Lnet/minecraft/entity/boss/dragon/EnderDragonPart;Lnet/minecraft/entity/damage/DamageSource;F)Z"))
-	private float pehkui$crystalDestroyed$damagePart(EnderDragonPart part, DamageSource source, float amount, @Local PlayerEntity attacker)
+	@ModifyArg(method = "crystalDestroyed", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/boss/dragon/EnderDragonEntity;damagePart(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/boss/dragon/EnderDragonPart;Lnet/minecraft/entity/damage/DamageSource;F)Z"))
+	private float pehkui$crystalDestroyed$damagePart(float amount, @Local PlayerEntity attacker)
 	{
 		if (attacker != null)
 		{

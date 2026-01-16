@@ -4,13 +4,12 @@
 	"package": "virtuoel.pehkui.mixin",
 	"compatibilityLevel": "JAVA_8",
 	"plugin": "virtuoel.pehkui.mixin.PehkuiMixinConfigPlugin",
-	"mixins":
-	[
+	"mixins": [
+		"AbstractBoatEntityMixin",
 		"AbstractDecorationEntityMixin",
 		"AreaEffectCloudEntityMixin",
 		"ArmorStandEntityMixin",
 		"BlazeEntityShootFireballGoalMixin",
-		"BoatEntityMixin",
 		"DataCommandInvoker$Get",
 		"DataCommandInvoker$Path",
 		"DataCommandInvoker$Scaled",
@@ -56,7 +55,6 @@
 		"compat115minus.FoxEntityMateGoalMixin",
 		"compat115minus.HorseBaseEntityMixin",
 		"compat115minus.LivingEntityMixin",
-		"compat115minus.LookTargetUtilMixin",
 		"compat115minus.NbtCompoundMixin",
 		"compat115minus.PassiveEntityMixin",
 		"compat115minus.PigEntityMixin",
@@ -89,21 +87,18 @@
 		"compat116plus.FishingBobberEntityMixin",
 		"compat116plus.FoxEntityMateGoalMixin",
 		"compat116plus.LivingEntityMixin",
-		"compat116plus.MobEntityMixin",
 		"compat116plus.NbtCompoundMixin",
 		"compat116plus.PersistentProjectileEntityMixin",
 		"compat116plus.PigEntityMixin",
 		"compat116plus.ProjectileEntityMixin",
 		"compat116plus.SpawnEggItemMixin",
 		"compat116plus.SummonVexGoalMixin",
-		"compat116plus.TargetPredicateMixin",
 		"compat116plus.VillagerBreedTaskMixin",
 		"compat116plus.VillagerEntityMixin",
 		"compat117.SectionedEntityCacheMixin",
 		"compat117minus.BoatEntityMixin",
 		"compat117plus.EntityCalculateDimensionsMixin",
 		"compat117plus.EntityMixin",
-		"compat117plus.LivingEntityMixin",
 		"compat117plus.PlayerEntityMixin",
 		"compat117plus.ProjectileUtilMixin",
 		"compat117plus.ServerWorldMixin",
@@ -111,7 +106,6 @@
 		"compat117plus.SlimeEntityMixin",
 		"compat118minus.ServerPlayerInteractionManagerMixin",
 		"compat118minus.ServerPlayNetworkHandlerMixin",
-		"compat118minus.compat116plus.LookTargetUtilMixin",
 		"compat119.compat1193plus.CamelEntityMixin",
 		"compat1192minus.EndCrystalEntityMixin",
 		"compat1192minus.compat116plus.FireballEntityMixin",
@@ -131,8 +125,6 @@
 		"compat119minus.ChickenEntityMixin",
 		"compat119minus.LlamaEntityMixin",
 		"compat119minus.compat116plus.ProjectileUtilMixin",
-		"compat119plus.ChestBoatEntityMixin",
-		"compat119plus.LookTargetUtilMixin",
 		"compat1201minus.AbstractDonkeyEntityMixin",
 		"compat1201minus.EntityMountedHeightOffsetMixin",
 		"compat1201minus.EntityVehicleHeightOffsetMixin",
@@ -182,9 +174,7 @@
 		"compat1204minus.compat1202plus.EntityMixin",
 		"compat1204minus.compat1202plus.LivingEntityMixin",
 		"compat1204minus.compat1203plus.ExplosionMixin",
-		"compat1205plus.BoatEntityMixin",
 		"compat1205plus.EntityMixin",
-		"compat1205plus.ExplosionMixin",
 		"compat1205plus.LivingEntityMixin",
 		"compat1205plus.PlayerEntityMixin",
 		"compat1205plus.PotionEntityMixin",
@@ -196,6 +186,13 @@
 		"compat1206minus.compat116plus.EnderPearlEntityMixin",
 		"compat1206minus.compat1203plus.PersistentProjectileEntityMixin",
 		"compat120plus.EntityMixin",
+		"compat1212plus.AbstractBoatEntityMixin",
+		"compat1212plus.AbstractChestBoatEntityMixin",
+		"compat1212plus.ExplosionImplMixin",
+		"compat1212plus.LivingEntityMixin",
+		"compat1212plus.MobEntityMixin",
+		"compat1212plus.TargetPredicateMixin",
+		"compat1212plus.TargetUtilMixin",
 		"compat121plus.BlockAttachedEntityMixin",
 		"compat121plus.EnderPearlEntityMixin",
 		"compat121plus.ExplosiveProjectileEntityMixin",
@@ -217,6 +214,8 @@
 		"reach.compat1193minus.BlockEntityUseDistanceMixin",
 		"reach.compat1193minus.EnderChestBlockEntityMixin",
 		"reach.compat1193minus.LecternBlockEntityMixin",
+		"reach.compat1204minus.ScreenHandlerMixin",
+		"reach.compat1204minus.ServerPlayNetworkHandlerMixin",
 		"reach.compat1204minus.compat116plus.ForgingScreenHandlerMixin",
 		"reach.compat1204minus.compat116plus.ItemMixin",
 		"reach.compat1204minus.compat1194plus.InventoryMixin",
@@ -224,16 +223,13 @@
 		"reach.compat1204minus.compat119plus.ServerPlayerInteractionManagerMixin",
 		"reach.compat1204minus.compat119plus.ServerPlayNetworkHandlerMixin",
 		"reach.compat1204minus.compat119plus.StorageMinecartEntityMixin",
-		"reach.compat1204minus.ScreenHandlerMixin",
-		"reach.compat1204minus.ServerPlayNetworkHandlerMixin",
 		"step_height.compat.compat1193minus.StepHeightEntityAttributeMainMixin",
 		"step_height.compat.compat1194plus.StepHeightEntityAttributeMainMixin",
 		"step_height.compat1193minus.EntityMixin",
 		"step_height.compat1194plus.EntityMixin",
 		"step_height.compat1205plus.LivingEntityMixin"
 	],
-	"client":
-	[
+	"client": [
 		"client.ClientPlayerEntityMixin",
 		"client.ClientWorldMixin",
 		"client.compat114.BoatEntityRendererMixin",
@@ -248,7 +244,6 @@
 		"client.compat115.EntityRenderDispatcherMixin",
 		"client.compat115.EntityRendererMixin",
 		"client.compat115minus.OtherClientPlayerEntityMixin",
-		"client.compat115plus.EntityRenderDispatcherMixin",
 		"client.compat115plus.InGameOverlayRendererMixin",
 		"client.compat115plus.ItemFrameEntityRendererMixin",
 		"client.compat115plus.PlayerEntityRendererMixin",
@@ -270,7 +265,6 @@
 		"client.compat1193plus.GameRendererMixin",
 		"client.compat1194.InventoryScreenMixin",
 		"client.compat1194minus.compat117plus.InGameHudMixin",
-		"client.compat1194plus.ItemRendererMixin",
 		"client.compat119minus.compat116plus.EntityRendererMixin",
 		"client.compat1201minus.compat120plus.InventoryScreenMixin",
 		"client.compat1202plus.InventoryScreenMixin",
@@ -286,8 +280,9 @@
 		"client.compat1206minus.compat1205plus.EntityRendererMixin",
 		"client.compat1206minus.compat1205plus.GameRendererMixin",
 		"client.compat120plus.InGameHudMixin",
+		"client.compat1212plus.EntityRenderDispatcherMixin",
+		"client.compat1212plus.ItemRendererMixin",
 		"client.compat121plus.CameraMixin",
-		"client.compat121plus.EntityRenderDispatcherMixin",
 		"client.compat121plus.EntityRendererMixin",
 		"client.compat121plus.GameRendererMixin",
 		"reach.client.compat1202minus.GameRendererMixin",
@@ -295,12 +290,10 @@
 		"reach.client.compat1204minus.GameRendererMixin",
 		"reach.compat.client.GameRendererMixin"
 	],
-	"injectors":
-	{
+	"injectors": {
 		"defaultRequire": 1
 	},
-	"overwrites":
-	{
+	"overwrites": {
 		"requireAnnotations": true
 	}
 }

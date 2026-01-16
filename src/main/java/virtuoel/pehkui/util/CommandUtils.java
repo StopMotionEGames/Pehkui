@@ -46,17 +46,10 @@ public class CommandUtils
 	{
 		if (ModLoaderUtils.isModLoaded("fabric-command-api-v2"))
 		{
-			new Runnable()
+			CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) ->
 			{
-				@Override
-				public void run()
-				{
-					CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, dedicated) ->
-					{
-						registerCommands(dispatcher);
-					});
-				}
-			}.run();
+				registerCommands(dispatcher);
+			});
 		}
 		else if (ModLoaderUtils.isModLoaded("fabric-command-api-v1"))
 		{
@@ -68,21 +61,14 @@ public class CommandUtils
 	{
 		if (ModLoaderUtils.isModLoaded("fabric-command-api-v2") && ModLoaderUtils.isModLoaded("fabric-registry-sync-v0"))
 		{
-			new Runnable()
+			CommandUtils.registerArgumentTypes(new ArgumentTypeConsumer()
 			{
 				@Override
-				public void run()
+				public <T extends ArgumentType<?>> void register(Identifier id, Class<T> argClass, Supplier<T> supplier)
 				{
-					CommandUtils.registerArgumentTypes(new ArgumentTypeConsumer()
-					{
-						@Override
-						public <T extends ArgumentType<?>> void register(Identifier id, Class<T> argClass, Supplier<T> supplier)
-						{
-							ArgumentTypeRegistry.registerArgumentType(id, argClass, ConstantArgumentSerializer.of(supplier));
-						}
-					});
+					ArgumentTypeRegistry.registerArgumentType(id, argClass, ConstantArgumentSerializer.of(supplier));
 				}
-			}.run();
+			});
 		}
 		else if (VersionUtils.MINOR <= 18)
 		{
@@ -237,7 +223,6 @@ public class CommandUtils
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T extends ArgumentType<?>> void registerConstantArgumentType(Identifier id, Class<? extends T> argClass, Supplier<T> supplier)
 	{
 		if (REGISTER_ARGUMENT_TYPE != null)

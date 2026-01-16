@@ -1,10 +1,10 @@
 package virtuoel.pehkui.mixin.compat116plus;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -16,12 +16,13 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(ProjectileEntity.class)
 public abstract class ProjectileEntityMixin
 {
-	@ModifyArg(method = "shouldLeaveOwner", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getOtherEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Ljava/util/List;"))
+	@ModifyExpressionValue(method = "shouldLeaveOwner", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(D)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$shouldLeaveOwner$expand(Box value)
 	{
-		final float width = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float height = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
-		
+		final Entity self = (Entity) (Object) this;
+		final float width = ScaleUtils.getBoundingBoxWidthScale(self);
+		final float height = ScaleUtils.getBoundingBoxHeightScale((self));
+
 		if (width != 1.0F || height != 1.0F)
 		{
 			return value.expand(width - 1.0D, height - 1.0D, width - 1.0D);
@@ -38,8 +39,8 @@ public abstract class ProjectileEntityMixin
 		return scale != 1.0F ? value * scale : value;
 	}
 	
-	@Inject(at = @At("HEAD"), method = "setOwner")
-	private void pehkui$setOwner(@Nullable Entity entity, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "setOwner(Lnet/minecraft/entity/Entity;)V")
+	private void pehkui$setOwner(@Nullable Entity entity, CallbackInfo ci)
 	{
 		if (entity != null)
 		{

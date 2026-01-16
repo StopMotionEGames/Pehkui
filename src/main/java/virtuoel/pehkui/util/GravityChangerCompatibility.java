@@ -19,7 +19,7 @@ public class GravityChangerCompatibility
 	private final Optional<Method> oldGetterMethod;
 	private final Optional<Method> accessorGetterMethod;
 	
-	private boolean enabled;
+	private final boolean enabled;
 	
 	private GravityChangerCompatibility()
 	{

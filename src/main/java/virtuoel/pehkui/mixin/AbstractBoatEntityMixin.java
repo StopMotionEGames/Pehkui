@@ -1,21 +1,19 @@
 package virtuoel.pehkui.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.vehicle.AbstractBoatEntity;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.util.math.Box;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(BoatEntity.class)
-public abstract class BoatEntityMixin
+@Mixin(AbstractBoatEntity.class)
+public abstract class AbstractBoatEntityMixin
 {
 	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$tick$expand(Box obj, double x, double y, double z, Operation<Box> original)

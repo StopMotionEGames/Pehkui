@@ -1,5 +1,6 @@
-package virtuoel.pehkui.mixin.compat116plus;
+package virtuoel.pehkui.mixin.compat1212plus;
 
+import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,18 +15,19 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(TargetPredicate.class)
 public class TargetPredicateMixin
 {
-	@Shadow boolean useDistanceScalingFactor;
-	
+	@Shadow
+	private boolean useDistanceScalingFactor;
+
 	@ModifyExpressionValue(method = "test", at = @At(value = "CONSTANT", args = "doubleValue=2.0D"))
-	private double pehkui$test$minDistance(double value, @Nullable LivingEntity baseEntity, LivingEntity targetEntity)
+	private double pehkui$test$minDistance(double value, ServerWorld world, @Nullable LivingEntity baseEntity, LivingEntity targetEntity)
 	{
 		if (useDistanceScalingFactor)
 		{
 			final float scale = ScaleUtils.getVisibilityScale(targetEntity);
-			
+
 			return scale != 1.0F ? value * scale : value;
 		}
-		
+
 		return value;
 	}
 }

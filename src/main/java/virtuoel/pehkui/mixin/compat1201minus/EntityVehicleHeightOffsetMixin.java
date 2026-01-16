@@ -54,7 +54,7 @@ public abstract class EntityVehicleHeightOffsetMixin
 				final double bottom = vehicleHeight - mountedOffset - offset;
 				final double down = vehicleScaledHeight - scaledMountedOffset - (bottom * scale);
 				
-				return (down < scaledOffset ? scaledOffset : down);
+				return (Math.max(down, scaledOffset));
 			}
 		}
 		

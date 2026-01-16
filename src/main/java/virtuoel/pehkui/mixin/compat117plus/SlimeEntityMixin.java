@@ -2,7 +2,6 @@ package virtuoel.pehkui.mixin.compat117plus;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
@@ -13,16 +12,16 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(SlimeEntity.class)
 public class SlimeEntityMixin
 {
-	@ModifyArg(method = "remove(Lnet/minecraft/entity/Entity$RemovalReason;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
-	private Entity pehkui$remove$spawnEntity(Entity entity)
-	{
-		ScaleUtils.loadScale(entity, (Entity) (Object) this);
-		
-		return entity;
-	}
+//	@ModifyArg(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+//	private Entity pehkui$remove$spawnEntity(Entity entity)
+//	{
+//		ScaleUtils.loadScale(entity, (Entity) (Object) this);
+//
+//		return entity;
+//	}
 	
-	@ModifyExpressionValue(method = "remove(Lnet/minecraft/entity/Entity$RemovalReason;)V", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
-	private double pehkui$remove$verticalOffset(double value)
+	@ModifyExpressionValue(method = "remove", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
+	private float pehkui$remove$verticalOffset(float value)
 	{
 		final float scale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
 		
@@ -34,3 +33,25 @@ public class SlimeEntityMixin
 		return value;
 	}
 }
+
+// todo: Test later!
+//@Mixin(MobEntity.class)
+//public abstract class MobEntityMixin {
+//
+//    @ModifyArg(
+//        method = "convertTo",
+//        at = @At(
+//            value = "INVOKE",
+//            target = "Lnet/minecraft/server/world/ServerWorld;spawnEntity(Lnet/minecraft/entity/Entity;)Z"
+//        )
+//    )
+//    private Entity pehkui$copyScaleOnSplit(Entity entity) {
+//        if ((Object) this instanceof SlimeEntity oldSlime
+//            && entity instanceof SlimeEntity newSlime) {
+//
+//            ScaleUtils.loadScale(newSlime, oldSlime);
+//        }
+//
+//        return entity;
+//    }
+//}

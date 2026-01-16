@@ -1,16 +1,16 @@
-package virtuoel.pehkui.mixin.compat119plus;
+package virtuoel.pehkui.mixin.compat1212plus;
 
+import net.minecraft.entity.vehicle.AbstractChestBoatEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.vehicle.ChestBoatEntity;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ChestBoatEntity.class)
-public abstract class ChestBoatEntityMixin
+@Mixin(AbstractChestBoatEntity.class)
+public abstract class AbstractChestBoatEntityMixin
 {
 	@ModifyReturnValue(method = "getPassengerHorizontalOffset", at = @At("RETURN"))
 	private float pehkui$getPassengerHorizontalOffset(float original)

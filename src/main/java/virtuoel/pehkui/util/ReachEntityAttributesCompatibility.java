@@ -19,7 +19,7 @@ public class ReachEntityAttributesCompatibility
 	private final Optional<Method> getSquaredReachDistance;
 	private final Optional<Method> getSquaredAttackRange;
 	
-	private boolean enabled;
+	private final boolean enabled;
 	
 	private ReachEntityAttributesCompatibility()
 	{

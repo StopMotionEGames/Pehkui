@@ -23,7 +23,7 @@ public class IdentityCompatibility
 	private final Optional<Method> getComponent;
 	private final Optional<Method> getIdentity;
 	
-	private boolean enabled;
+	private final boolean enabled;
 	
 	private IdentityCompatibility()
 	{

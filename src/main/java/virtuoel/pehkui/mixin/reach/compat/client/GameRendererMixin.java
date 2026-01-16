@@ -65,9 +65,8 @@ public class GameRendererMixin
 			{
 				final double baseEntityReach = ScaleRenderUtils.hasExtendedReach(client.interactionManager) ? 6.0D : client.interactionManager.getCurrentGameMode().isCreative() ? 5.0F : 4.5F;
 				final double entityReach = ReachEntityAttributesCompatibility.INSTANCE.getAttackRange(client.player, baseEntityReach);
-				final double entityReachSquared = entityReach * entityReach;
-				
-				return entityReachSquared;
+
+				return entityReach * entityReach;
 			}
 		}
 		

@@ -21,7 +21,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class EntityRenderDispatcherMixin
 {
 	@Dynamic
-	@ModifyExpressionValue(method = MixinConstants.RENDER_SHADOW_PART, at = @At(value = "CONSTANT", args = "doubleValue=0.015625D"))
+	@ModifyExpressionValue(method = "renderShadowPart", at = @At(value = "CONSTANT", args = "doubleValue=0.015625D"))
 	private static double pehkui$renderShadowPart$shadowHeight(double value)
 	{
 		return value - 0.0155D;

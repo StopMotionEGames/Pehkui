@@ -151,7 +151,7 @@ public class ConfigSyncUtils
 	{
 		if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 		{
-			return ServerPlayNetworking.createS2CPacket((CustomPayload) (Object) new ConfigSyncPayload(configEntries));
+			return ServerPlayNetworking.createS2CPacket((CustomPayload) new ConfigSyncPayload(configEntries));
 		}
 		else
 		{
@@ -206,47 +206,31 @@ public class ConfigSyncUtils
 		
 		return () -> tasks.forEach(Runnable::run);
 	}
-	
-	private static class ConfigEntryCodec<T>
-	{
-		final BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer;
-		final BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader;
-		final Supplier<ArgumentType<T>> argumentGetter;
-		final BiFunction<CommandContext<?>, String, T> argumentFunction;
-		
-		public ConfigEntryCodec(final BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer, final BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader)
-		{
-			this(writer, reader, () -> null, (c, n) -> null);
+
+	private record ConfigEntryCodec<T>(BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer,
+									   BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader,
+									   Supplier<ArgumentType<T>> argumentGetter,
+									   BiFunction<CommandContext<?>, String, T> argumentFunction) {
+			public ConfigEntryCodec(final BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer, final BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader) {
+				this(writer, reader, () -> null, (c, n) -> null);
+			}
+
+		public void write(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry) {
+				writer.accept(buffer, entry);
+			}
+
+		public Runnable read(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry) {
+				return reader.apply(buffer, entry);
+			}
+
+		public @Nullable ArgumentType<T> getArgumentType() {
+				return argumentGetter.get();
+			}
+
+		public T getArgument(final CommandContext<?> context, final String name) {
+				return argumentFunction.apply(context, name);
+			}
 		}
-		
-		public ConfigEntryCodec(final BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer, final BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader, final Supplier<ArgumentType<T>> argumentGetter, final BiFunction<CommandContext<?>, String, T> argumentFunction)
-		{
-			this.writer = writer;
-			this.reader = reader;
-			this.argumentGetter = argumentGetter;
-			this.argumentFunction = argumentFunction;
-		}
-		
-		public void write(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry)
-		{
-			writer.accept(buffer, entry);
-		}
-		
-		public Runnable read(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry)
-		{
-			return reader.apply(buffer, entry);
-		}
-		
-		public @Nullable ArgumentType<T> getArgumentType()
-		{
-			return argumentGetter.get();
-		}
-		
-		public T getArgument(final CommandContext<?> context, final String name)
-		{
-			return argumentFunction.apply(context, name);
-		}
-	}
 	
 	public static <T> MutableConfigEntry<T> createConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer)
 	{

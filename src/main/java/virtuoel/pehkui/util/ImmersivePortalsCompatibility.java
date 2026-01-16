@@ -10,7 +10,7 @@ public class ImmersivePortalsCompatibility
 	
 	private final Optional<Class<?>> globalClass;
 	
-	private boolean enabled;
+	private final boolean enabled;
 	
 	private ImmersivePortalsCompatibility()
 	{

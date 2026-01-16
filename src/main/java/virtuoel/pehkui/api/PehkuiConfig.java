@@ -103,7 +103,7 @@ public class PehkuiConfig
 						ScaleRegistries.register(
 							ScaleRegistries.SCALE_MODIFIERS,
 							Pehkui.id("clamping", path),
-							new ClampingScaleModifier(min::get, max::get, 0.0F)
+							new ClampingScaleModifier(min, max, 0.0F)
 						)
 					);
 				}

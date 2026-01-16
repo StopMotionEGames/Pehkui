@@ -15,7 +15,7 @@ public class MulticonnectCompatibility
 	private final Optional<Method> instanceMethod;
 	private final Optional<Method> protocolVersion;
 	
-	private boolean enabled;
+	private final boolean enabled;
 	
 	private MulticonnectCompatibility()
 	{

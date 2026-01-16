@@ -1,23 +1,21 @@
 package virtuoel.pehkui.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ThrownEntity.class)
+@Mixin(ProjectileEntity.class)
 public abstract class ThrownEntityMixin
 {
-	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;)V")
-	private void pehkui$construct(EntityType<? extends ThrownEntity> type, LivingEntity owner, World world, CallbackInfo info)
+	@Inject(at = @At("RETURN"), method = "setOwner(Lnet/minecraft/entity/Entity;)V")
+	private void pehkui$construct(Entity entity, CallbackInfo ci, @Local(argsOnly = true) Entity owner)
 	{
 		final float heightScale = ScaleUtils.getEyeHeightScale(owner);
 		if (heightScale != 1.0F)

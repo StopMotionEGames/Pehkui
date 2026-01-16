@@ -57,28 +57,14 @@ public class ServerPlayNetworkHandlerMixin
 		{
 			nearestY = box.minY;
 		}
-		else if (eyePos.y > box.maxY)
-		{
-			nearestY = box.maxY;
-		}
-		else
-		{
-			nearestY = eyePos.y;
-		}
+		else nearestY = Math.min(eyePos.y, box.maxY);
 		
 		final double nearestZ;
 		if (eyePos.z < box.minZ)
 		{
 			nearestZ = box.minZ;
 		}
-		else if (eyePos.z > box.maxZ)
-		{
-			nearestZ = box.maxZ;
-		}
-		else
-		{
-			nearestZ = eyePos.z;
-		}
+		else nearestZ = Math.min(eyePos.z, box.maxZ);
 		
 		return eyePos.squaredDistanceTo(nearestX, nearestY, nearestZ);
 	}

@@ -186,7 +186,7 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		ScaleUtils.syncScalesOnTrackingStart((Entity) (Object) this, player.networkHandler);
 	}
 	
-	@ModifyVariable(method = "dropStack(Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "STORE"))
+	@ModifyVariable(method = "dropStack(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "STORE"))
 	private ItemEntity pehkui$dropStack(ItemEntity entity)
 	{
 		ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);

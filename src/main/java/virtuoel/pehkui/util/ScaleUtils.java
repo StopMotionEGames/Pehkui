@@ -258,7 +258,7 @@ public class ScaleUtils
 			{
 				if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 				{
-					packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPayload) (Object) new ScalePayload(entity, syncedScales)));
+					packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPayload) new ScalePayload(entity, syncedScales)));
 				}
 				else
 				{
@@ -494,7 +494,7 @@ public class ScaleUtils
 	
 	public static float getMotionScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.MOTION, PehkuiConfig.COMMON.scaledMotion::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.MOTION, PehkuiConfig.COMMON.scaledMotion, tickDelta);
 	}
 	
 	public static float getFlightScale(Entity entity)
@@ -514,7 +514,7 @@ public class ScaleUtils
 	
 	public static float getBlockReachScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.BLOCK_REACH, PehkuiConfig.COMMON.scaledReach::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.BLOCK_REACH, PehkuiConfig.COMMON.scaledReach, tickDelta);
 	}
 	
 	public static float getEntityReachScale(Entity entity)
@@ -524,7 +524,7 @@ public class ScaleUtils
 	
 	public static float getEntityReachScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.ENTITY_REACH, PehkuiConfig.COMMON.scaledReach::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.ENTITY_REACH, PehkuiConfig.COMMON.scaledReach, tickDelta);
 	}
 	
 	public static float getMiningSpeedScale(Entity entity)
@@ -564,7 +564,7 @@ public class ScaleUtils
 	
 	public static float getAttackScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.ATTACK, PehkuiConfig.COMMON.scaledAttack::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.ATTACK, PehkuiConfig.COMMON.scaledAttack, tickDelta);
 	}
 	
 	public static float getDefenseScale(Entity entity)
@@ -574,7 +574,7 @@ public class ScaleUtils
 	
 	public static float getDefenseScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.DEFENSE, PehkuiConfig.COMMON.scaledDefense::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.DEFENSE, PehkuiConfig.COMMON.scaledDefense, tickDelta);
 	}
 	
 	public static float getHealthScale(Entity entity)
@@ -584,7 +584,7 @@ public class ScaleUtils
 	
 	public static float getHealthScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.HEALTH, PehkuiConfig.COMMON.scaledHealth::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.HEALTH, PehkuiConfig.COMMON.scaledHealth, tickDelta);
 	}
 	
 	public static float getDropScale(Entity entity)
@@ -594,7 +594,7 @@ public class ScaleUtils
 	
 	public static float getDropScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.DROPS, PehkuiConfig.COMMON.scaledItemDrops::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.DROPS, PehkuiConfig.COMMON.scaledItemDrops, tickDelta);
 	}
 	
 	public static float getHeldItemScale(Entity entity)
@@ -614,7 +614,7 @@ public class ScaleUtils
 	
 	public static float getProjectileScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.PROJECTILES, PehkuiConfig.COMMON.scaledProjectiles::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.PROJECTILES, PehkuiConfig.COMMON.scaledProjectiles, tickDelta);
 	}
 	
 	public static float getExplosionScale(Entity entity)
@@ -624,7 +624,7 @@ public class ScaleUtils
 	
 	public static float getExplosionScale(Entity entity, float tickDelta)
 	{
-		return getConfigurableTypedScale(entity, ScaleTypes.EXPLOSIONS, PehkuiConfig.COMMON.scaledExplosions::get, tickDelta);
+		return getConfigurableTypedScale(entity, ScaleTypes.EXPLOSIONS, PehkuiConfig.COMMON.scaledExplosions, tickDelta);
 	}
 	
 	public static float getConfigurableTypedScale(Entity entity, ScaleType type, Supplier<Boolean> config, float tickDelta)

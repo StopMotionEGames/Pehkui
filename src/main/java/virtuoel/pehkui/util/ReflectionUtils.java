@@ -315,7 +315,7 @@ public final class ReflectionUtils
 				}
 				else
 				{
-					SEND_PACKET.invoke((PlayerAssociatedNetworkHandler) (Object) handler, packet);
+					SEND_PACKET.invoke((PlayerAssociatedNetworkHandler) handler, packet);
 				}
 			}
 			catch (final Throwable e)

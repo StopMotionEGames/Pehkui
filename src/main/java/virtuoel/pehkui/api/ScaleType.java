@@ -39,7 +39,7 @@ public class ScaleType
 		return ((PehkuiEntityExtensions) entity).pehkui_getScaleData(this);
 	}
 	
-	private boolean affectsDimensions;
+	private final boolean affectsDimensions;
 	
 	@ApiStatus.Internal
 	public boolean getAffectsDimensions()
@@ -71,14 +71,14 @@ public class ScaleType
 		return defaultEasing;
 	}
 	
-	private float defaultBaseScale;
+	private final float defaultBaseScale;
 	
 	public final float getDefaultBaseScale()
 	{
 		return defaultBaseScale;
 	}
 	
-	private int defaultTickDelay;
+	private final int defaultTickDelay;
 	
 	public final int getDefaultTickDelay()
 	{
@@ -112,7 +112,7 @@ public class ScaleType
 	
 	public static class Builder
 	{
-		private Set<ScaleModifier> defaultBaseValueModifiers = new ObjectRBTreeSet<>();
+		private final Set<ScaleModifier> defaultBaseValueModifiers = new ObjectRBTreeSet<>();
 		private float defaultBaseScale = 1.0F;
 		private int defaultTickDelay = 20;
 		private float defaultMinPositiveScale = ScaleUtils.DEFAULT_MINIMUM_POSITIVE_SCALE;
@@ -152,7 +152,7 @@ public class ScaleType
 			return newScale < 0 ? -defaultMinPositiveScale : defaultMinPositiveScale;
 		};
 		private boolean affectsDimensions = false;
-		private Set<ScaleModifier> dependentModifiers = new ObjectRBTreeSet<>();
+		private final Set<ScaleModifier> dependentModifiers = new ObjectRBTreeSet<>();
 		private boolean defaultPersistence = false;
 		private Float2FloatFunction defaultEasing = ScaleEasings.LINEAR;
 		

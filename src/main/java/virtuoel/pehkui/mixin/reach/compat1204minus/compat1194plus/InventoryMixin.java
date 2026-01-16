@@ -21,7 +21,7 @@ public interface InventoryMixin
 	 */
 	@Dynamic
 	@Overwrite // UNMAPPED_METHOD
-	public static boolean method_49106(BlockEntity blockEntity, PlayerEntity player, int range)
+	static boolean method_49106(BlockEntity blockEntity, PlayerEntity player, int range)
 	{
 		World world = blockEntity.getWorld();
 		BlockPos pos = blockEntity.getPos();

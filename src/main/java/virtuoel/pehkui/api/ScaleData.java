@@ -118,7 +118,7 @@ public class ScaleData
 	
 	/**
 	 * Called at the start of {@link Entity#tick()}.
-	 * <p>Pre and post tick callbacks are not invoked here. If calling this manually, be sure to invoke callbacks!
+	 * <p>Pre- and post-tick callbacks are not invoked here. If calling this manually, be sure to invoke callbacks!
 	 */
 	public void tick()
 	{
@@ -307,9 +307,8 @@ public class ScaleData
 		final int total = getScaleTickDelay();
 		final float range = getTargetScale() - this.initialScale;
 		final float perTick = total == 0 ? 1.0F : (easing.apply(Math.min(progress / total, 1.0F)));
-		final float next = this.initialScale + (perTick * range);
-		
-		return next;
+
+		return this.initialScale + (perTick * range);
 	}
 	
 	@ApiStatus.Internal
@@ -318,10 +317,8 @@ public class ScaleData
 	{
 		final float lastTarget = getTargetScale();
 		final float initial = getInitialScale();
-		
-		final int remaining = lastTarget == initial ? 0 : Math.round(getScaleTickDelay() * ((lastTarget - getBaseScale()) / (lastTarget - initial)));
-		
-		return remaining;
+
+		return lastTarget == initial ? 0 : Math.round(getScaleTickDelay() * ((lastTarget - getBaseScale()) / (lastTarget - initial)));
 	}
 	
 	/**
@@ -454,9 +451,8 @@ public class ScaleData
 	
 	public PacketByteBuf toPacket(PacketByteBuf buffer)
 	{
-		final ByteBuf buf = ((ByteBuf) buffer);
-		
-		buf.writeFloat(this.baseScale)
+
+		((ByteBuf) buffer).writeFloat(this.baseScale)
 		.writeFloat(this.prevBaseScale)
 		.writeFloat(this.initialScale)
 		.writeFloat(this.targetScale)
@@ -469,16 +465,16 @@ public class ScaleData
 			buffer.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, modifier));
 		}
 		
-		buf.writeByte(this.persistent == null ? -1 : this.persistent ? 1 : 0);
+		((ByteBuf) buffer).writeByte(this.persistent == null ? -1 : this.persistent ? 1 : 0);
 		
 		if (this.easing != null)
 		{
-			buf.writeBoolean(true);
+			((ByteBuf) buffer).writeBoolean(true);
 			buffer.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_EASINGS, this.easing));
 		}
 		else
 		{
-			buf.writeBoolean(false);
+			((ByteBuf) buffer).writeBoolean(false);
 		}
 		
 		return buffer;
@@ -701,13 +697,8 @@ public class ScaleData
 		{
 			return false;
 		}
-		
-		if (getEasing() != null)
-		{
-			return false;
-		}
-		
-		return true;
+
+		return getEasing() == null;
 	}
 	
 	public ScaleData fromScale(ScaleData scaleData)

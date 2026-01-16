@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import net.minecraft.entity.SpawnReason;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -99,7 +100,7 @@ public class DebugCommand
 							
 							if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 							{
-								packet = ServerPlayNetworking.createS2CPacket((CustomPayload) (Object) new DebugPayload(PacketType.GARBAGE_COLLECT));
+								packet = ServerPlayNetworking.createS2CPacket((CustomPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
 							}
 							else
 							{
@@ -176,12 +177,12 @@ public class DebugCommand
 		Vec3d pos = entity.getPos();
 		BlockPos.Mutable mut = new BlockPos.Mutable(pos.x, pos.y, pos.z).move(dir, distance).move(left, width / 2);
 		
-		World w = entity.getEntityWorld();
+		World w = entity.getWorld();
 		
 		for (EntityType<?> t : TYPES)
 		{
 			w.setBlockState(mut, Blocks.POLISHED_ANDESITE.getDefaultState());
-			final Entity e = t.create(w);
+			final Entity e = t.create(w, SpawnReason.COMMAND);
 			
 			e.updatePositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.asRotation(), 0);
 			e.refreshPositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.asRotation(), 0);
@@ -204,11 +205,10 @@ public class DebugCommand
 		return 1;
 	}
 	
-	public static enum PacketType
+	public enum PacketType
 	{
 		MIXIN_AUDIT,
 		GARBAGE_COLLECT
-		;
 	}
 	
 	private static int runMixinTests(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
@@ -220,7 +220,7 @@ public class DebugCommand
 			
 			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 			{
-				packet = ServerPlayNetworking.createS2CPacket((CustomPayload) (Object) new DebugPayload(PacketType.MIXIN_AUDIT));
+				packet = ServerPlayNetworking.createS2CPacket((CustomPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
 			}
 			else
 			{
