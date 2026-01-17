@@ -39,7 +39,7 @@ public abstract class EntityCalculateDimensionsMixin
 		{
 			final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
 			final float dist = (previousWidth - currentWidth) / 2.0F;
-			
+
 			move(MovementType.SELF, new Vec3d(dist / scale, 0.0D, dist / scale));
 		}
 	}

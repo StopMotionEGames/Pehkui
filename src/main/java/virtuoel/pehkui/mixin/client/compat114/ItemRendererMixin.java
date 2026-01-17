@@ -34,8 +34,8 @@ public class ItemRendererMixin
 		
 		if (!stack.isEmpty() && entity != null)
 		{
-			final float tickDelta = ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance());
-			final float scale = ScaleUtils.getHeldItemScale(entity, tickDelta);
+			final float tickProgress = ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance());
+			final float scale = ScaleUtils.getHeldItemScale(entity, tickProgress);
 			
 			if (scale != 1.0F)
 			{

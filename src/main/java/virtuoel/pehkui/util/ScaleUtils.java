@@ -367,14 +367,14 @@ public class ScaleUtils
 		return getEyeHeightScale(entity, 1.0F);
 	}
 	
-	public static float getEyeHeightScale(Entity entity, float tickDelta)
+	public static float getEyeHeightScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.EYE_HEIGHT, tickDelta);
+		return getTypedScale(entity, ScaleTypes.EYE_HEIGHT, tickProgress);
 	}
 	
-	public static float getThirdPersonScale(Entity entity, float tickDelta)
+	public static float getThirdPersonScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.THIRD_PERSON, tickDelta);
+		return getTypedScale(entity, ScaleTypes.THIRD_PERSON, tickProgress);
 	}
 	
 	public static float getModelWidthScale(Entity entity)
@@ -382,9 +382,9 @@ public class ScaleUtils
 		return getModelWidthScale(entity, 1.0F);
 	}
 	
-	public static float getModelWidthScale(Entity entity, float tickDelta)
+	public static float getModelWidthScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.MODEL_WIDTH, tickDelta);
+		return getTypedScale(entity, ScaleTypes.MODEL_WIDTH, tickProgress);
 	}
 	
 	public static float getModelHeightScale(Entity entity)
@@ -392,9 +392,9 @@ public class ScaleUtils
 		return getModelHeightScale(entity, 1.0F);
 	}
 	
-	public static float getModelHeightScale(Entity entity, float tickDelta)
+	public static float getModelHeightScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.MODEL_HEIGHT, tickDelta);
+		return getTypedScale(entity, ScaleTypes.MODEL_HEIGHT, tickProgress);
 	}
 	
 	public static float getBoundingBoxWidthScale(Entity entity)
@@ -402,9 +402,9 @@ public class ScaleUtils
 		return getBoundingBoxWidthScale(entity, 1.0F);
 	}
 	
-	public static float getBoundingBoxWidthScale(Entity entity, float tickDelta)
+	public static float getBoundingBoxWidthScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.HITBOX_WIDTH, tickDelta);
+		return getTypedScale(entity, ScaleTypes.HITBOX_WIDTH, tickProgress);
 	}
 	
 	public static float getBoundingBoxHeightScale(Entity entity)
@@ -412,9 +412,9 @@ public class ScaleUtils
 		return getBoundingBoxHeightScale(entity, 1.0F);
 	}
 	
-	public static float getBoundingBoxHeightScale(Entity entity, float tickDelta)
+	public static float getBoundingBoxHeightScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.HITBOX_HEIGHT, tickDelta);
+		return getTypedScale(entity, ScaleTypes.HITBOX_HEIGHT, tickProgress);
 	}
 	
 	public static float getInteractionBoxWidthScale(Entity entity)
@@ -422,9 +422,9 @@ public class ScaleUtils
 		return getInteractionBoxWidthScale(entity, 1.0F);
 	}
 	
-	public static float getInteractionBoxWidthScale(Entity entity, float tickDelta)
+	public static float getInteractionBoxWidthScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.INTERACTION_BOX_WIDTH, tickDelta);
+		return getTypedScale(entity, ScaleTypes.INTERACTION_BOX_WIDTH, tickProgress);
 	}
 	
 	public static float getInteractionBoxHeightScale(Entity entity)
@@ -432,9 +432,9 @@ public class ScaleUtils
 		return getInteractionBoxHeightScale(entity, 1.0F);
 	}
 	
-	public static float getInteractionBoxHeightScale(Entity entity, float tickDelta)
+	public static float getInteractionBoxHeightScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.INTERACTION_BOX_HEIGHT, tickDelta);
+		return getTypedScale(entity, ScaleTypes.INTERACTION_BOX_HEIGHT, tickProgress);
 	}
 	
 	public static float getFallingScale(Entity entity)
@@ -442,9 +442,9 @@ public class ScaleUtils
 		return getFallingScale(entity, 1.0F);
 	}
 	
-	public static float getFallingScale(Entity entity, float tickDelta)
+	public static float getFallingScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.FALLING, tickDelta);
+		return getTypedScale(entity, ScaleTypes.FALLING, tickProgress);
 	}
 	
 	public static float getStepHeightScale(Entity entity)
@@ -452,9 +452,9 @@ public class ScaleUtils
 		return getStepHeightScale(entity, 1.0F);
 	}
 	
-	public static float getStepHeightScale(Entity entity, float tickDelta)
+	public static float getStepHeightScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.STEP_HEIGHT, tickDelta);
+		return getTypedScale(entity, ScaleTypes.STEP_HEIGHT, tickProgress);
 	}
 	
 	public static float getViewBobbingScale(Entity entity)
@@ -462,9 +462,9 @@ public class ScaleUtils
 		return getViewBobbingScale(entity, 1.0F);
 	}
 	
-	public static float getViewBobbingScale(Entity entity, float tickDelta)
+	public static float getViewBobbingScale(Entity entity, float tickProgress)
 	{
-		return getTypedScale(entity, ScaleTypes.VIEW_BOBBING, tickDelta);
+		return getTypedScale(entity, ScaleTypes.VIEW_BOBBING, tickProgress);
 	}
 	
 	public static float getVisibilityScale(Entity entity)

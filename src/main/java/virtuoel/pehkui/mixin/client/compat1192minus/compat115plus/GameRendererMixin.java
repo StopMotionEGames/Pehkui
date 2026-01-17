@@ -40,14 +40,14 @@ public class GameRendererMixin
 	
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER_WORLD, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/client/render/GameRenderer;bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-	private void pehkui$renderWorld$before(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo info)
+	private void pehkui$renderWorld$before(float tickProgress, long limitTime, MatrixStack matrices, CallbackInfo info)
 	{
 		pehkui$isBobbing = true;
 	}
 	
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER_WORLD, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/client/render/GameRenderer;bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"))
-	private void pehkui$renderWorld$after(float tickDelta, long limitTime, MatrixStack matrices, CallbackInfo info)
+	private void pehkui$renderWorld$after(float tickProgress, long limitTime, MatrixStack matrices, CallbackInfo info)
 	{
 		pehkui$isBobbing = false;
 	}

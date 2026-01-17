@@ -17,8 +17,8 @@ public class EntityRendererMixin<T extends Entity>
 //	@Inject(method = "renderLeash", at = @At(value = "HEAD"))
 //	private <E extends Entity> void pehkui$renderLeash$head(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState.LeashData leashData, CallbackInfo ci)
 //	{
-//		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickDelta);
-//		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickDelta);
+//		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickProgress);
+//		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickProgress);
 //
 //		final float inverseWidthScale = 1.0F / widthScale;
 //		final float inverseHeightScale = 1.0F / heightScale;

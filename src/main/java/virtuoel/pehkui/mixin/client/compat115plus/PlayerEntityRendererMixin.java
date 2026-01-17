@@ -13,7 +13,7 @@ public abstract class PlayerEntityRendererMixin
 //	{
 //		if (original != Vec3d.ZERO)
 //		{
-//			return original.multiply(ScaleUtils.getModelHeightScale(entity, tickDelta));
+//			return original.multiply(ScaleUtils.getModelHeightScale(entity, tickProgress));
 //		}
 //
 //		return original;

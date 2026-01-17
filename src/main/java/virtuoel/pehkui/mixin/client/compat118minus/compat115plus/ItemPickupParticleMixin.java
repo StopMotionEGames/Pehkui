@@ -20,9 +20,9 @@ public class ItemPickupParticleMixin
 	@Shadow @Final @Mutable Entity interactingEntity;
 	
 	@ModifyExpressionValue(method = "buildGeometry", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
-	private double pehkui$buildGeometry$offset(double value, VertexConsumer vertexConsumer, Camera camera, float tickDelta)
+	private double pehkui$buildGeometry$offset(double value, VertexConsumer vertexConsumer, Camera camera, float tickProgress)
 	{
-		final float scale = ScaleUtils.getEyeHeightScale(interactingEntity, tickDelta);
+		final float scale = ScaleUtils.getEyeHeightScale(interactingEntity, tickProgress);
 		
 		if (scale != 1.0F)
 		{

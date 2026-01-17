@@ -29,9 +29,9 @@ public abstract class EntityRendererMixin {
 // todo: found the correct way to use this method.
 //	@Dynamic
 //	@WrapOperation(method = MixinConstants.POST_RENDER, at = @At(value = "INVOKE", target = MixinConstants.RENDER_SHADOW))
-//	private void pehkui$postRender$renderShadow(EntityRenderer<Entity> obj, Entity entity, double x, double y, double z, float opacity, float tickDelta, Operation<Void> original)
+//	private void pehkui$postRender$renderShadow(EntityRenderer<Entity> obj, Entity entity, double x, double y, double z, float opacity, float tickProgress, Operation<Void> original)
 //	{
-//		final float scale = ScaleUtils.getModelWidthScale(entity, tickDelta);
+//		final float scale = ScaleUtils.getModelWidthScale(entity, tickProgress);
 //
 //		if (scale != 1.0F)
 //		{
@@ -43,7 +43,7 @@ public abstract class EntityRendererMixin {
 //			GL11.glTranslated(0, -0.0155, 0);
 //			GL11.glPushMatrix();
 //
-//			original.call(obj, entity, x, y, z, opacity, tickDelta);
+//			original.call(obj, entity, x, y, z, opacity, tickProgress);
 //
 //			GL11.glPopMatrix();
 //			GL11.glPopMatrix();
@@ -52,7 +52,7 @@ public abstract class EntityRendererMixin {
 //		}
 //		else
 //		{
-//			original.call(obj, entity, x, y, z, opacity, tickDelta);
+//			original.call(obj, entity, x, y, z, opacity, tickProgress);
 //		}
 //	}
 }

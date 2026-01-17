@@ -20,12 +20,12 @@ public class MobEntityRendererMixin<T extends MobEntity>
 {
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER_LEASH, at = @At(value = "HEAD"))
-	private <E extends Entity> void pehkui$renderLeash$head(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, CallbackInfo info)
+	private <E extends Entity> void pehkui$renderLeash$head(T entity, float tickProgress, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, CallbackInfo info)
 	{
 		if (ReflectionUtils.getHoldingEntity(entity) != null)
 		{
-			final float inverseWidthScale = 1.0F / ScaleUtils.getModelWidthScale(entity, tickDelta);
-			final float inverseHeightScale = 1.0F / ScaleUtils.getModelHeightScale(entity, tickDelta);
+			final float inverseWidthScale = 1.0F / ScaleUtils.getModelWidthScale(entity, tickProgress);
+			final float inverseHeightScale = 1.0F / ScaleUtils.getModelHeightScale(entity, tickProgress);
 			
 			matrices.push();
 			matrices.scale(inverseWidthScale, inverseHeightScale, inverseWidthScale);
@@ -35,7 +35,7 @@ public class MobEntityRendererMixin<T extends MobEntity>
 	
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER_LEASH, at = @At(value = "RETURN"))
-	private <E extends Entity> void pehkui$renderLeash$return(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, CallbackInfo info)
+	private <E extends Entity> void pehkui$renderLeash$return(T entity, float tickProgress, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, CallbackInfo info)
 	{
 		if (ReflectionUtils.getHoldingEntity(entity) != null)
 		{

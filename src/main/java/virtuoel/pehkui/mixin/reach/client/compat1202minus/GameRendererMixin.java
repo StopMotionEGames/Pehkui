@@ -20,13 +20,13 @@ public class GameRendererMixin
 	MinecraftClient client;
 	
 	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=3.0D"))
-	private double pehkui$updateCrosshairTarget$distance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$distance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
 		if (entity != null)
 		{
-			final float scale = ScaleUtils.getEntityReachScale(entity, tickDelta);
+			final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
 			
 			if (scale != 1.0F)
 			{

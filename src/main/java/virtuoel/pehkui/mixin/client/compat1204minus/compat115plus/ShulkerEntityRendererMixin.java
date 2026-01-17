@@ -18,16 +18,16 @@ public class ShulkerEntityRendererMixin
 {
 	@Dynamic
 	@Inject(at = @At("RETURN"), method = MixinConstants.SHULKER_ENTITY_SETUP_TRANSFORMS)
-	private void pehkui$setupTransforms(ShulkerEntity entity, MatrixStack matrices, float animationProgress, float bodyYaw, float tickDelta, CallbackInfo info)
+	private void pehkui$setupTransforms(ShulkerEntity entity, MatrixStack matrices, float animationProgress, float bodyYaw, float tickProgress, CallbackInfo info)
 	{
 		final Direction face = entity.getAttachedFace();
 		
 		if (face != Direction.DOWN)
 		{
-			final float h = ScaleUtils.getModelHeightScale(entity, tickDelta);
+			final float h = ScaleUtils.getModelHeightScale(entity, tickProgress);
 			if (face != Direction.UP)
 			{
-				final float w = ScaleUtils.getModelWidthScale(entity, tickDelta);
+				final float w = ScaleUtils.getModelWidthScale(entity, tickProgress);
 				if (w != 1.0F || h != 1.0F)
 				{
 					matrices.translate(0.0, -((1.0F - w) * 0.5F) / w, -((1.0F - h) * 0.5F) / h);

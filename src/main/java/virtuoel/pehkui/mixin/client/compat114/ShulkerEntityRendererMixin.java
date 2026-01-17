@@ -19,16 +19,16 @@ public class ShulkerEntityRendererMixin
 {
 	@Dynamic
 	@Inject(at = @At("RETURN"), method = "setupTransforms(Lnet/minecraft/client/render/entity/state/ShulkerEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;FF)V")
-	private void pehkui$setupTransforms(LivingEntity entity, float animationProgress, float bodyYaw, float tickDelta, CallbackInfo info)
+	private void pehkui$setupTransforms(LivingEntity entity, float animationProgress, float bodyYaw, float tickProgress, CallbackInfo info)
 	{
 		final Direction face = entity instanceof ShulkerEntity ? ((ShulkerEntity) entity).getAttachedFace() : Direction.DOWN;
 		
 		if (face != Direction.DOWN)
 		{
-			final float h = ScaleUtils.getModelHeightScale(entity, tickDelta);
+			final float h = ScaleUtils.getModelHeightScale(entity, tickProgress);
 			if (face != Direction.UP)
 			{
-				final float w = ScaleUtils.getModelWidthScale(entity, tickDelta);
+				final float w = ScaleUtils.getModelWidthScale(entity, tickProgress);
 				if (w != 1.0F || h != 1.0F)
 				{
 					GL11.glTranslated(0.0, -((1.0F - w) * 0.5F) / w, -((1.0F - h) * 0.5F) / h);

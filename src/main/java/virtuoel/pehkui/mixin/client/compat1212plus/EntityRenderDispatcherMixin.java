@@ -22,11 +22,11 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
 	@Inject(method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/client/render/entity/EntityRenderer;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
-	private <E extends Entity, S extends EntityRenderState> void pehkui$render$before(E entity, double x, double y, double z, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<? super E, S> renderer, CallbackInfo ci) {
+	private <E extends Entity, S extends EntityRenderState> void pehkui$render$before(E entity, double x, double y, double z, float tickProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<? super E, S> renderer, CallbackInfo ci) {
 		ScaleRenderUtils.logIfEntityRenderCancelled();
 
-		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickDelta);
-		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickDelta);
+		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickProgress);
+		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickProgress);
 
 		matrices.push();
 		matrices.scale(widthScale, heightScale, widthScale);
@@ -36,7 +36,7 @@ public class EntityRenderDispatcherMixin {
 	}
 
 	@Inject(method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/client/render/entity/EntityRenderer;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
-	private <E extends Entity, S extends EntityRenderState> void pehkui$render$after(E entity, double x, double y, double z, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<? super E, S> renderer, CallbackInfo ci) {
+	private <E extends Entity, S extends EntityRenderState> void pehkui$render$after(E entity, double x, double y, double z, float tickProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<? super E, S> renderer, CallbackInfo ci) {
 		ScaleRenderUtils.clearLastRenderedEntity();
 
 		matrices.pop();
@@ -49,7 +49,7 @@ public class EntityRenderDispatcherMixin {
 	}
 
 	@Inject(method = "renderHitbox", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexRendering;drawBox(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;DDDDDDFFFF)V", ordinal = 0))
-	private static void pehkui$renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, float red, float green, float blue, CallbackInfo ci) {
+	private static void pehkui$renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickProgress, float red, float green, float blue, CallbackInfo ci) {
 		final float interactionWidth = ScaleUtils.getInteractionBoxWidthScale(entity);
 		final float interactionHeight = ScaleUtils.getInteractionBoxHeightScale(entity);
 		final float margin = entity.getTargetingMargin();

@@ -237,22 +237,22 @@ public class ScaleRenderUtils
 		}
 	}
 
-	public static float modifyProjectionMatrixDepthByWidth(float depth, @Nullable Entity entity, float tickDelta)
+	public static float modifyProjectionMatrixDepthByWidth(float depth, @Nullable Entity entity, float tickProgress)
 	{
-		return entity == null ? depth : modifyProjectionMatrixDepth(ScaleUtils.getBoundingBoxWidthScale(entity, tickDelta), depth, entity, tickDelta);
+		return entity == null ? depth : modifyProjectionMatrixDepth(ScaleUtils.getBoundingBoxWidthScale(entity, tickProgress), depth, entity, tickProgress);
 	}
 
-	public static float modifyProjectionMatrixDepthByHeight(float depth, @Nullable Entity entity, float tickDelta)
+	public static float modifyProjectionMatrixDepthByHeight(float depth, @Nullable Entity entity, float tickProgress)
 	{
-		return entity == null ? depth : modifyProjectionMatrixDepth(ScaleUtils.getEyeHeightScale(entity, tickDelta), depth, entity, tickDelta);
+		return entity == null ? depth : modifyProjectionMatrixDepth(ScaleUtils.getEyeHeightScale(entity, tickProgress), depth, entity, tickProgress);
 	}
 
-	public static float modifyProjectionMatrixDepth(float depth, @Nullable Entity entity, float tickDelta)
+	public static float modifyProjectionMatrixDepth(float depth, @Nullable Entity entity, float tickProgress)
 	{
-		return entity == null ? depth : modifyProjectionMatrixDepth(Math.min(ScaleUtils.getBoundingBoxWidthScale(entity, tickDelta), ScaleUtils.getEyeHeightScale(entity, tickDelta)), depth, entity, tickDelta);
+		return entity == null ? depth : modifyProjectionMatrixDepth(Math.min(ScaleUtils.getBoundingBoxWidthScale(entity, tickProgress), ScaleUtils.getEyeHeightScale(entity, tickProgress)), depth, entity, tickProgress);
 	}
 
-	public static float modifyProjectionMatrixDepth(float scale, float depth, Entity entity, float tickDelta)
+	public static float modifyProjectionMatrixDepth(float scale, float depth, Entity entity, float tickProgress)
 	{
 		if (scale < 1.0F)
 		{

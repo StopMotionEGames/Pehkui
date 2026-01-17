@@ -20,7 +20,7 @@ public class EntityRenderDispatcherMixin
 {
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER_HITBOX, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawBox(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/util/math/Box;FFFF)V", ordinal = 0))
-	private static void pehkui$renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickDelta, CallbackInfo ci)
+	private static void pehkui$renderHitbox(MatrixStack matrices, VertexConsumer vertices, Entity entity, float tickProgress, CallbackInfo ci)
 	{
 		final float interactionWidth = ScaleUtils.getInteractionBoxWidthScale(entity);
 		final float interactionHeight = ScaleUtils.getInteractionBoxHeightScale(entity);

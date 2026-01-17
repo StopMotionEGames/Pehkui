@@ -21,12 +21,12 @@ public class EntityRenderDispatcherMixin
 {
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = MixinConstants.RENDER_IN_WORLD))
-	private <E extends Entity> void pehkui$render$before(E entity, double x, double y, double z, float yaw, float tickDelta, boolean forceHideHitbox, CallbackInfo info)
+	private <E extends Entity> void pehkui$render$before(E entity, double x, double y, double z, float yaw, float tickProgress, boolean forceHideHitbox, CallbackInfo info)
 	{
 		ScaleRenderUtils.logIfEntityRenderCancelled();
 		
-		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickDelta);
-		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickDelta);
+		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickProgress);
+		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickProgress);
 		
 		GL11.glPushMatrix();
 		GL11.glScalef(widthScale, heightScale, widthScale);
@@ -38,7 +38,7 @@ public class EntityRenderDispatcherMixin
 	
 	@Dynamic
 	@Inject(method = MixinConstants.RENDER, at = @At(value = "INVOKE", shift = Shift.AFTER, target = MixinConstants.RENDER_IN_WORLD))
-	private <E extends Entity> void pehkui$render$after(E entity, double x, double y, double z, float yaw, float tickDelta, boolean forceHideHitbox, CallbackInfo info)
+	private <E extends Entity> void pehkui$render$after(E entity, double x, double y, double z, float yaw, float tickProgress, boolean forceHideHitbox, CallbackInfo info)
 	{
 		ScaleRenderUtils.clearLastRenderedEntity();
 		

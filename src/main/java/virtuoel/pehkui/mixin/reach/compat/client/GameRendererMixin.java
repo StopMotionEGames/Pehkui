@@ -21,7 +21,7 @@ public class GameRendererMixin
 	MinecraftClient client;
 	
 	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getCameraPosVec(F)Lnet/minecraft/util/math/Vec3d;"))
-	private double pehkui$updateCrosshairTarget$setDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$setDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
@@ -39,7 +39,7 @@ public class GameRendererMixin
 	}
 	
 	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRotationVec(F)Lnet/minecraft/util/math/Vec3d;"))
-	private double pehkui$updateCrosshairTarget$fixDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$fixDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
@@ -55,7 +55,7 @@ public class GameRendererMixin
 	}
 	
 	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRotationVec(F)Lnet/minecraft/util/math/Vec3d;"))
-	private double pehkui$updateCrosshairTarget$fixSquaredDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$fixSquaredDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		

@@ -24,13 +24,13 @@ public class GameRendererMixin
 	MinecraftClient client;
 	
 	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 0, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/entity/Entity;getCameraPosVec(F)Lnet/minecraft/util/math/Vec3d;"))
-	private double pehkui$updateCrosshairTarget$setDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$setDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
 		if (entity != null)
 		{
-			final float scale = ScaleUtils.getEntityReachScale(entity, tickDelta);
+			final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
 			
 			if (scale != 1.0F)
 			{
@@ -42,7 +42,7 @@ public class GameRendererMixin
 	}
 	
 	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRotationVec(F)Lnet/minecraft/util/math/Vec3d;"))
-	private double pehkui$updateCrosshairTarget$squaredDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$squaredDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
@@ -50,7 +50,7 @@ public class GameRendererMixin
 		{
 			if (this.client.crosshairTarget == null || this.client.crosshairTarget.getType() == HitResult.Type.MISS)
 			{
-				final float scale = ScaleUtils.getEntityReachScale(entity, tickDelta);
+				final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
 				final double baseEntityReach = ScaleRenderUtils.hasExtendedReach(client.interactionManager) ? 6.0D : client.interactionManager.getCurrentGameMode().isCreative() ? 5.0F : 4.5F;
 				final double entityReach = scale * baseEntityReach;
 				
@@ -62,13 +62,13 @@ public class GameRendererMixin
 	}
 	
 	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=6.0D"))
-	private double pehkui$updateCrosshairTarget$extendedDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$extendedDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
 		if (entity != null)
 		{
-			final float scale = ScaleUtils.getEntityReachScale(entity, tickDelta);
+			final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
 			
 			if (scale != 1.0F)
 			{
@@ -80,13 +80,13 @@ public class GameRendererMixin
 	}
 	
 	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=9.0D"))
-	private double pehkui$updateCrosshairTarget$squaredMaxDistance(double value, float tickDelta)
+	private double pehkui$updateCrosshairTarget$squaredMaxDistance(double value, float tickProgress)
 	{
 		final Entity entity = client.getCameraEntity();
 		
 		if (entity != null)
 		{
-			final float scale = ScaleUtils.getEntityReachScale(entity, tickDelta);
+			final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
 			
 			if (scale != 1.0F)
 			{

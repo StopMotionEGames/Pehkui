@@ -25,7 +25,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class GameRendererMixin
 {
 	@Shadow @Final @Mutable
-	MinecraftClient client;
+	private MinecraftClient client;
 	
 	@Dynamic
 	@ModifyExpressionValue(method = MixinConstants.APPLY_CAMERA_TRANSFORMATIONS, at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
@@ -39,14 +39,14 @@ public class GameRendererMixin
 	
 	@Dynamic
 	@Inject(method = MixinConstants.APPLY_CAMERA_TRANSFORMATIONS, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = MixinConstants.BOB_VIEW))
-	private void pehkui$renderWorld$before(float tickDelta, CallbackInfo info)
+	private void pehkui$renderWorld$before(float tickProgress, CallbackInfo info)
 	{
 		pehkui$isBobbing = true;
 	}
 	
 	@Dynamic
 	@Inject(method = MixinConstants.APPLY_CAMERA_TRANSFORMATIONS, at = @At(value = "INVOKE", shift = Shift.AFTER, target = MixinConstants.BOB_VIEW))
-	private void pehkui$renderWorld$after(float tickDelta, CallbackInfo info)
+	private void pehkui$renderWorld$after(float tickProgress, CallbackInfo info)
 	{
 		pehkui$isBobbing = false;
 	}
