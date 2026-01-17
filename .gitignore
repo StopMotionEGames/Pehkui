@@ -31,7 +31,6 @@ bin
 *.launch
 .settings
 .metadata
-.project
 .checkstyle
 
 # other

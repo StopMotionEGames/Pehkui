@@ -22,12 +22,23 @@ import virtuoel.pehkui.util.ModLoaderUtils;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.List;
+
 @ApiStatus.Internal
 public class PehkuiClient implements ClientModInitializer
 {
 	@Override
 	public void onInitializeClient()
 	{
+		RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+		List<String> jvmArgs = runtimeMxBean.getInputArguments();
+
+		System.out.println("JVM Arguments:");
+		for (String arg : jvmArgs) {
+			System.out.println(arg);
+		}
 		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
 		{
 			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))

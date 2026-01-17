@@ -11,31 +11,28 @@ import net.minecraft.util.math.Direction;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(ShulkerEntity.class)
-public class ShulkerEntityMixin
-{
+public class ShulkerEntityMixin {
 	@ModifyReturnValue(method = "calculateBoundingBox()Lnet/minecraft/util/math/Box;", at = @At("RETURN"))
-	private Box pehkui$calculateBoundingBox(Box box)
-	{
+	private Box pehkui$calculateBoundingBox(Box box) {
 		final ShulkerEntity entity = (ShulkerEntity) (Object) this;
-		
+
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
-		
-		if (widthScale != 1.0F || heightScale != 1.0F)
-		{
+
+		if (widthScale != 1.0F || heightScale != 1.0F) {
 			final Direction facing = entity.getAttachedFace().getOpposite();
-			
+
 			final double xLength = box.getLengthX() / -2.0D;
 			final double yLength = box.getLengthY() / -2.0D;
 			final double zLength = box.getLengthZ() / -2.0D;
-			
+
 			final double dX = xLength * (1.0D - widthScale);
 			final double dY = yLength * (1.0D - heightScale);
 			final double dZ = zLength * (1.0D - widthScale);
 			box = box.expand(dX, dY, dZ);
-			box = box.offset(dX * facing.getOffsetX(), dY * facing.getOffsetY(), dZ * facing.getOffsetZ());
+			box = box.offset(dX, dY * facing.getOffsetY(), dZ);
 		}
-		
+
 		return box;
 	}
 }

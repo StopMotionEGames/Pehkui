@@ -2,6 +2,9 @@ package virtuoel.pehkui.mixin;
 
 import java.util.Map;
 
+import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,7 +42,10 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 {
 	@Shadow boolean onGround;
 	@Shadow boolean firstUpdate;
-	
+
+	@Shadow
+	public abstract Direction getHorizontalFacing();
+
 	private boolean pehkui_shouldSyncScales = false;
 	private boolean pehkui_shouldIgnoreScaleNbt = false;
 	private ScaleData[] pehkui_scaleCache = null;

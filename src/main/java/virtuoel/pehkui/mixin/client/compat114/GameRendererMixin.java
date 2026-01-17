@@ -52,7 +52,7 @@ public class GameRendererMixin
 	}
 	
 	@Dynamic
-	@WrapOperation(method = MixinConstants.BOB_VIEW, at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;translatef(FFF)V", remap = false))
+	@WrapOperation(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;translatef(FFF)V", remap = false))
 	private void pehkui$bobView$translate(float x, float y, float z, Operation<Void> original)
 	{
 		if (pehkui$isBobbing)

@@ -22,26 +22,6 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin
 {
-	@Inject(at = @At("RETURN"), method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;")
-	private void pehkui$dropItem(ItemStack stack, boolean spread, boolean thrown, CallbackInfoReturnable<ItemEntity> info)
-	{
-		final ItemEntity entity = info.getReturnValue();
-		
-		if (entity != null)
-		{
-			ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);
-			
-			final float scale = ScaleUtils.getEyeHeightScale((Entity) (Object) this);
-			
-			if (scale != 1.0F)
-			{
-				final Vec3d pos = entity.getPos();
-				
-				entity.setPosition(pos.x, pos.y + ((1.0F - scale) * 0.3D), pos.z);
-			}
-		}
-	}
-	
 	@WrapOperation(method = "tickMovement()V", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$tickMovement$expand(Box obj, double x, double y, double z, Operation<Box> original)
 	{
