@@ -7,7 +7,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.storage.NbtWriteView;
 import net.minecraft.text.Text;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.Identifier;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleRegistries;
@@ -65,7 +67,7 @@ public class PehkuiEntitySelectorOptions
 				final NbtCompound parsed = (StringNbtReader.readCompoundAsArgument(r.getReader()));
 				r.addPredicate(entity ->
 				{
-					final NbtCompound nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(new NbtCompound());
+					final NbtCompound nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(NbtWriteView.create((ErrorReporter) Pehkui.LOGGER));
 					
 					return NbtHelper.matches(parsed, nbt, true) != negated;
 				});

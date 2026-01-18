@@ -3,8 +3,11 @@ package virtuoel.pehkui.mixin;
 import java.util.Map;
 
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -47,6 +50,9 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 
 	@Shadow
 	public abstract Direction getHorizontalFacing();
+
+	@Shadow
+	protected abstract @Nullable String getSavedEntityId();
 
 	private boolean pehkui_shouldSyncScales = false;
 	private boolean pehkui_shouldIgnoreScaleNbt = false;
@@ -94,75 +100,69 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		pehkui_shouldIgnoreScaleNbt = ignore;
 	}
 	
-	@Inject(at = @At("HEAD"), method = "readNbt")
-	private void pehkui$readNbt(NbtCompound tag, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "readData")
+	private void pehkui$readNbt(ReadView view, CallbackInfo ci)
 	{
-		pehkui_readScaleNbt(tag);
+		pehkui_readScaleNbt(view);
 	}
 	
 	@Override
-	public void pehkui_readScaleNbt(NbtCompound nbt)
+	public void pehkui_readScaleNbt(ReadView view)
 	{
-		if (pehkui_shouldIgnoreScaleNbt())
-		{
+		if (pehkui_shouldIgnoreScaleNbt()) {
 			return;
 		}
-		
-		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
-		{
-			final NbtCompound typeData = nbt.getCompoundOrEmpty(Pehkui.MOD_ID + ":scale_data_types");
-			
-			String key;
-			ScaleData scaleData;
-			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
-			{
-				key = entry.getKey().toString();
-				
-				if (typeData.contains(key))
-				{
-					scaleData = pehkui_getScaleData(entry.getValue());
-					scaleData.readNbt(typeData.getCompoundOrEmpty(key));
+
+		String key = Pehkui.MOD_ID + ":scale_data_types";
+		view.read(key, NbtCompound.CODEC).ifPresent(typeData -> {
+//			todo: See if nothing breaks
+//			if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
+			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
+				String scaleKey = entry.getKey().toString();
+
+				if (typeData.contains(scaleKey)) {
+					ScaleData scaleData = pehkui_getScaleData(entry.getValue());
+					scaleData.readNbt(typeData.getCompoundOrEmpty(scaleKey));
 				}
 			}
-		}
+		});
 	}
 	
-	@Inject(at = @At("HEAD"), method = "writeNbt")
-	private void pehkui$writeNbt(NbtCompound tag, CallbackInfoReturnable<NbtCompound> info)
+	@Inject(at = @At("HEAD"), method = "writeData")
+	private void pehkui$writeNbt(WriteView view, CallbackInfo ci)
 	{
-		pehkui_writeScaleNbt(tag);
+		pehkui_writeScaleNbt(view);
 	}
 	
 	@Override
-	public NbtCompound pehkui_writeScaleNbt(NbtCompound nbt)
+	public NbtCompound pehkui_writeScaleNbt(WriteView view)
 	{
-		if (pehkui_shouldIgnoreScaleNbt())
-		{
-			return nbt;
+		if (pehkui_shouldIgnoreScaleNbt()) {
+			return new NbtCompound();
 		}
-		
+
 		final NbtCompound typeData = new NbtCompound();
-		
-		NbtCompound compound;
-		for (final ScaleData scaleData : pehkui_getScales().values())
-		{
-			if (scaleData != null)
-			{
-				compound = scaleData.writeNbt(new NbtCompound());
-				
-				if (compound.getSize() != 0)
-				{
-					typeData.put(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, scaleData.getScaleType()).toString(), compound);
+
+		for (final ScaleData scaleData : pehkui_getScales().values()) {
+			if (scaleData != null) {
+				NbtCompound compound = scaleData.writeNbt(new NbtCompound());
+				if (compound.getSize() != 0) {
+					typeData.put(
+						ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, scaleData.getScaleType()).toString(),
+						compound
+					);
 				}
 			}
 		}
-		
-		if (typeData.getSize() > 0)
-		{
-			nbt.put(Pehkui.MOD_ID + ":scale_data_types", typeData);
+
+		final NbtCompound rootContainer = new NbtCompound();
+		if (typeData.getSize() > 0) {
+			view.put(Pehkui.MOD_ID + ":scale_data_types", NbtCompound.CODEC, typeData);
+
+			rootContainer.put(Pehkui.MOD_ID + ":scale_data_types", typeData);
 		}
-		
-		return nbt;
+
+		return rootContainer;
 	}
 	
 	@Inject(at = @At("HEAD"), method = "tick")
@@ -177,8 +177,9 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 	@ModifyReturnValue(method = "getDimensions", at = @At("RETURN"))
 	private EntityDimensions pehkui$getDimensions(EntityDimensions original)
 	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+		Entity self = (Entity) (Object) this;
+		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(self);
+		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(self);
 		
 		if (widthScale != 1.0F || heightScale != 1.0F)
 		{

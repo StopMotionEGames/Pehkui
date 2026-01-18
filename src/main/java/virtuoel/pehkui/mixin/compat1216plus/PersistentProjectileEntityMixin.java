@@ -1,7 +1,7 @@
-package virtuoel.pehkui.mixin.compat116plus;
+package virtuoel.pehkui.mixin.compat1216plus;
 
-import java.util.function.Predicate;
-
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -9,19 +9,17 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin
 {
-	@ModifyArg(method = "getEntityCollision", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileUtil;getEntityCollision(Lnet/minecraft/world/World;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Lnet/minecraft/util/hit/EntityHitResult;"))
-	private Box pehkui$getEntityCollision$expand(World world, Entity entity, Vec3d vec3d, Vec3d vec3d2, Box box, Predicate<Entity> predicate)
+	@ModifyArg(method = "getEntityCollision", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileUtil;getEntityCollision(Lnet/minecraft/world/World;Lnet/minecraft/entity/projectile/ProjectileEntity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Lnet/minecraft/util/hit/EntityHitResult;"))
+	private Box pehkui$getEntityCollision$expand(Box box)
 	{
-		final float width = ScaleUtils.getBoundingBoxWidthScale(entity);
-		final float height = ScaleUtils.getBoundingBoxHeightScale(entity);
+		ProjectileEntity projectile = (ProjectileEntity) (Object) this;
+		final float width = ScaleUtils.getBoundingBoxWidthScale(projectile);
+		final float height = ScaleUtils.getBoundingBoxHeightScale(projectile);
 		
 		if (width != 1.0F || height != 1.0F)
 		{

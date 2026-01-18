@@ -3,6 +3,8 @@ package virtuoel.pehkui.util;
 import java.util.Map;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleType;
 
@@ -26,9 +28,9 @@ public interface PehkuiEntityExtensions
 	
 	void pehkui_setShouldIgnoreScaleNbt(boolean ignore);
 	
-	void pehkui_readScaleNbt(NbtCompound nbt);
+	void pehkui_readScaleNbt(ReadView view);
 	
-	NbtCompound pehkui_writeScaleNbt(NbtCompound nbt);
+	NbtCompound pehkui_writeScaleNbt(WriteView view);
 	
 	boolean pehkui_isFirstUpdate();
 	

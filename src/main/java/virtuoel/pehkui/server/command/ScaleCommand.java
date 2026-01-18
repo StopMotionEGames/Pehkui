@@ -5,6 +5,10 @@ import java.util.Random;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import net.minecraft.storage.NbtReadView;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.ReadView;
+import net.minecraft.util.ErrorReporter;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -25,6 +29,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleModifier;
@@ -40,19 +46,16 @@ import virtuoel.pehkui.util.CommandUtils;
 import virtuoel.pehkui.util.I18nUtils;
 import virtuoel.pehkui.util.PehkuiEntityExtensions;
 
-public class ScaleCommand
-{
-	public static void register(final CommandDispatcher<ServerCommandSource> commandDispatcher)
-	{
-		if (!FabricLoader.getInstance().isDevelopmentEnvironment() && !PehkuiConfig.COMMON.enableCommands.get())
-		{
+public class ScaleCommand {
+	public static void register(final CommandDispatcher<ServerCommandSource> commandDispatcher) {
+		if (!FabricLoader.getInstance().isDevelopmentEnvironment() && !PehkuiConfig.COMMON.enableCommands.get()) {
 			return;
 		}
-		
+
 		final LiteralArgumentBuilder<ServerCommandSource> builder =
 			CommandManager.literal("scale")
-			.requires(source -> source.hasPermissionLevel(2));
-		
+				.requires(source -> source.hasPermissionLevel(2));
+
 		registerOperation(builder);
 		registerRandomize(builder);
 		registerGet(builder);
@@ -63,12 +66,11 @@ public class ScaleCommand
 		registerEasing(builder);
 		registerPersist(builder);
 		registerNbt(builder);
-		
+
 		commandDispatcher.register(builder);
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerOperation(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerOperation(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.argument("operation", ScaleOperationArgumentType.operation())
 				.then(CommandManager.argument("scale_type", ScaleTypeArgumentType.scaleType())
@@ -78,15 +80,14 @@ public class ScaleCommand
 							{
 								final float scale = FloatArgumentType.getFloat(context, "value");
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleData data = type.getScaleData(e);
 									final ScaleOperationArgumentType.Operation operation = ScaleOperationArgumentType.getOperation(context, "operation");
-									
+
 									data.setTargetScale((float) operation.apply(data.getTargetScale(), scale));
 								}
-								
+
 								return 1;
 							})
 						)
@@ -94,12 +95,12 @@ public class ScaleCommand
 						{
 							final float scale = FloatArgumentType.getFloat(context, "value");
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-							
+
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 							final ScaleOperationArgumentType.Operation operation = ScaleOperationArgumentType.getOperation(context, "operation");
-							
+
 							data.setTargetScale((float) operation.apply(data.getTargetScale(), scale));
-							
+
 							return 1;
 						})
 					)
@@ -109,37 +110,35 @@ public class ScaleCommand
 						.executes(context ->
 						{
 							final float scale = FloatArgumentType.getFloat(context, "value");
-							
-							for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-							{
+
+							for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 								final ScaleData data = ScaleTypes.BASE.getScaleData(e);
 								final ScaleOperationArgumentType.Operation operation = ScaleOperationArgumentType.getOperation(context, "operation");
-								
+
 								data.setTargetScale((float) operation.apply(data.getTargetScale(), scale));
 							}
-							
+
 							return 1;
 						})
 					)
 					.executes(context ->
 					{
 						final float scale = FloatArgumentType.getFloat(context, "value");
-						
+
 						final ScaleData data = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow());
 						final ScaleOperationArgumentType.Operation operation = ScaleOperationArgumentType.getOperation(context, "operation");
-						
+
 						data.setTargetScale((float) operation.apply(data.getTargetScale(), scale));
-						
+
 						return 1;
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerRandomize(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerRandomize(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("randomize")
 				.then(CommandManager.argument("scale_type", ScaleTypeArgumentType.scaleType())
@@ -152,31 +151,29 @@ public class ScaleCommand
 										{
 											final float minValue = FloatArgumentType.getFloat(context, "minValue");
 											final float maxValue = FloatArgumentType.getFloat(context, "maxValue");
-											
+
 											final ScaleOperationArgumentType.Operation minOperation = ScaleOperationArgumentType.getOperation(context, "minOperation");
 											final ScaleOperationArgumentType.Operation maxOperation = ScaleOperationArgumentType.getOperation(context, "maxOperation");
-											
+
 											final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-											
+
 											double min, max, target;
-											for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-											{
+											for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 												final ScaleData data = type.getScaleData(e);
-												
+
 												target = data.getTargetScale();
 												min = minOperation.apply(target, minValue);
 												max = maxOperation.apply(target, maxValue);
-												
-												if (max < min)
-												{
+
+												if (max < min) {
 													final double temp = min;
 													min = max;
 													max = temp;
 												}
-												
+
 												data.setTargetScale((float) (min + (RANDOM.nextFloat() * (max - min))));
 											}
-											
+
 											return 1;
 										})
 									)
@@ -184,27 +181,26 @@ public class ScaleCommand
 									{
 										final float minValue = FloatArgumentType.getFloat(context, "minValue");
 										final float maxValue = FloatArgumentType.getFloat(context, "maxValue");
-										
+
 										final ScaleOperationArgumentType.Operation minOperation = ScaleOperationArgumentType.getOperation(context, "minOperation");
 										final ScaleOperationArgumentType.Operation maxOperation = ScaleOperationArgumentType.getOperation(context, "maxOperation");
-										
+
 										final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-										
+
 										final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-										
+
 										final double target = data.getTargetScale();
 										double min = minOperation.apply(target, minValue);
 										double max = maxOperation.apply(target, maxValue);
-										
-										if (max < min)
-										{
+
+										if (max < min) {
 											final double temp = min;
 											min = max;
 											max = temp;
 										}
-										
+
 										data.setTargetScale((float) (min + (RANDOM.nextFloat() * (max - min))));
-										
+
 										return 1;
 									})
 								)
@@ -213,12 +209,11 @@ public class ScaleCommand
 					)
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerGet(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerGet(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("get")
 				.then(CommandManager.argument("scale_type", ScaleTypeArgumentType.scaleType())
@@ -230,7 +225,7 @@ public class ScaleCommand
 								final float scale = type.getScaleData(EntityArgumentType.getEntity(context, "entity")).getBaseScale();
 								final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 								CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-								
+
 								return scaled;
 							})
 						)
@@ -239,7 +234,7 @@ public class ScaleCommand
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 							final float scale = type.getScaleData(EntityArgumentType.getEntity(context, "entity")).getBaseScale();
 							CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-							
+
 							return (int) scale;
 						})
 					)
@@ -250,7 +245,7 @@ public class ScaleCommand
 							final float scale = type.getScaleData(context.getSource().getEntityOrThrow()).getBaseScale();
 							final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 							CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-							
+
 							return scaled;
 						})
 					)
@@ -259,7 +254,7 @@ public class ScaleCommand
 						final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 						final float scale = type.getScaleData(context.getSource().getEntityOrThrow()).getBaseScale();
 						CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-						
+
 						return (int) scale;
 					})
 				)
@@ -269,7 +264,7 @@ public class ScaleCommand
 						final float scale = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow()).getBaseScale();
 						final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 						CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-						
+
 						return scaled;
 					})
 				)
@@ -280,7 +275,7 @@ public class ScaleCommand
 							final float scale = ScaleTypes.BASE.getScaleData(EntityArgumentType.getEntity(context, "entity")).getBaseScale();
 							final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 							CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-							
+
 							return scaled;
 						})
 					)
@@ -288,7 +283,7 @@ public class ScaleCommand
 					{
 						final float scale = ScaleTypes.BASE.getScaleData(EntityArgumentType.getEntity(context, "entity")).getBaseScale();
 						CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-						
+
 						return (int) scale;
 					})
 				)
@@ -296,16 +291,15 @@ public class ScaleCommand
 				{
 					final float scale = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow()).getBaseScale();
 					CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-					
+
 					return (int) scale;
 				})
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerCompute(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerCompute(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("compute")
 				.then(CommandManager.argument("scale_type", ScaleTypeArgumentType.scaleType())
@@ -317,7 +311,7 @@ public class ScaleCommand
 								final float scale = type.getScaleData(EntityArgumentType.getEntity(context, "entity")).getScale();
 								final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 								CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-								
+
 								return scaled;
 							})
 						)
@@ -326,7 +320,7 @@ public class ScaleCommand
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 							final float scale = type.getScaleData(EntityArgumentType.getEntity(context, "entity")).getScale();
 							CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-							
+
 							return (int) scale;
 						})
 					)
@@ -337,7 +331,7 @@ public class ScaleCommand
 							final float scale = type.getScaleData(context.getSource().getEntityOrThrow()).getScale();
 							final int scaled = (int) (scale * FloatArgumentType.getFloat(context, "scalingFactor"));
 							CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale, scaled), false);
-							
+
 							return scaled;
 						})
 					)
@@ -346,32 +340,30 @@ public class ScaleCommand
 						final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 						final float scale = type.getScaleData(context.getSource().getEntityOrThrow()).getScale();
 						CommandUtils.sendFeedback(context.getSource(), () -> scaleText(scale), false);
-						
+
 						return (int) scale;
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerReset(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerReset(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("reset")
 				.then(CommandManager.argument("scale_type", ScaleTypeArgumentType.scaleType())
 					.then(CommandManager.argument("targets", EntityArgumentType.entities())
 						.executes(context ->
 						{
-							for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-							{
+							for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 								final ScaleData data = type.getScaleData(e);
 								final Boolean persist = data.getPersistence();
 								data.resetScale();
 								data.setPersistence(persist);
 							}
-							
+
 							return 1;
 						})
 					)
@@ -382,46 +374,42 @@ public class ScaleCommand
 						final Boolean persist = data.getPersistence();
 						data.resetScale();
 						data.setPersistence(persist);
-						
+
 						return 1;
 					})
 				)
 				.then(CommandManager.argument("targets", EntityArgumentType.entities())
 					.executes(context ->
 					{
-						for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-						{
-							for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-							{
+						for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
+							for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 								final ScaleData data = type.getScaleData(e);
 								final Boolean persist = data.getPersistence();
 								data.resetScale();
 								data.setPersistence(persist);
 							}
 						}
-						
+
 						return 1;
 					})
 				)
 				.executes(context ->
 				{
-					for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-					{
+					for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 						final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 						final Boolean persist = data.getPersistence();
 						data.resetScale();
 						data.setPersistence(persist);
 					}
-					
+
 					return 1;
 				})
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerModifier(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerModifier(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("modifier")
 				.then(CommandManager.literal("get")
@@ -431,22 +419,22 @@ public class ScaleCommand
 							{
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 								final ScaleData data = type.getScaleData(EntityArgumentType.getEntity(context, "entity"));
-								
+
 								final String modifierString = data.getBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.joining(", "));
-								
+
 								CommandUtils.sendFeedback(context.getSource(), () -> modifierText(modifierString), false);
-								
+
 								return 1;
 							})
 						)
 						.executes(context ->
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-							
+
 							final String modifierString = type.getDefaultBaseValueModifiers().stream().map(e -> ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, e).toString()).collect(Collectors.joining(", "));
-							
+
 							CommandUtils.sendFeedback(context.getSource(), () -> modifierText(modifierString), false);
-							
+
 							return 1;
 						})
 					)
@@ -457,14 +445,13 @@ public class ScaleCommand
 							.then(CommandManager.argument("targets", EntityArgumentType.entities())
 								.executes(context ->
 								{
-									for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-									{
+									for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 										final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 										final ScaleModifier modifier = ScaleModifierArgumentType.getScaleModifierArgument(context, "scale_modifier");
 										final ScaleData data = type.getScaleData(e);
 										data.getBaseValueModifiers().add(modifier);
 									}
-									
+
 									return 1;
 								})
 							)
@@ -474,7 +461,7 @@ public class ScaleCommand
 								final ScaleModifier modifier = ScaleModifierArgumentType.getScaleModifierArgument(context, "scale_modifier");
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 								data.getBaseValueModifiers().add(modifier);
-								
+
 								return 1;
 							})
 						)
@@ -486,14 +473,13 @@ public class ScaleCommand
 							.then(CommandManager.argument("targets", EntityArgumentType.entities())
 								.executes(context ->
 								{
-									for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-									{
+									for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 										final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 										final ScaleModifier modifier = ScaleModifierArgumentType.getScaleModifierArgument(context, "scale_modifier");
 										final ScaleData data = type.getScaleData(e);
 										data.getBaseValueModifiers().remove(modifier);
 									}
-									
+
 									return 1;
 								})
 							)
@@ -503,7 +489,7 @@ public class ScaleCommand
 								final ScaleModifier modifier = ScaleModifierArgumentType.getScaleModifierArgument(context, "scale_modifier");
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 								data.getBaseValueModifiers().remove(modifier);
-								
+
 								return 1;
 							})
 						)
@@ -514,17 +500,16 @@ public class ScaleCommand
 						.then(CommandManager.argument("targets", EntityArgumentType.entities())
 							.executes(context ->
 							{
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 									final ScaleData data = type.getScaleData(e);
-									
+
 									final SortedSet<ScaleModifier> baseValueModifiers = data.getBaseValueModifiers();
-									
+
 									baseValueModifiers.clear();
 									baseValueModifiers.addAll(type.getDefaultBaseValueModifiers());
 								}
-								
+
 								return 1;
 							})
 						)
@@ -532,23 +517,22 @@ public class ScaleCommand
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-							
+
 							final SortedSet<ScaleModifier> baseValueModifiers = data.getBaseValueModifiers();
-							
+
 							baseValueModifiers.clear();
 							baseValueModifiers.addAll(type.getDefaultBaseValueModifiers());
-							
+
 							return 1;
 						})
 					)
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerDelay(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerDelay(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("delay")
 				.then(CommandManager.literal("set")
@@ -559,14 +543,13 @@ public class ScaleCommand
 								{
 									final int ticks = IntegerArgumentType.getInteger(context, "ticks");
 									final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-									
-									for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-									{
+
+									for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 										final ScaleData data = type.getScaleData(e);
-										
+
 										data.setScaleTickDelay(ticks);
 									}
-									
+
 									return 1;
 								})
 							)
@@ -574,11 +557,11 @@ public class ScaleCommand
 							{
 								final int ticks = IntegerArgumentType.getInteger(context, "ticks");
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
+
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-								
+
 								data.setScaleTickDelay(ticks);
-								
+
 								return 1;
 							})
 						)
@@ -588,25 +571,24 @@ public class ScaleCommand
 							.executes(context ->
 							{
 								final int ticks = IntegerArgumentType.getInteger(context, "ticks");
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleData data = ScaleTypes.BASE.getScaleData(e);
-									
+
 									data.setScaleTickDelay(ticks);
 								}
-								
+
 								return 1;
 							})
 						)
 						.executes(context ->
 						{
 							final int ticks = IntegerArgumentType.getInteger(context, "ticks");
-							
+
 							final ScaleData data = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow());
-							
+
 							data.setScaleTickDelay(ticks);
-							
+
 							return 1;
 						})
 					)
@@ -652,16 +634,15 @@ public class ScaleCommand
 							{
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 								final int ticks = type.getDefaultTickDelay();
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleData data = type.getScaleData(e);
-									
+
 									data.setScaleTickDelay(ticks);
 								}
-								
+
 								CommandUtils.sendFeedback(context.getSource(), () -> delayText(ticks), false);
-								
+
 								return 1;
 							})
 						)
@@ -669,13 +650,13 @@ public class ScaleCommand
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
 							final int ticks = type.getDefaultTickDelay();
-							
+
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-							
+
 							data.setScaleTickDelay(ticks);
-							
+
 							CommandUtils.sendFeedback(context.getSource(), () -> delayText(ticks), false);
-							
+
 							return 1;
 						})
 					)
@@ -683,39 +664,37 @@ public class ScaleCommand
 						.executes(context ->
 						{
 							final int ticks = ScaleTypes.BASE.getDefaultTickDelay();
-							
-							for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-							{
+
+							for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 								final ScaleData data = ScaleTypes.BASE.getScaleData(e);
-								
+
 								data.setScaleTickDelay(ticks);
 							}
-							
+
 							CommandUtils.sendFeedback(context.getSource(), () -> delayText(ticks), false);
-							
+
 							return 1;
 						})
 					)
 					.executes(context ->
 					{
 						final int ticks = ScaleTypes.BASE.getDefaultTickDelay();
-						
+
 						final ScaleData data = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow());
-						
+
 						data.setScaleTickDelay(ticks);
-						
+
 						CommandUtils.sendFeedback(context.getSource(), () -> delayText(ticks), false);
-						
+
 						return 1;
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerEasing(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerEasing(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("easing")
 				.then(CommandManager.literal("set")
@@ -726,14 +705,13 @@ public class ScaleCommand
 								{
 									final Float2FloatFunction easing = ScaleEasingArgumentType.getScaleEasingArgument(context, "easing");
 									final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-									
-									for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-									{
+
+									for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 										final ScaleData data = type.getScaleData(e);
-										
+
 										data.setEasing(easing);
 									}
-									
+
 									return 1;
 								})
 							)
@@ -741,11 +719,11 @@ public class ScaleCommand
 							{
 								final Float2FloatFunction easing = ScaleEasingArgumentType.getScaleEasingArgument(context, "easing");
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
+
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-								
+
 								data.setEasing(easing);
-								
+
 								return 1;
 							})
 						)
@@ -791,65 +769,62 @@ public class ScaleCommand
 							.executes(context ->
 							{
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleData data = type.getScaleData(e);
-									
+
 									data.setEasing(null);
 								}
-								
+
 								CommandUtils.sendFeedback(context.getSource(), () -> easingText(null, type), false);
-								
+
 								return 1;
 							})
 						)
 						.executes(context ->
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-							
+
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-							
+
 							data.setEasing(null);
-							
+
 							CommandUtils.sendFeedback(context.getSource(), () -> easingText(null, type), false);
-							
+
 							return 1;
 						})
 					)
 					.then(CommandManager.argument("targets", EntityArgumentType.entities())
 						.executes(context ->
 						{
-							for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-							{
+							for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 								final ScaleData data = ScaleTypes.BASE.getScaleData(e);
-								
+
 								data.setEasing(null);
 							}
-							
+
 							CommandUtils.sendFeedback(context.getSource(), () -> easingText(null, ScaleTypes.BASE), false);
-							
+
 							return 1;
 						})
 					)
 					.executes(context ->
 					{
 						final ScaleData data = ScaleTypes.BASE.getScaleData(context.getSource().getEntityOrThrow());
-						
+
 						data.setEasing(null);
-						
+
 						CommandUtils.sendFeedback(context.getSource(), () -> easingText(null, ScaleTypes.BASE), false);
-						
+
 						return 1;
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerPersist(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerPersist(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("persist")
 				.then(CommandManager.literal("set")
@@ -860,14 +835,13 @@ public class ScaleCommand
 								{
 									final boolean persist = BoolArgumentType.getBool(context, "enabled");
 									final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-									
-									for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-									{
+
+									for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 										final ScaleData data = type.getScaleData(e);
-										
+
 										data.setPersistence(persist);
 									}
-									
+
 									return 1;
 								})
 							)
@@ -875,11 +849,11 @@ public class ScaleCommand
 							{
 								final boolean persist = BoolArgumentType.getBool(context, "enabled");
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
+
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-								
+
 								data.setPersistence(persist);
-								
+
 								return 1;
 							})
 						)
@@ -889,29 +863,26 @@ public class ScaleCommand
 							.executes(context ->
 							{
 								final boolean persist = BoolArgumentType.getBool(context, "enabled");
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
-									for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-									{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
+									for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 										final ScaleData data = type.getScaleData(e);
 										data.setPersistence(persist);
 									}
 								}
-								
+
 								return 1;
 							})
 						)
 						.executes(context ->
 						{
 							final boolean persist = BoolArgumentType.getBool(context, "enabled");
-							
-							for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-							{
+
+							for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 								final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 								data.setPersistence(persist);
 							}
-							
+
 							return 1;
 						})
 					)
@@ -942,61 +913,56 @@ public class ScaleCommand
 							.executes(context ->
 							{
 								final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-								
-								for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-								{
+
+								for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
 									final ScaleData data = type.getScaleData(e);
-									
+
 									data.setPersistence(null);
 								}
-								
+
 								return 1;
 							})
 						)
 						.executes(context ->
 						{
 							final ScaleType type = ScaleTypeArgumentType.getScaleTypeArgument(context, "scale_type");
-							
+
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
-							
+
 							data.setPersistence(null);
-							
+
 							return 1;
 						})
 					)
 					.then(CommandManager.argument("targets", EntityArgumentType.entities())
 						.executes(context ->
 						{
-							for (final Entity e : EntityArgumentType.getEntities(context, "targets"))
-							{
-								for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-								{
+							for (final Entity e : EntityArgumentType.getEntities(context, "targets")) {
+								for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 									final ScaleData data = type.getScaleData(e);
 									data.setPersistence(null);
 								}
 							}
-							
+
 							return 1;
 						})
 					)
 					.executes(context ->
 					{
-						for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values())
-						{
+						for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
 							final ScaleData data = type.getScaleData(context.getSource().getEntityOrThrow());
 							data.setPersistence(null);
 						}
-						
+
 						return 1;
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static LiteralArgumentBuilder<ServerCommandSource> registerNbt(final LiteralArgumentBuilder<ServerCommandSource> builder)
-	{
+
+	private static LiteralArgumentBuilder<ServerCommandSource> registerNbt(final LiteralArgumentBuilder<ServerCommandSource> builder) {
 		builder
 			.then(CommandManager.literal("nbt")
 				.then(CommandManager.literal("get")
@@ -1030,110 +996,97 @@ public class ScaleCommand
 					.executes(context ->
 					{
 						final EntityDataObject obj = new EntityScaleDataObject(context.getSource().getEntityOrThrow());
-						
+
 						final NbtCompound nbt = obj.getNbt();
 						CommandUtils.sendFeedback(context.getSource(), () -> obj.feedbackQuery(nbt), false);
-						
+
 						return nbt.getSize();
 					})
 				)
 			);
-		
+
 		return builder;
 	}
-	
-	private static class EntityScaleDataObject extends EntityDataObject
-	{
+
+	private static class EntityScaleDataObject extends EntityDataObject {
 		private final Entity entity;
-		
-		public EntityScaleDataObject(Entity entity)
-		{
+
+		public EntityScaleDataObject(Entity entity) {
 			super(entity);
 			this.entity = entity;
 		}
-		
+
 		@Override
-		public void setNbt(NbtCompound nbt) throws CommandSyntaxException
-		{
-			((PehkuiEntityExtensions) entity).pehkui_readScaleNbt(nbt);
+		public void setNbt(NbtCompound nbt) throws CommandSyntaxException {
+			try (ErrorReporter.Logging logging = new ErrorReporter.Logging(this.entity.getErrorReporterContext(), (Logger) Pehkui.LOGGER)) {
+
+				((PehkuiEntityExtensions) this.entity).pehkui_readScaleNbt(NbtReadView.create(logging, this.entity.getRegistryManager(), nbt));
+			}
 		}
-		
+
 		@Override
-		public NbtCompound getNbt()
-		{
-			return ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(new NbtCompound());
+		public NbtCompound getNbt() {
+			return ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(NbtWriteView.create((ErrorReporter) Pehkui.LOGGER));
 		}
 	}
-	
-	private static Text scaleText(float scale)
-	{
+
+	private static Text scaleText(float scale) {
 		final long denominator = (long) (1.0F / scale);
-		if (((long) scale) != 1L && Float.compare(scale, 1.0F / denominator) == 0)
-		{
+		if (((long) scale) != 1L && Float.compare(scale, 1.0F / denominator) == 0) {
 			return I18nUtils.translate("commands.pehkui.scale.get.fraction.message", "Scale: %s (1/%s)", format(scale), format(denominator));
 		}
-		
+
 		return I18nUtils.translate("commands.pehkui.scale.get.message", "Scale: %s", format(scale));
 	}
-	
-	private static Text scaleText(float scale, int multiplied)
-	{
+
+	private static Text scaleText(float scale, int multiplied) {
 		final long denominator = (long) (1.0F / scale);
-		if (((long) scale) != 1L && Float.compare(scale, 1.0F / denominator) == 0)
-		{
+		if (((long) scale) != 1L && Float.compare(scale, 1.0F / denominator) == 0) {
 			return I18nUtils.translate("commands.pehkui.scale.get.fraction.factor.message", "Scale: %s (1/%s) | (%s)", format(scale), format(denominator), format(multiplied));
 		}
-		
+
 		return I18nUtils.translate("commands.pehkui.scale.get.factor.message", "Scale: %s | (%s)", format(scale), format(multiplied));
 	}
-	
-	private static Text modifierText(String modifierString)
-	{
+
+	private static Text modifierText(String modifierString) {
 		return I18nUtils.translate("commands.pehkui.scale.modifier.get.message", "%s", modifierString.isEmpty() ? "N/A" : modifierString);
 	}
-	
-	private static Text delayText(int ticks)
-	{
+
+	private static Text delayText(int ticks) {
 		return I18nUtils.translate("commands.pehkui.scale.delay.get.message", "Delay: %s ticks", format(ticks));
 	}
-	
-	private static Text persistenceText(@Nullable Boolean persist, ScaleType type)
-	{
+
+	private static Text persistenceText(@Nullable Boolean persist, ScaleType type) {
 		final String unlocalized = "commands.pehkui.scale.persist." + (persist != null ? persist : ("default." + type.getDefaultPersistence()));
 		final String message = "Persistent: " + (persist == null ? "default (" + type.getDefaultPersistence() + ")" : persist);
 		return I18nUtils.translate(unlocalized, message);
 	}
-	
-	private static Text easingText(@Nullable Float2FloatFunction easing, ScaleType type)
-	{
+
+	private static Text easingText(@Nullable Float2FloatFunction easing, ScaleType type) {
 		final String easingId = ScaleRegistries.getId(ScaleRegistries.SCALE_EASINGS, easing != null ? easing : type.getDefaultEasing()).toString();
 		final String unlocalized = "commands.pehkui.scale.easing" + (easing != null ? "" : ".default");
 		final String message = "Easing: " + (easing == null ? "default (" + easingId + ")" : easingId);
 		return I18nUtils.translate(unlocalized, message, easingId);
 	}
-	
+
 	private static final Random RANDOM = new Random();
-	
+
 	private static final DecimalFormat SCALE_FORMAT;
-	
-	static
-	{
+
+	static {
 		SCALE_FORMAT = new DecimalFormat("#,##0");
 		SCALE_FORMAT.setMaximumFractionDigits(340);
 	}
-	
-	private static String format(int scale)
-	{
+
+	private static String format(int scale) {
 		return SCALE_FORMAT.format(scale);
 	}
-	
-	private static String format(long scale)
-	{
+
+	private static String format(long scale) {
 		return SCALE_FORMAT.format(scale);
 	}
-	
-	private static String format(float scale)
-	{
+
+	private static String format(float scale) {
 		return SCALE_FORMAT.format(scale);
 	}
 }
