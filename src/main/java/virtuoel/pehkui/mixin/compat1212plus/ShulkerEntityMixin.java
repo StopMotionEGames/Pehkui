@@ -1,9 +1,8 @@
-package virtuoel.pehkui.mixin.compat117plus;
+package virtuoel.pehkui.mixin.compat1212plus;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -16,10 +15,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(ShulkerEntity.class)
 public class ShulkerEntityMixin {
-	@Unique
-	private static final double SAFETY_GAP = 0.01;
-
-	@ModifyReturnValue(method = "calculateBoundingBox()Lnet/minecraft/util/math/Box;", at = @At("RETURN"))
+	@ModifyReturnValue(method = "calculateDefaultBoundingBox", at = @At("RETURN"))
 	private Box pehkui$calculateBoundingBox(Box originalBox) {
 		final ShulkerEntity entity = (ShulkerEntity) (Object) this;
 

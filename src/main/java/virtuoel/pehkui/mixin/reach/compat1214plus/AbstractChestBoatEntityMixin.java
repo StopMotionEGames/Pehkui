@@ -1,5 +1,6 @@
-package virtuoel.pehkui.mixin.reach.compat1204minus.compat119plus;
+package virtuoel.pehkui.mixin.reach.compat1214plus;
 
+import net.minecraft.entity.vehicle.AbstractChestBoatEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -9,8 +10,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.ChestBoatEntity;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ChestBoatEntity.class)
-public abstract class ChestBoatEntityMixin
+@Mixin(AbstractChestBoatEntity.class)
+public abstract class AbstractChestBoatEntityMixin
 {
 	@ModifyReturnValue(method = "canPlayerUse", at = @At("RETURN"))
 	private boolean pehkui$canPlayerUse(boolean original, PlayerEntity playerEntity)

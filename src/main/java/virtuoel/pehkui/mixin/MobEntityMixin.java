@@ -15,7 +15,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin
 {
-	@ModifyExpressionValue(method = "tryAttack(Lnet/minecraft/entity/Entity;)Z", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
+	@ModifyExpressionValue(method = "tryAttack", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
 	private float pehkui$tryAttack$knockback(float value)
 	{
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
@@ -26,8 +26,9 @@ public abstract class MobEntityMixin
 	@WrapOperation(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$tickMovement$expand(Box obj, double x, double y, double z, Operation<Box> original)
 	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+		Entity entity = (Entity) (Object) this;
+		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
+		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
 		
 		if (widthScale != 1.0F)
 		{

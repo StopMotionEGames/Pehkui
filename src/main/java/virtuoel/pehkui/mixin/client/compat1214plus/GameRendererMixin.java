@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.client.compat1193plus;
+package virtuoel.pehkui.mixin.client.compat1214plus;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,9 +16,9 @@ import virtuoel.pehkui.util.ScaleRenderUtils;
 public class GameRendererMixin
 {
 	@Shadow @Final @Mutable
-	MinecraftClient client;
+	private MinecraftClient client;
 	
-	@ModifyExpressionValue(method = "getBasicProjectionMatrix(D)Lorg/joml/Matrix4f;", at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
+	@ModifyExpressionValue(method = "getBasicProjectionMatrix", at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$getBasicProjectionMatrix$depth(float value)
 	{
 		return ScaleRenderUtils.modifyProjectionMatrixDepth(value, client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));

@@ -184,9 +184,9 @@ public class DebugCommand
 			w.setBlockState(mut, Blocks.POLISHED_ANDESITE.getDefaultState());
 			final Entity e = t.create(w, SpawnReason.COMMAND);
 			
-			e.updatePositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.asRotation(), 0);
-			e.refreshPositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.asRotation(), 0);
-			e.setHeadYaw(opposite.asRotation());
+			e.updatePositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.getPositiveHorizontalDegrees(), 0);
+			e.refreshPositionAndAngles(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.getPositiveHorizontalDegrees(), 0);
+			e.setHeadYaw(opposite.getPositiveHorizontalDegrees());
 			
 			e.addCommandTag("pehkui");
 			

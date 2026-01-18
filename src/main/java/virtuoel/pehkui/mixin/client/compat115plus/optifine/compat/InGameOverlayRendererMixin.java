@@ -12,6 +12,8 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(InGameOverlayRenderer.class)
 public abstract class InGameOverlayRendererMixin
 {
+	//@ModifyExpressionValue(method = "getInWallBlockState", remap = false, at = @At(value = "CONSTANT", args = "floatValue=0.1F"))
+	// maybe you got to update to that ^
 	@ModifyExpressionValue(method = "getOverlayBlock", remap = false, at = @At(value = "CONSTANT", args = "floatValue=0.1F"))
 	private static float pehkui$getInWallBlockState$offset(float value, PlayerEntity player)
 	{
