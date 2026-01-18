@@ -40,8 +40,10 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements PehkuiEntityExtensions
 {
-	@Shadow boolean onGround;
-	@Shadow boolean firstUpdate;
+	@Shadow
+	private boolean onGround;
+	@Shadow
+	protected boolean firstUpdate;
 
 	@Shadow
 	public abstract Direction getHorizontalFacing();
@@ -192,7 +194,7 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		ScaleUtils.syncScalesOnTrackingStart((Entity) (Object) this, player.networkHandler);
 	}
 	
-	@ModifyVariable(method = "dropStack(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "STORE"))
+	@ModifyVariable(method = "dropStack(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "STORE"))
 	private ItemEntity pehkui$dropStack(ItemEntity entity)
 	{
 		ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);
