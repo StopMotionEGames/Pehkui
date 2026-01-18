@@ -14,5 +14,4 @@ tracking some listed bug.
 | Rendering a Leash causes a insta-crash                                                   | Fixed  | 1.21.2 |    1.21.5     |                                                                                                |
 | Shulker's eyes stuck inside the attached block when upside-down or attached horizontally |  Open  | 1.21.3 |       -       |                                                                                                |
 | Leash doesn't render in the correct alignment                                            |  Open  | 1.21.5 |       -       | Use a lead at any entity.                                                                      |
-
-[//]: # (|                                                                                          |        |        |               |                                                                                                |)
+| Ender Dragon's interaction hitboxes does not follow the scaling                          |  Open  | 1.21.5 |       -       |                                                                                                |
