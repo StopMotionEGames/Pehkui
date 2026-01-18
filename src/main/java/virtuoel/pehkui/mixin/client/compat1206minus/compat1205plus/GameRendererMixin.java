@@ -49,7 +49,7 @@ public class GameRendererMixin
 	{
 		if (pehkui$isBobbing)
 		{
-			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));
+			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
 			
 			if (scale != 1.0F)
 			{

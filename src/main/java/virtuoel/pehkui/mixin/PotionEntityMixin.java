@@ -15,11 +15,12 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(PotionEntity.class)
 public class PotionEntityMixin
 {
-	@WrapOperation(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
+	@WrapOperation(method = "explodeWaterPotion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$applyWater$expand(Box obj, double x, double y, double z, Operation<Box> original)
 	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+		Entity entity = (Entity) (Object) this;
+		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
+		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
 		
 		if (widthScale != 1.0F)
 		{
@@ -35,7 +36,7 @@ public class PotionEntityMixin
 		return original.call(obj, x, y, z);
 	}
 	
-	@ModifyExpressionValue(method = "applyWater", at = @At(value = "CONSTANT", args = "doubleValue=16.0D"))
+	@ModifyExpressionValue(method = "explodeWaterPotion", at = @At(value = "CONSTANT", args = "doubleValue=16.0D"))
 	private double pehkui$applyWater$maxDist(double value)
 	{
 		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);

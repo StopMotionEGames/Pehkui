@@ -1,5 +1,7 @@
 package virtuoel.pehkui.mixin;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -14,8 +16,9 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class EnderDragonEntityMixin
 {
 	@ModifyArg(method = "crystalDestroyed", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/boss/dragon/EnderDragonEntity;damagePart(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/boss/dragon/EnderDragonPart;Lnet/minecraft/entity/damage/DamageSource;F)Z"))
-	private float pehkui$crystalDestroyed$damagePart(float amount, @Local PlayerEntity attacker)
+	private float pehkui$crystalDestroyed$damagePart(float amount, @Local(argsOnly = true) DamageSource damageSource)
 	{
+		Entity attacker = damageSource.getAttacker();
 		if (attacker != null)
 		{
 			final float scale = ScaleUtils.getAttackScale(attacker);

@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.compat1212plus;
+package virtuoel.pehkui.mixin.compat1215plus;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +30,7 @@ public class ShulkerEntityMixin {
 		// 1. Calculamos o tamanho real que a caixa DEVE ter
 		// O Shulker fechado tem 1.0 de largura e 1.0 de altura.
 		// O progresso de abertura (0.0 a 1.0) aumenta a altura.
-		double openProgress = entity.getOpenProgress(ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance()));
+		double openProgress = entity.getOpenProgress(ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance()));
 
 		// Largura escalada (X e Z se estiver no chão)
 		double scaledWidth = 1.0D * widthScale;

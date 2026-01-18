@@ -159,7 +159,7 @@ public class ScaleRenderUtils
 		}
 	}
 
-	public static float getTickDelta(final MinecraftClient client)
+	public static float getTickProgress(final MinecraftClient client)
 	{
 		if (GET_TICK_DELTA != null)
 		{
@@ -173,7 +173,7 @@ public class ScaleRenderUtils
 			}
 		}
 
-		return client.getRenderTickCounter().getTickDelta(false);
+		return client.getRenderTickCounter().getTickProgress(false);
 	}
 
 	public static boolean hasExtendedReach(final ClientPlayerInteractionManager interactionManager)

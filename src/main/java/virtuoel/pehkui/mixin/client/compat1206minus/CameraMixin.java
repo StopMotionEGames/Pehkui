@@ -24,7 +24,7 @@ public abstract class CameraMixin
 	@ModifyVariable(method = MixinConstants.CLIP_TO_SPACE, at = @At(value = "HEAD"), argsOnly = true)
 	private double pehkui$clipToSpace(double desiredCameraDistance)
 	{
-		return desiredCameraDistance * ScaleUtils.getThirdPersonScale(focusedEntity, ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance()));
+		return desiredCameraDistance * ScaleUtils.getThirdPersonScale(focusedEntity, ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance()));
 	}
 	
 	@Dynamic

@@ -1,13 +1,17 @@
 package virtuoel.pehkui.mixin.compat1212plus;
 
 import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import virtuoel.pehkui.util.PehkuiEntityRenderStateExtensions;
 
 @Mixin(EntityRenderState.class)
 public class EntityRenderStateMixin implements PehkuiEntityRenderStateExtensions {
 
+	@Shadow
+	public double z;
 	@Unique
 	private float pehkui$modelWidthScale = 1.0f;
 	@Unique
@@ -18,6 +22,14 @@ public class EntityRenderStateMixin implements PehkuiEntityRenderStateExtensions
 
 	@Unique
 	private float pehkui$boundingBoxHeightScale = 1.0f;
+
+	private float pehkui$interactionBoxWidthScale = 1.0f;
+
+	private float pehkui$interactionBoxHeightScale = 1.0f;
+
+	private float pehkui$targetingMargin = 0.0f;
+
+	private Box pehkui$currentBoundingBox = new Box(0, 0, 0, 0, 0, 0);
 
 	@Override
 	public float pehkui$getModelWidthScale() {
@@ -57,5 +69,45 @@ public class EntityRenderStateMixin implements PehkuiEntityRenderStateExtensions
 	@Override
 	public void pehkui$setBoundingBoxHeightScale(float scale) {
 		pehkui$boundingBoxHeightScale = scale;
+	}
+
+	@Override
+	public float pehkui$getInteractionBoxWidthScale() {
+		return pehkui$interactionBoxWidthScale;
+	}
+
+	@Override
+	public float pehkui$getInteractionBoxHeightScale() {
+		return pehkui$interactionBoxHeightScale;
+	}
+
+	@Override
+	public void pehkui$setInteractionBoxWidthScale(float scale) {
+		pehkui$interactionBoxWidthScale = scale;
+	}
+
+	@Override
+	public void pehkui$setInteractionBoxHeightScale(float scale) {
+		pehkui$interactionBoxHeightScale = scale;
+	}
+
+	@Override
+	public float pehkui$getTargetingMargin() {
+		return pehkui$targetingMargin;
+	}
+
+	@Override
+	public void pehkui$setTargetingMargin(float targetingMargin) {
+		pehkui$targetingMargin = targetingMargin;
+	}
+
+	@Override
+	public Box pehkui$getCurrentBoundingBox() {
+		return pehkui$currentBoundingBox;
+	}
+
+	@Override
+	public void pehkui$setCurrentBoundingBox(Box box) {
+		pehkui$currentBoundingBox = box;
 	}
 }

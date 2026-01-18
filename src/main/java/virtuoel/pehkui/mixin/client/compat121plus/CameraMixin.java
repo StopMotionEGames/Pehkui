@@ -16,12 +16,13 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(Camera.class)
 public abstract class CameraMixin
 {
-	@Shadow Entity focusedEntity;
+	@Shadow
+	private Entity focusedEntity;
 	
 	@ModifyVariable(method = "clipToSpace", at = @At(value = "HEAD"), argsOnly = true)
 	private float pehkui$clipToSpace(float desiredCameraDistance)
 	{
-		return desiredCameraDistance * ScaleUtils.getThirdPersonScale(focusedEntity, ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance()));
+		return desiredCameraDistance * ScaleUtils.getThirdPersonScale(focusedEntity, ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance()));
 	}
 	
 	@ModifyExpressionValue(method = "clipToSpace", at = @At(value = "CONSTANT", args = "floatValue=0.1F"))

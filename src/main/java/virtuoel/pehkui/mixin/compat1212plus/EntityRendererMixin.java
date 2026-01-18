@@ -20,5 +20,9 @@ public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> 
 		ext.pehkui$setModelHeightScale(ScaleUtils.getModelHeightScale(entity, tickProgress));
 		ext.pehkui$setBoundingBoxWidthScale(ScaleUtils.getBoundingBoxWidthScale(entity, tickProgress));
 		ext.pehkui$setBoundingBoxHeightScale(ScaleUtils.getBoundingBoxHeightScale(entity, tickProgress));
+		ext.pehkui$setInteractionBoxWidthScale(ScaleUtils.getBoundingBoxWidthScale(entity,tickProgress));
+		ext.pehkui$setInteractionBoxHeightScale(ScaleUtils.getBoundingBoxHeightScale(entity,tickProgress));
+		ext.pehkui$setTargetingMargin(entity.getTargetingMargin());
+		ext.pehkui$setCurrentBoundingBox(entity.getBoundingBox());
 	}
 }

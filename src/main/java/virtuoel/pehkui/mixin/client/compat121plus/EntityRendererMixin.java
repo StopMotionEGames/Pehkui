@@ -28,12 +28,12 @@ public class EntityRendererMixin<T extends Entity>
 //		matrices.push();
 //	}
 	
-	@Inject(method = "renderLeash", at = @At(value = "RETURN"))
-	private static <E extends Entity> void pehkui$renderLeash$return(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState.LeashData leashData, CallbackInfo ci)
-	{
-		matrices.pop();
-		matrices.pop();
-	}
+//	@Inject(method = "renderLeash", at = @At(value = "RETURN"))
+//	private static <E extends Entity> void pehkui$renderLeash$return(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState.LeashData leashData, CallbackInfo ci)
+//	{
+//		matrices.pop();
+//		matrices.pop();
+//	}
 //	todo: See this!
 //	@ModifyExpressionValue(method = "renderLabelIfPresent", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
 //	private <S extends EntityRenderState> double pehkui$renderLabelIfPresent$offset(double original, @Local(argsOnly = true) S state)

@@ -21,7 +21,7 @@ public abstract class InGameHudMixin
 	{
 		final MinecraftClient client = MinecraftClient.getInstance();
 		
-		final float healthScale = ScaleUtils.getHealthScale(client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));
+		final float healthScale = ScaleUtils.getHealthScale(client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
 		
 		return healthScale != 1.0F ? value * healthScale : value;
 	}

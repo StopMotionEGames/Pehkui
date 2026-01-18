@@ -106,9 +106,9 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 			return;
 		}
 		
-		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types", NbtElement.COMPOUND_TYPE) && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
+		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
 		{
-			final NbtCompound typeData = nbt.getCompound(Pehkui.MOD_ID + ":scale_data_types");
+			final NbtCompound typeData = nbt.getCompoundOrEmpty(Pehkui.MOD_ID + ":scale_data_types");
 			
 			String key;
 			ScaleData scaleData;
@@ -116,10 +116,10 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 			{
 				key = entry.getKey().toString();
 				
-				if (typeData.contains(key, NbtElement.COMPOUND_TYPE))
+				if (typeData.contains(key))
 				{
 					scaleData = pehkui_getScaleData(entry.getValue());
-					scaleData.readNbt(typeData.getCompound(key));
+					scaleData.readNbt(typeData.getCompoundOrEmpty(key));
 				}
 			}
 		}

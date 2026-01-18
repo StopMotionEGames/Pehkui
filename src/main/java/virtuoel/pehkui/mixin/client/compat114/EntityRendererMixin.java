@@ -23,7 +23,7 @@ public abstract class EntityRendererMixin {
 	@Dynamic
 	@WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I"))
 	private float pehkui$renderLabel$getHeight(Entity entity, Operation<Float> original) {
-		final float delta = ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance());
+		final float delta = ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance());
 		return original.call(entity) / ScaleUtils.getBoundingBoxHeightScale(entity, delta);
 	}
 // todo: found the correct way to use this method.

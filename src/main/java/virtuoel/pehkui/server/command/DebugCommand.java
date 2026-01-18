@@ -147,7 +147,7 @@ public class DebugCommand
 			return true;
 		}
 		
-		final NbtCompoundExtensions compound = ((NbtCompoundExtensions) nbt);
+		final NbtCompoundExtensions compound = ((NbtCompoundExtensions) (Object) nbt);
 		
 		return compound.pehkui_containsUuid("UUID") && MARKED_UUIDS.remove(compound.pehkui_getUuid("UUID"));
 	}

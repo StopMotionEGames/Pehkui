@@ -10,19 +10,19 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Entity.class)
 public class EntityMixin {
-	@ModifyArg(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;F)V"))
-	private float pehkui$fall$fallDistance(float distance) {
+	@ModifyArg(method = "fall", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;D)V"))
+	private double pehkui$fall$fallDistance(double fallDistance) {
 		final float scale = ScaleUtils.getFallingScale((Entity) (Object) this);
 
 		if (scale != 1.0F) {
 			if (PehkuiConfig.COMMON.scaledFallDamage.get()) {
-				return distance * scale;
+				return fallDistance * scale;
 			}
 		}
 
-		return distance;
+		return fallDistance;
 	}
- 	// todo: maybe these can cause a weird bug. Down below there is another todo, that can be the solution... but may cause a weird bug... idk
+	// todo: maybe these can cause a weird bug. Down below there is another todo, that can be the solution... but may cause a weird bug... idk
 	//	@ModifyExpressionValue(method = "move", at = @At(value = "CONSTANT", ordinal = 0, args = "doubleValue=0.6D"))
 	//	private double pehkui$move$flapping(double value)
 	//	{
@@ -61,7 +61,7 @@ public class EntityMixin {
 	//
 	//		return value;
 	//	}
-	}
+}
 
 // todo: you got to look at this.
 // @ModifyVariable(

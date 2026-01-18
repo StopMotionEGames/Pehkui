@@ -19,11 +19,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
-import virtuoel.pehkui.api.ScaleTypes;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
-
-import static java.lang.System.out;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
@@ -48,7 +45,7 @@ public class GameRendererMixin {
 	@WrapOperation(method = "bobView", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"))
 	private void pehkui$bobView$translate(MatrixStack obj, float x, float y, float z, Operation<Void> original) {
 		if (pehkui$isBobbing) {
-			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));
+			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
 
 			if (scale != 1.0F) {
 				x *= scale;

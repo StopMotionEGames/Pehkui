@@ -21,7 +21,7 @@ public abstract class EntityRendererMixin
 	@WrapOperation(method = MixinConstants.RENDER_LABEL_STRING_IF_PRESENT, at = @At(value = "INVOKE", target = MixinConstants.GET_HEIGHT))
 	private float pehkui$renderLabelIfPresent$getHeight(Entity entity, Operation<Float> original)
 	{
-		final float delta = ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance());
+		final float delta = ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance());
 		return original.call(entity) / ScaleUtils.getBoundingBoxHeightScale(entity, delta);
 	}
 }

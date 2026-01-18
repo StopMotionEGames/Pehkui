@@ -25,7 +25,7 @@ public class ItemPickupParticleMixin
 	@ModifyArg(method = MixinConstants.BUILD_GEOMETRY, index = 2, at = @At(value = "INVOKE", target = MixinConstants.LERP, ordinal = 4))
 	private double pehkui$buildGeometry$offset(double value)
 	{
-		final float scale = ScaleUtils.getEyeHeightScale(field_3821, ScaleRenderUtils.getTickDelta(MinecraftClient.getInstance()));
+		final float scale = ScaleUtils.getEyeHeightScale(field_3821, ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance()));
 		
 		if (scale != 1.0F)
 		{

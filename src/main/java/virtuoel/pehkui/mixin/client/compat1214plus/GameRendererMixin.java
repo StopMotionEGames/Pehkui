@@ -21,6 +21,6 @@ public class GameRendererMixin
 	@ModifyExpressionValue(method = "getBasicProjectionMatrix", at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$getBasicProjectionMatrix$depth(float value)
 	{
-		return ScaleRenderUtils.modifyProjectionMatrixDepth(value, client.getCameraEntity(), ScaleRenderUtils.getTickDelta(client));
+		return ScaleRenderUtils.modifyProjectionMatrixDepth(value, client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
 	}
 }

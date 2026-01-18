@@ -1,5 +1,6 @@
 package virtuoel.pehkui.mixin;
 
+import net.minecraft.entity.EntityCollisionHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,13 +18,13 @@ import virtuoel.pehkui.util.PehkuiBlockStateExtensions;
 public abstract class PortalBlockMixin
 {
 	@Inject(at = @At("HEAD"), method = "onEntityCollision", cancellable = true)
-	private void pehkui$onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo info)
+	private void pehkui$onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, EntityCollisionHandler handler, CallbackInfo ci)
 	{
 		if (PehkuiConfig.COMMON.accurateNetherPortals.get())
 		{
 			if (!entity.getBoundingBox().intersects(((PehkuiBlockStateExtensions) state).pehkui_getOutlineShape(world, pos).getBoundingBox().offset(pos)))
 			{
-				info.cancel();
+				ci.cancel();
 			}
 		}
 	}

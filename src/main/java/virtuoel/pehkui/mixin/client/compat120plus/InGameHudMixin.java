@@ -25,7 +25,7 @@ public abstract class InGameHudMixin
 	@ModifyArg(method = "renderStatusBars", index = 0, at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
 	private float pehkui$renderStatusBars(float value)
 	{
-		final float healthScale = ScaleUtils.getHealthScale(getCameraPlayer(), ScaleRenderUtils.getTickDelta(client));
+		final float healthScale = ScaleUtils.getHealthScale(getCameraPlayer(), ScaleRenderUtils.getTickProgress(client));
 		
 		return healthScale != 1.0F ? value * healthScale : value;
 	}
