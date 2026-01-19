@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.render.VertexRendering;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -213,29 +215,29 @@ public class ScaleRenderUtils
 		return packet.hasFlag((byte) 1);
 	}
 
-	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final Box box)
-	{
-		renderInteractionBox(matrices, vertices, box, 0.25F, 1.0F, 0.0F, 1.0F);
-	}
+//	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final Box box)
+//	{
+//		renderInteractionBox(matrices, vertices, box, 0.25F, 1.0F, 0.0F, 1.0F);
+//	}
 
-	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final Box box, final float red, final float green, final float blue, final float alpha)
-	{
-		if (VersionUtils.MINOR >= 15)
-		{
-			VertexRendering.drawBox(((MatrixStack) matrices).peek(), (VertexConsumer) vertices, box, red, green, blue, alpha);
-		}
-		else if (DRAW_BOX_OUTLINE != null)
-		{
-			try
-			{
-				DRAW_BOX_OUTLINE.invoke(box, red, green, blue, alpha);
-			}
-			catch (Throwable e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-	}
+//	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final Box box, final float red, final float green, final float blue, final float alpha)
+//	{
+//		if (VersionUtils.MINOR >= 15)
+//		{
+//		VertexRendering.drawOutline((MatrixStack) matrices, (VertexConsumer) vertices, VoxelShape., box, red, green, , alpha);
+//		}
+//		else if (DRAW_BOX_OUTLINE != null)
+//		{
+//			try
+//			{
+//				DRAW_BOX_OUTLINE.invoke(box, red, green, blue, alpha);
+//			}
+//			catch (Throwable e)
+//			{
+//				throw new RuntimeException(e);
+//			}
+//		}
+//	}
 
 	public static float modifyProjectionMatrixDepthByWidth(float depth, @Nullable Entity entity, float tickProgress)
 	{

@@ -20,50 +20,43 @@ import net.minecraft.util.math.Vec3d;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin
-{
+public abstract class PlayerEntityMixin {
 	@WrapOperation(method = "tickMovement()V", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
-	private Box pehkui$tickMovement$expand(Box obj, double x, double y, double z, Operation<Box> original)
-	{
+	private Box pehkui$tickMovement$expand(Box obj, double x, double y, double z, Operation<Box> original) {
 		Entity entity = (Entity) (Object) this;
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
-		
-		if (widthScale != 1.0F)
-		{
+
+		if (widthScale != 1.0F) {
 			x *= widthScale;
 			z *= widthScale;
 		}
-		
-		if (heightScale != 1.0F)
-		{
+
+		if (heightScale != 1.0F) {
 			y *= heightScale;
 		}
-		
+
 		return original.call(obj, x, y, z);
 	}
-	
-	@ModifyExpressionValue(method = "attack(Lnet/minecraft/entity/Entity;)V", at = { @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 1), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 2), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 3) })
-	private float pehkui$attack$knockback(float value)
-	{
+
+	@ModifyExpressionValue(method = "attack(Lnet/minecraft/entity/Entity;)V", at = {@At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 0), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 1)})
+	private float pehkui$attack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
-		
+
 		return scale != 1.0F ? scale * value : value;
 	}
-	
+
 	@ModifyExpressionValue(method = "getAttackCooldownProgressPerTick", at = @At(value = "CONSTANT", args = "doubleValue=20.0D"))
-	private double pehkui$getAttackCooldownProgressPerTick$multiplier(double value)
-	{
+	private double pehkui$getAttackCooldownProgressPerTick$multiplier(double value) {
 		final float scale = ScaleUtils.getAttackSpeedScale((Entity) (Object) this);
-		
+
 		return scale != 1.0F ? value / scale : value;
 	}
-	
+
 	@ModifyReturnValue(method = "getBlockBreakingSpeed", at = @At("RETURN"))
-	private float pehkui$getBlockBreakingSpeed(float original)
-	{
+	private float pehkui$getBlockBreakingSpeed(float original) {
 		final float scale = ScaleUtils.getMiningSpeedScale((Entity) (Object) this);
-		
+
 		return scale != 1.0F ? original * scale : original;
 	}
 
@@ -75,24 +68,22 @@ public abstract class PlayerEntityMixin
 //
 //		return scale != 1.0F ? scale * value : value;
 //	}
-	
-	@WrapOperation(method = "attack(Lnet/minecraft/entity/Entity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
-	private Box pehkui$attack$expand(Box obj, double x, double y, double z, Operation<Box> original, @Local(argsOnly = true) Entity target)
-	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(target);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(target);
-		
-		if (widthScale != 1.0F)
-		{
-			x *= widthScale;
-			z *= widthScale;
-		}
-		
-		if (heightScale != 1.0F)
-		{
-			y *= heightScale;
-		}
-		
-		return original.call(obj, x, y, z);
-	}
+
+	// todo: see if nothing breaks here
+//	@WrapOperation(method = "attack(Lnet/minecraft/entity/Entity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
+//	private Box pehkui$attack$expand(Box obj, double x, double y, double z, Operation<Box> original, @Local(argsOnly = true) Entity target) {
+//		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(target);
+//		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(target);
+//
+//		if (widthScale != 1.0F) {
+//			x *= widthScale;
+//			z *= widthScale;
+//		}
+//
+//		if (heightScale != 1.0F) {
+//			y *= heightScale;
+//		}
+//
+//		return original.call(obj, x, y, z);
+//	}
 }

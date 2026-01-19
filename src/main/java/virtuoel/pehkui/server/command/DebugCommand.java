@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import net.minecraft.command.permission.*;
 import net.minecraft.entity.SpawnReason;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -51,7 +52,7 @@ public class DebugCommand
 	{
 		final LiteralArgumentBuilder<ServerCommandSource> builder =
 			CommandManager.literal("scale")
-			.requires(source -> source.hasPermissionLevel(2));
+			.requires(source -> source.getPermissions().hasPermission(new Permission.Level(PermissionLevel.GAMEMASTERS)));
 		
 		builder.then(CommandManager.literal("debug")
 			.then(ConfigSyncUtils.registerConfigCommands())

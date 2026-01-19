@@ -13,12 +13,13 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin
 {
-	@WrapOperation(method = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getHeight()F"))
-	private static float pehkui$drawEntity$getHeight(LivingEntity obj, Operation<Float> original)
-	{
-		final float value = original.call(obj);
-		final float scale = ScaleUtils.getBoundingBoxHeightScale(obj);
-		
-		return scale != 1.0F ? ScaleUtils.divideClamped(value, scale) : value;
-	}
+	// todo: see if there is something strange
+//	@WrapOperation(method = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getHeight()F"))
+//	private static float pehkui$drawEntity$getHeight(LivingEntity obj, Operation<Float> original)
+//	{
+//		final float value = original.call(obj);
+//		final float scale = ScaleUtils.getBoundingBoxHeightScale(obj);
+//
+//		return scale != 1.0F ? ScaleUtils.divideClamped(value, scale) : value;
+//	}
 }

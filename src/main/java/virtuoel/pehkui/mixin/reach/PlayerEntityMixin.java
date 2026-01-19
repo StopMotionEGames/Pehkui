@@ -12,11 +12,12 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin
 {
-	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "doubleValue=9.0F"))
-	private double pehkui$attack$distance(double value)
-	{
-		final float scale = ScaleUtils.getEntityReachScale((Entity) (Object) this);
-		
-		return scale > 1.0F ? scale * scale * value : value;
-	}
+	//todo: see if entity reach doesn't break
+//	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "doubleValue=9.0F"))
+//	private double pehkui$attack$distance(double value)
+//	{
+//		final float scale = ScaleUtils.getEntityReachScale((Entity) (Object) this);
+//
+//		return scale > 1.0F ? scale * scale * value : value;
+//	}
 }

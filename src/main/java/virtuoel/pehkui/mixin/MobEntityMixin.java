@@ -10,17 +10,19 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.math.Box;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin
 {
-	@ModifyExpressionValue(method = "tryAttack", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
-	private float pehkui$tryAttack$knockback(float value)
+	// todo: see if knockback is ok
+	@ModifyArg(method = "tryAttack", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;knockbackTarget(Lnet/minecraft/entity/Entity;FLnet/minecraft/util/math/Vec3d;)V"))
+	private float pehkui$tryAttack$knockback(float strength)
 	{
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 		
-		return scale != 1.0F ? scale * value : value;
+		return scale != 1.0F ? scale * strength : strength;
 	}
 	
 	@WrapOperation(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))

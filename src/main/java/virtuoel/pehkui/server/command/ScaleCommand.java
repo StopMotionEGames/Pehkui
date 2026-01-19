@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import net.minecraft.command.permission.Permission;
+import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.storage.NbtReadView;
 import net.minecraft.storage.NbtWriteView;
 import net.minecraft.storage.ReadView;
@@ -54,7 +56,7 @@ public class ScaleCommand {
 
 		final LiteralArgumentBuilder<ServerCommandSource> builder =
 			CommandManager.literal("scale")
-				.requires(source -> source.hasPermissionLevel(2));
+				.requires(source -> source.getPermissions().hasPermission(new Permission.Level(PermissionLevel.GAMEMASTERS)));
 
 		registerOperation(builder);
 		registerRandomize(builder);
