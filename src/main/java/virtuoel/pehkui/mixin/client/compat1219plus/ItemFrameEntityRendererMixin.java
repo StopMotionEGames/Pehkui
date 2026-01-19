@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.client.compat115plus;
+package virtuoel.pehkui.mixin.client.compat1219plus;
 
 import net.minecraft.client.render.entity.state.ItemFrameEntityRenderState;
 import net.minecraft.util.math.Direction;
@@ -13,7 +13,7 @@ import virtuoel.pehkui.util.PehkuiEntityRenderStateExtensions;
 @Mixin(ItemFrameEntityRenderer.class)
 public class ItemFrameEntityRendererMixin
 {
-	@ModifyVariable(method = "render(Lnet/minecraft/client/render/entity/state/ItemFrameEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "STORE"))
+	@ModifyVariable(method = "render(Lnet/minecraft/client/render/entity/state/ItemFrameEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At(value = "STORE"))
 	private Vec3d pehkui$render(Vec3d value, ItemFrameEntityRenderState state)
 	{
 		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) state;
