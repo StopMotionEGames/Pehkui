@@ -142,7 +142,7 @@ public class DebugCommand
 	
 	public static boolean unmarkEntityForScaleReset(final Entity entity, final NbtCompound nbt)
 	{
-		if (entity instanceof PlayerEntity && MARKED_USERNAMES.remove(((PlayerEntity) entity).getGameProfile().getName().toLowerCase(Locale.ROOT)))
+		if (entity instanceof PlayerEntity && MARKED_USERNAMES.remove(((PlayerEntity) entity).getGameProfile().name().toLowerCase(Locale.ROOT)))
 		{
 			return true;
 		}
@@ -174,10 +174,10 @@ public class DebugCommand
 		
 		int width = ((TYPES.size() - 1) * (spacing + 1)) + 1;
 		
-		Vec3d pos = entity.getPos();
+		Vec3d pos = entity.getEntityPos();
 		BlockPos.Mutable mut = new BlockPos.Mutable(pos.x, pos.y, pos.z).move(dir, distance).move(left, width / 2);
 		
-		World w = entity.getWorld();
+		World w = entity.getEntityWorld();
 		
 		for (EntityType<?> t : TYPES)
 		{

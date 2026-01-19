@@ -289,12 +289,10 @@ public class ScaleUtils
 		final double offsetX = entity.getStandingEyeHeight() * -gravity.getOffsetX();
 		final double offsetY = entity.getStandingEyeHeight() * -gravity.getOffsetY();
 		final double offsetZ = entity.getStandingEyeHeight() * -gravity.getOffsetZ();
-		final double footXCoord = entity.getPos().getX();
-		final double footYCoord = entity.getPos().getY();
-		final double footZCoord = entity.getPos().getZ();
-		final double headXCoord = footXCoord + offsetX;
-		final double headYCoord = footYCoord + offsetY;
-		final double headZCoord = footZCoord + offsetZ;
+		final Vec3d pos = entity.getEntityPos();
+		final double headXCoord = pos.x + offsetX;
+		final double headYCoord = pos.y + offsetY;
+		final double headZCoord = pos.z + offsetZ;
 		
 		return new Vec3d(headXCoord, headYCoord, headZCoord);
 	}
@@ -304,7 +302,7 @@ public class ScaleUtils
 		final int blockCoord = pos.getX();
 		final Direction gravity = GravityChangerCompatibility.INSTANCE.getGravityDirection(player);
 		final double offset = player.getStandingEyeHeight() * -gravity.getOffsetX();
-		final double footCoord = player.getPos().getX();
+		final double footCoord = player.getX();
 		final double headCoord = footCoord + offset;
 		final int headCoordFloored = MathHelper.floor(headCoord);
 		
@@ -325,7 +323,7 @@ public class ScaleUtils
 		final int blockCoord = pos.getY();
 		final Direction gravity = GravityChangerCompatibility.INSTANCE.getGravityDirection(player);
 		final double offset = player.getStandingEyeHeight() * -gravity.getOffsetY();
-		final double footCoord = player.getPos().getY();
+		final double footCoord = player.getY();
 		final double headCoord = footCoord + offset;
 		final int headCoordFloored = MathHelper.floor(headCoord);
 		
@@ -346,7 +344,7 @@ public class ScaleUtils
 		final int blockCoord = pos.getZ();
 		final Direction gravity = GravityChangerCompatibility.INSTANCE.getGravityDirection(player);
 		final double offset = player.getStandingEyeHeight() * -gravity.getOffsetZ();
-		final double footCoord = player.getPos().getZ();
+		final double footCoord = player.getZ();
 		final double headCoord = footCoord + offset;
 		final int headCoordFloored = MathHelper.floor(headCoord);
 		

@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.compat116plus;
+package virtuoel.pehkui.mixin.compat1218minus;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.jetbrains.annotations.Nullable;

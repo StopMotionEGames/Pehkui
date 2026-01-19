@@ -11,7 +11,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(value = ItemEntity.class, priority = 1010)
 public class ItemEntityMixin
 {
-	@ModifyArg(method = "tryMerge", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getEntitiesByClass(Ljava/lang/Class;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Ljava/util/List;"))
+	@ModifyArg(method = "tryMerge()V", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getEntitiesByClass(Ljava/lang/Class;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Ljava/util/List;"))
 	private Box pehkui$tryMerge$box(Box box)
 	{
 		final ItemEntity self = (ItemEntity) (Object) this;

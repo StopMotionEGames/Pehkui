@@ -312,7 +312,7 @@ public class ConfigSyncUtils
 						config.invalidate();
 						config.get();
 						
-						syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
+						syncConfigs(context.getSource().getServer().getPlayerManager().getPlayerList());
 					}
 					
 					return 1;
@@ -328,7 +328,7 @@ public class ConfigSyncUtils
 						{
 							Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
 							config.get();
-							syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
+							syncConfigs(context.getSource().getServer().getPlayerManager().getPlayerList());
 							
 							return 1;
 						}
@@ -414,7 +414,7 @@ public class ConfigSyncUtils
 				false
 			);
 			
-			for (final ServerPlayerEntity p : context.getSource().getWorld().getServer().getPlayerManager().getPlayerList())
+			for (final ServerPlayerEntity p : context.getSource().getServer().getPlayerManager().getPlayerList())
 			{
 				syncConfigs(p.networkHandler);
 			}
@@ -473,7 +473,7 @@ public class ConfigSyncUtils
 					
 					final Collection<SyncableConfigEntry<?>> cfgs = Collections.singleton(cfg);
 					
-					for (final ServerPlayerEntity p : context.getSource().getWorld().getServer().getPlayerManager().getPlayerList())
+					for (final ServerPlayerEntity p : context.getSource().getServer().getPlayerManager().getPlayerList())
 					{
 						syncConfigs(p.networkHandler, cfgs);
 					}

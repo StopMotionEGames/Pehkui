@@ -12,9 +12,10 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin
 {
-	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/entity/ItemEntity;)V")
-	private void pehkui$construct(ItemEntity entity, CallbackInfo info)
-	{
-		ScaleUtils.loadScale((Entity) (Object) this, entity);
-	}
+	// todo: see if items doesn't break
+//	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/entity/ItemEntity;)V")
+//	private void pehkui$construct(ItemEntity entity, CallbackInfo info)
+//	{
+//		ScaleUtils.loadScale((Entity) (Object) this, entity);
+//	}
 }

@@ -22,7 +22,7 @@ public abstract class AbstractChestBoatEntityMixin
 			
 			final ChestBoatEntity self = (ChestBoatEntity) (Object) this;
 			
-			if (scale > 1.0F && !self.isRemoved() && self.getPos().isInRange(playerEntity.getPos(), 8.0 * scale))
+			if (scale > 1.0F && !self.isRemoved() && self.getEntityPos().isInRange(playerEntity.getEntityPos(), 8.0 * scale))
 			{
 				return true;
 			}

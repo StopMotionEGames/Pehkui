@@ -119,7 +119,7 @@ public abstract class LivingEntityMixin
 			final int minZ = MathHelper.floor(bounds.minZ + halfUnscaledZLength);
 			final int maxZ = MathHelper.floor(bounds.maxZ - halfUnscaledZLength);
 			
-			final World world = self.getWorld();
+			final World world = self.getEntityWorld();
 			
 			for (final BlockPos pos : BlockPos.iterate(minX, minY, minZ, maxX, minY, maxZ))
 			{

@@ -25,8 +25,9 @@ public abstract class PlayerEntityMixin
 	@WrapOperation(method = "tickMovement()V", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$tickMovement$expand(Box obj, double x, double y, double z, Operation<Box> original)
 	{
-		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+		Entity entity = (Entity) (Object) this;
+		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
+		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
 		
 		if (widthScale != 1.0F)
 		{
@@ -65,14 +66,15 @@ public abstract class PlayerEntityMixin
 		
 		return scale != 1.0F ? original * scale : original;
 	}
-	
-	@ModifyExpressionValue(method = "updateCapeAngles", at = { @At(value = "CONSTANT", args = "doubleValue=10.0D"), @At(value = "CONSTANT", args = "doubleValue=-10.0D") })
-	private double pehkui$updateCapeAngles$limits(double value)
-	{
-		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
-		
-		return scale != 1.0F ? scale * value : value;
-	}
+
+	// todo! See if cape breaks. If break, found the right place where capes are updated
+//	@ModifyExpressionValue(method = "updateCapeAngles", at = { @At(value = "CONSTANT", args = "doubleValue=10.0D"), @At(value = "CONSTANT", args = "doubleValue=-10.0D") })
+//	private double pehkui$updateCapeAngles$limits(double value)
+//	{
+//		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
+//
+//		return scale != 1.0F ? scale * value : value;
+//	}
 	
 	@WrapOperation(method = "attack(Lnet/minecraft/entity/Entity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
 	private Box pehkui$attack$expand(Box obj, double x, double y, double z, Operation<Box> original, @Local(argsOnly = true) Entity target)

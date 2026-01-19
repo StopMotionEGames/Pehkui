@@ -14,7 +14,8 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(targets = "net.minecraft.entity.mob.BlazeEntity$ShootFireballGoal")
 public abstract class BlazeEntityShootFireballGoalMixin
 {
-	@Shadow @Final BlazeEntity blaze;
+	@Shadow @Final
+	private BlazeEntity blaze;
 	
 	@ModifyArg(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
 	private Entity pehkui$tick$spawnEntity(Entity entity)
@@ -23,7 +24,7 @@ public abstract class BlazeEntityShootFireballGoalMixin
 		
 		if (scale != 1.0F)
 		{
-			final Vec3d pos = entity.getPos();
+			final Vec3d pos = entity.getEntityPos();
 			
 			entity.setPosition(pos.x, pos.y - ((1.0D - scale) * 0.5D), pos.z);
 		}

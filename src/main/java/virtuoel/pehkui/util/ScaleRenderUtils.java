@@ -222,7 +222,7 @@ public class ScaleRenderUtils
 	{
 		if (VersionUtils.MINOR >= 15)
 		{
-			VertexRendering.drawBox((MatrixStack) matrices, (VertexConsumer) vertices, box, red, green, blue, alpha);
+			VertexRendering.drawBox(((MatrixStack) matrices).peek(), (VertexConsumer) vertices, box, red, green, blue, alpha);
 		}
 		else if (DRAW_BOX_OUTLINE != null)
 		{
