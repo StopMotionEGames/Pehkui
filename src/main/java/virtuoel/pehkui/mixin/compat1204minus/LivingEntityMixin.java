@@ -7,11 +7,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -23,7 +22,7 @@ public class LivingEntityMixin
 	@ModifyArg(method = MixinConstants.GET_EYE_HEIGHT, index = 1, at = @At(value = "INVOKE", target = MixinConstants.GET_ACTIVE_EYE_HEIGHT_TARGET))
 	private EntityDimensions pehkui$getEyeHeight$dimensions(EntityDimensions dimensions)
 	{
-		return dimensions.scaled(1.0F / ScaleUtils.getEyeHeightScale((Entity) (Object) this));
+		return dimensions.scale(1.0F / ScaleUtils.getEyeHeightScale((Entity) (Object) this));
 	}
 	
 	@ModifyExpressionValue(method = "travel", at = @At(value = "CONSTANT", args = "floatValue=1.0F", ordinal = 0))
@@ -44,9 +43,9 @@ public class LivingEntityMixin
 	
 	@Dynamic
 	@ModifyReturnValue(method = MixinConstants.GET_EYE_HEIGHT, at = @At("RETURN"))
-	private float pehkui$getEyeHeight(float original, EntityPose pose, EntityDimensions dimensions)
+	private float pehkui$getEyeHeight(float original, Pose pose, EntityDimensions dimensions)
 	{
-		if (pose != EntityPose.SLEEPING)
+		if (pose != Pose.SLEEPING)
 		{
 			final float scale = ScaleUtils.getEyeHeightScale((Entity) (Object) this);
 			
@@ -59,7 +58,7 @@ public class LivingEntityMixin
 		return original;
 	}
 	
-	@ModifyReturnValue(method = "getJumpVelocity()F", at = @At("RETURN"))
+	@ModifyReturnValue(method = "getJumpPower()F", at = @At("RETURN"))
 	private float pehkui$getJumpVelocity(float original)
 	{
 		final float scale = ScaleUtils.getJumpHeightScale((Entity) (Object) this);

@@ -1,7 +1,11 @@
 package virtuoel.pehkui.mixin.client.compat1193minus;
 
 import java.util.Map;
-
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,11 +17,6 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
@@ -32,7 +31,7 @@ public abstract class InventoryScreenMixin
 	
 	@Dynamic
 	@Inject(method = MixinConstants.DRAW_ENTITY_MOUSE_LOOK, at = @At(value = "HEAD"))
-	private static void pehkui$drawEntity$head(int x, int y, int size, float mouseX, float mouseY, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<Box> bounds)
+	private static void pehkui$drawEntity$head(int x, int y, int size, float mouseX, float mouseY, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<AABB> bounds)
 	{
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 		
@@ -49,20 +48,20 @@ public abstract class InventoryScreenMixin
 		bounds.set(entity.getBoundingBox());
 		
 		final EntityDimensions dims = entity.getDimensions(entity.getPose());
-		final Vec3d pos = entity.getEntityPos();
+		final Vec3 pos = entity.position();
 		final double r = ReflectionUtils.getDimensionsWidth(dims) / 2.0D;
 		final double h = ReflectionUtils.getDimensionsHeight(dims);
 		final double xPos = pos.x;
 		final double yPos = pos.y;
 		final double zPos = pos.z;
-		final Box box = new Box(xPos - r, yPos, zPos - r, xPos + r, yPos + h, zPos + r);
+		final AABB box = new AABB(xPos - r, yPos, zPos - r, xPos + r, yPos + h, zPos + r);
 		
 		entity.setBoundingBox(box);
 	}
 	
 	@Dynamic
 	@Inject(method = MixinConstants.DRAW_ENTITY_MOUSE_LOOK, at = @At(value = "RETURN"))
-	private static void pehkui$drawEntity$return(int x, int y, int size, float mouseX, float mouseY, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<Box> bounds)
+	private static void pehkui$drawEntity$return(int x, int y, int size, float mouseX, float mouseY, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<AABB> bounds)
 	{
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 		

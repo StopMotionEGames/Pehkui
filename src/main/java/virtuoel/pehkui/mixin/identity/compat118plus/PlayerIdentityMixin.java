@@ -1,14 +1,13 @@
 package virtuoel.pehkui.mixin.identity.compat118plus;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Pseudo
@@ -16,7 +15,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class PlayerIdentityMixin
 {
 	@Inject(at = @At("TAIL"), method = "updateIdentity", remap = false)
-	private static void pehkui$updateIdentity(ServerPlayerEntity player, @Coerce Object type, LivingEntity entity, CallbackInfoReturnable<Boolean> info)
+	private static void pehkui$updateIdentity(ServerPlayer player, @Coerce Object type, LivingEntity entity, CallbackInfoReturnable<Boolean> info)
 	{
 		if (entity != null)
 		{

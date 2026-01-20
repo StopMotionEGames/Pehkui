@@ -14,9 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -25,13 +24,13 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class GameRendererMixin
 {
 	@Shadow @Final @Mutable
-	private MinecraftClient client;
+	private Minecraft minecraft;
 	
 	@Dynamic
 	@ModifyExpressionValue(method = MixinConstants.APPLY_CAMERA_TRANSFORMATIONS, at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$applyCameraTransformations$depth(float value)
 	{
-		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
+		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickProgress(minecraft));
 	}
 	
 	@Unique
@@ -57,7 +56,7 @@ public class GameRendererMixin
 	{
 		if (pehkui$isBobbing)
 		{
-			final float scale = ScaleUtils.getViewBobbingScale(client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
+			final float scale = ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity(), ScaleRenderUtils.getTickProgress(minecraft));
 			
 			if (scale != 1.0F)
 			{
@@ -74,20 +73,20 @@ public class GameRendererMixin
 	@ModifyExpressionValue(method = MixinConstants.RENDER_HAND, at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$renderHand$depth(float value)
 	{
-		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
+		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickProgress(minecraft));
 	}
 	
 	@Dynamic
 	@ModifyExpressionValue(method = MixinConstants.RENDER_CENTER, at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$renderCenter$depth(float value)
 	{
-		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
+		return ScaleRenderUtils.modifyProjectionMatrixDepthByWidth(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickProgress(minecraft));
 	}
 	
 	@Dynamic
 	@ModifyExpressionValue(method = MixinConstants.RENDER_ABOVE_CLOUDS, at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
 	private float pehkui$renderAboveClouds$depth(float value)
 	{
-		return ScaleRenderUtils.modifyProjectionMatrixDepthByHeight(value, client.getCameraEntity(), ScaleRenderUtils.getTickProgress(client));
+		return ScaleRenderUtils.modifyProjectionMatrixDepthByHeight(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickProgress(minecraft));
 	}
 }

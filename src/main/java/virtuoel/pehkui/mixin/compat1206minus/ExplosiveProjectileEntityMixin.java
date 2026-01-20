@@ -1,20 +1,19 @@
 package virtuoel.pehkui.mixin.compat1206minus;
 
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.world.World;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ExplosiveProjectileEntity.class)
+@Mixin(AbstractHurtingProjectile.class)
 public abstract class ExplosiveProjectileEntityMixin
 {
 	@Dynamic
@@ -29,9 +28,9 @@ public abstract class ExplosiveProjectileEntityMixin
 	
 	@Dynamic
 	@Inject(at = @At("RETURN"), method = MixinConstants.EXPLOSIVE_PROJECTILE_ENTITY_INIT)
-	private void pehkui$construct(EntityType<? extends ExplosiveProjectileEntity> type, LivingEntity owner, double directionX, double directionY, double directionZ, World world, CallbackInfo info)
+	private void pehkui$construct(EntityType<? extends AbstractHurtingProjectile> type, LivingEntity owner, double directionX, double directionY, double directionZ, Level world, CallbackInfo info)
 	{
-		final ExplosiveProjectileEntity self = (ExplosiveProjectileEntity) (Object) this;
+		final AbstractHurtingProjectile self = (AbstractHurtingProjectile) (Object) this;
 		final float scale = ScaleUtils.setScaleOfProjectile(self, owner);
 		
 		if (scale != 1.0F)

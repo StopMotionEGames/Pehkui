@@ -1,5 +1,9 @@
 package virtuoel.pehkui.mixin.client.compat114;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
@@ -7,11 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -34,7 +33,7 @@ public class ItemRendererMixin
 		
 		if (!stack.isEmpty() && entity != null)
 		{
-			final float tickProgress = ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance());
+			final float tickProgress = ScaleRenderUtils.getTickProgress(Minecraft.getInstance());
 			final float scale = ScaleUtils.getHeldItemScale(entity, tickProgress);
 			
 			if (scale != 1.0F)

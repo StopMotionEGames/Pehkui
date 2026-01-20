@@ -9,15 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.entity.ai.goal.AnimalMateGoal;
-import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.animal.fox.Fox;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Pseudo
 @Mixin(targets = MixinConstants.FOX_ENTITY_MATE_GOAL)
-public abstract class FoxEntityMateGoalMixin extends AnimalMateGoal
+public abstract class FoxEntityMateGoalMixin extends BreedGoal
 {
 	private FoxEntityMateGoalMixin()
 	{
@@ -26,8 +25,8 @@ public abstract class FoxEntityMateGoalMixin extends AnimalMateGoal
 	
 	@Dynamic
 	@Inject(method = MixinConstants.BREED, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = MixinConstants.SPAWN_ENTITY))
-	private void pehkui$breed(CallbackInfo info, @Local FoxEntity foxEntity)
+	private void pehkui$breed(CallbackInfo info, @Local Fox foxEntity)
 	{
-		ScaleUtils.loadAverageScales(foxEntity, this.animal, this.mate);
+		ScaleUtils.loadAverageScales(foxEntity, this.animal, this.partner);
 	}
 }

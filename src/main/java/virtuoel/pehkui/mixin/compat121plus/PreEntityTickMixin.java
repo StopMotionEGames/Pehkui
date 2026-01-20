@@ -1,11 +1,10 @@
 package virtuoel.pehkui.mixin.compat121plus;
 
+import net.minecraft.world.entity.decoration.BlockAttachedEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.entity.decoration.BlockAttachedEntity;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
 import virtuoel.pehkui.mixin.EntityMixin;

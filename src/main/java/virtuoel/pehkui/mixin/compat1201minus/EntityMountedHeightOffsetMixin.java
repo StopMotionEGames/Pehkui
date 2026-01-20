@@ -5,16 +5,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.RavagerEntity;
-import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.Ravager;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin({
-	BoatEntity.class,
-	RavagerEntity.class,
+	Boat.class,
+	Ravager.class,
 })
 public abstract class EntityMountedHeightOffsetMixin
 {

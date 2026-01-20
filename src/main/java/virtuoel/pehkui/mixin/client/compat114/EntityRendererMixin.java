@@ -7,10 +7,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.world.entity.Entity;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -21,9 +20,9 @@ public abstract class EntityRendererMixin {
 	float shadowRadius; // UNMAPPED_FIELD
 
 	@Dynamic
-	@WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I"))
+	@WrapOperation(method = "submitNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Font;width(Lnet/minecraft/network/chat/FormattedText;)I"))
 	private float pehkui$renderLabel$getHeight(Entity entity, Operation<Float> original) {
-		final float delta = ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance());
+		final float delta = ScaleRenderUtils.getTickProgress(Minecraft.getInstance());
 		return original.call(entity) / ScaleUtils.getBoundingBoxHeightScale(entity, delta);
 	}
 // todo: found the correct way to use this method.

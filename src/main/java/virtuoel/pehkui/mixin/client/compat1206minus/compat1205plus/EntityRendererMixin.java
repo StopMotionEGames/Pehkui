@@ -6,9 +6,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.world.entity.Entity;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -21,6 +20,6 @@ public abstract class EntityRendererMixin<T extends Entity>
 	{
 		final float scale = ScaleUtils.getBoundingBoxHeightScale(entity);
 		
-		return scale != 1.0F ? value + (entity.getHeight() * ((1.0F / scale) - 1.0F)) : value;
+		return scale != 1.0F ? value + (entity.getBbHeight() * ((1.0F / scale) - 1.0F)) : value;
 	}
 }

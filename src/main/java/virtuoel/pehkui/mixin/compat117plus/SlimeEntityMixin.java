@@ -4,12 +4,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.SlimeEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.Slime;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(SlimeEntity.class)
+@Mixin(Slime.class)
 public class SlimeEntityMixin
 {
 //	@ModifyArg(method = "remove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))

@@ -9,11 +9,10 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.HitResult;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -21,12 +20,12 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class GameRendererMixin
 {
 	@Shadow @Final @Mutable
-	MinecraftClient client;
+	Minecraft minecraft;
 	
-	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 0, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/entity/Entity;getCameraPosVec(F)Lnet/minecraft/util/math/Vec3d;"))
+	@ModifyVariable(method = "pick", ordinal = 0, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/world/entity/Entity;getEyePosition(F)Lnet/minecraft/world/phys/Vec3;"))
 	private double pehkui$updateCrosshairTarget$setDistance(double value, float tickProgress)
 	{
-		final Entity entity = client.getCameraEntity();
+		final Entity entity = minecraft.getCameraEntity();
 		
 		if (entity != null)
 		{
@@ -41,17 +40,17 @@ public class GameRendererMixin
 		return value;
 	}
 	
-	@ModifyVariable(method = "updateCrosshairTarget", ordinal = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getRotationVec(F)Lnet/minecraft/util/math/Vec3d;"))
+	@ModifyVariable(method = "pick", ordinal = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getViewVector(F)Lnet/minecraft/world/phys/Vec3;"))
 	private double pehkui$updateCrosshairTarget$squaredDistance(double value, float tickProgress)
 	{
-		final Entity entity = client.getCameraEntity();
+		final Entity entity = minecraft.getCameraEntity();
 		
 		if (entity != null)
 		{
-			if (this.client.crosshairTarget == null || this.client.crosshairTarget.getType() == HitResult.Type.MISS)
+			if (this.minecraft.hitResult == null || this.minecraft.hitResult.getType() == HitResult.Type.MISS)
 			{
 				final float scale = ScaleUtils.getEntityReachScale(entity, tickProgress);
-				final double baseEntityReach = ScaleRenderUtils.hasExtendedReach(client.interactionManager) ? 6.0D : client.interactionManager.getCurrentGameMode().isCreative() ? 5.0F : 4.5F;
+				final double baseEntityReach = ScaleRenderUtils.hasExtendedReach(minecraft.gameMode) ? 6.0D : minecraft.gameMode.getPlayerMode().isCreative() ? 5.0F : 4.5F;
 				final double entityReach = scale * baseEntityReach;
 				
 				return entityReach * entityReach;
@@ -61,10 +60,10 @@ public class GameRendererMixin
 		return value;
 	}
 	
-	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=6.0D"))
+	@ModifyExpressionValue(method = "pick", at = @At(value = "CONSTANT", args = "doubleValue=6.0D"))
 	private double pehkui$updateCrosshairTarget$extendedDistance(double value, float tickProgress)
 	{
-		final Entity entity = client.getCameraEntity();
+		final Entity entity = minecraft.getCameraEntity();
 		
 		if (entity != null)
 		{
@@ -79,10 +78,10 @@ public class GameRendererMixin
 		return value;
 	}
 	
-	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=9.0D"))
+	@ModifyExpressionValue(method = "pick", at = @At(value = "CONSTANT", args = "doubleValue=9.0D"))
 	private double pehkui$updateCrosshairTarget$squaredMaxDistance(double value, float tickProgress)
 	{
-		final Entity entity = client.getCameraEntity();
+		final Entity entity = minecraft.getCameraEntity();
 		
 		if (entity != null)
 		{

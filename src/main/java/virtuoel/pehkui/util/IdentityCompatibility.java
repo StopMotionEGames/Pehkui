@@ -3,9 +3,8 @@ package virtuoel.pehkui.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
-
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class IdentityCompatibility
 {
@@ -65,7 +64,7 @@ public class IdentityCompatibility
 		}
 	}
 	
-	public LivingEntity getIdentity(final PlayerEntity entity)
+	public LivingEntity getIdentity(final Player entity)
 	{
 		if (this.enabled)
 		{

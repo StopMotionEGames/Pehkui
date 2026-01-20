@@ -7,9 +7,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Entity.class)
@@ -22,7 +21,7 @@ public abstract class EntityMixin
 	@Dynamic @Shadow
 	private double field_6035; // UNMAPPED_FIELD
 	@Dynamic @Shadow
-	abstract Vec3d method_5812(); // UNMAPPED_METHOD
+	abstract Vec3 method_5812(); // UNMAPPED_METHOD
 	
 	@Unique
 	protected void setPosDirectly(final double x, final double y, final double z)
@@ -32,7 +31,7 @@ public abstract class EntityMixin
 		field_6035 = z;
 	}
 	
-	@ModifyExpressionValue(method = "isInsideWall()Z", at = @At(value = "CONSTANT", args = "floatValue=0.1F"))
+	@ModifyExpressionValue(method = "isInWall()Z", at = @At(value = "CONSTANT", args = "floatValue=0.1F"))
 	private float pehkui$isInsideWall$offset(float value)
 	{
 		final float scale = ScaleUtils.getEyeHeightScale((Entity) (Object) this);

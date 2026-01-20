@@ -5,29 +5,28 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.entity.mob.EndermiteEntity;
-import net.minecraft.entity.mob.PatrolEntity;
-import net.minecraft.entity.mob.SilverfishEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.monster.PatrollingMonster;
+import net.minecraft.world.entity.monster.Silverfish;
+import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.player.Player;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin({
-	ArmorStandEntity.class,
-	AbstractSkeletonEntity.class,
-	EndermiteEntity.class,
-	PatrolEntity.class,
-	SilverfishEntity.class,
-	ZombieEntity.class,
-	AnimalEntity.class,
-	PlayerEntity.class
+	ArmorStand.class,
+	AbstractSkeleton.class,
+	Endermite.class,
+	PatrollingMonster.class,
+	Silverfish.class,
+	Zombie.class,
+	Animal.class,
+	Player.class
 })
 public abstract class EntityVehicleHeightOffsetMixin
 {
@@ -45,7 +44,7 @@ public abstract class EntityVehicleHeightOffsetMixin
 			
 			if (scale != 1.0F || vehicleScale != 1.0F)
 			{
-				final double vehicleScaledHeight = vehicle.getHeight();
+				final double vehicleScaledHeight = vehicle.getBbHeight();
 				final double vehicleHeight = vehicleScaledHeight / vehicleScale;
 				final double scaledMountedOffset = ReflectionUtils.getMountedHeightOffset(vehicle);
 				final double mountedOffset = scaledMountedOffset / vehicleScale;

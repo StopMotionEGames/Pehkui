@@ -1,5 +1,8 @@
 package virtuoel.pehkui.mixin.identity.compat117minus.compat116plus;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
@@ -7,21 +10,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Pseudo
 @Mixin(targets = "draylar.identity.cca.IdentityComponent", remap = false)
 public class IdentityComponentMixin
 {
-	@Shadow(remap = false) PlayerEntity player;
+	@Shadow(remap = false) Player player;
 	@Shadow(remap = false) LivingEntity identity;
 	
 	@Inject(at = @At("RETURN"), method = "readFromNbt", remap = false)
-	private void pehkui$readFromNbt(NbtCompound nbt, CallbackInfo info)
+	private void pehkui$readFromNbt(CompoundTag nbt, CallbackInfo info)
 	{
 		if (this.identity != null)
 		{
