@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -31,7 +30,6 @@ import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
-import virtuoel.pehkui.server.command.DebugCommand;
 import virtuoel.pehkui.util.PehkuiEntityExtensions;
 import virtuoel.pehkui.util.ScaleUtils;
 
