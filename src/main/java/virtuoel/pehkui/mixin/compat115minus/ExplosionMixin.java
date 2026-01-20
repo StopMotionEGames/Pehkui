@@ -1,5 +1,8 @@
 package virtuoel.pehkui.mixin.compat115minus;
 
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Final;
@@ -9,10 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -24,7 +23,7 @@ public abstract class ExplosionMixin
 	
 	@Dynamic
 	@Inject(at = @At("RETURN"), method = MixinConstants.EXPLOSION_INIT)
-	private void pehkui$construct(World world, @Nullable Entity entity, double x, double y, double z, float power, boolean createFire, Explosion.DestructionType blockDestructionType, CallbackInfo info)
+	private void pehkui$construct(Level world, @Nullable Entity entity, double x, double y, double z, float power, boolean createFire, Explosion.BlockInteraction blockDestructionType, CallbackInfo info)
 	{
 		if (entity != null)
 		{

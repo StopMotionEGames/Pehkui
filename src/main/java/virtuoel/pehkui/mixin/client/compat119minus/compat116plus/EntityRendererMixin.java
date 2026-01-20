@@ -6,10 +6,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.world.entity.Entity;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -18,10 +17,10 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class EntityRendererMixin
 {
 	@Dynamic
-	@WrapOperation(method = MixinConstants.RENDER_LABEL_IF_PRESENT, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getHeight()F"))
+	@WrapOperation(method = MixinConstants.RENDER_LABEL_IF_PRESENT, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBbHeight()F"))
 	private float pehkui$renderLabelIfPresent$getHeight(Entity entity, Operation<Float> original)
 	{
-		final float delta = ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance());
+		final float delta = ScaleRenderUtils.getTickProgress(Minecraft.getInstance());
 		return original.call(entity) / ScaleUtils.getBoundingBoxHeightScale(entity, delta);
 	}
 }

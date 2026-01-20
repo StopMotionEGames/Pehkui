@@ -5,9 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(InventoryScreen.class)

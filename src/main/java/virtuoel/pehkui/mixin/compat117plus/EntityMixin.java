@@ -1,16 +1,15 @@
 package virtuoel.pehkui.mixin.compat117plus;
 
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import net.minecraft.entity.Entity;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Entity.class)
 public class EntityMixin {
-	@ModifyArg(method = "fall", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onLandedUpon(Lnet/minecraft/world/World;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;D)V"))
+	@ModifyArg(method = "checkFallDamage", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;D)V"))
 	private double pehkui$fall$fallDistance(double fallDistance) {
 		final float scale = ScaleUtils.getFallingScale((Entity) (Object) this);
 

@@ -7,22 +7,21 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.entity.Entity;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(value = GameRenderer.class, priority = 990)
 public class GameRendererMixin
 {
 	@Shadow @Final @Mutable
-	MinecraftClient client;
+	Minecraft minecraft;
 	
-	@ModifyExpressionValue(method = "updateCrosshairTarget", at = @At(value = "CONSTANT", args = "doubleValue=3.0D"))
+	@ModifyExpressionValue(method = "pick", at = @At(value = "CONSTANT", args = "doubleValue=3.0D"))
 	private double pehkui$updateCrosshairTarget$distance(double value, float tickProgress)
 	{
-		final Entity entity = client.getCameraEntity();
+		final Entity entity = minecraft.getCameraEntity();
 		
 		if (entity != null)
 		{

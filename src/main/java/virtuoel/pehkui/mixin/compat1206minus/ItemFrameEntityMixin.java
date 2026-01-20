@@ -1,31 +1,30 @@
 package virtuoel.pehkui.mixin.compat1206minus;
 
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import net.minecraft.entity.decoration.AbstractDecorationEntity;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ItemFrameEntity.class)
+@Mixin(ItemFrame.class)
 public abstract class ItemFrameEntityMixin
 {
 	@Dynamic
-	@ModifyArg(method = MixinConstants.UPDATE_ATTACHMENT_POSITION, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/decoration/ItemFrameEntity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"))
-	private Box pehkui$updateAttachment$box(Box box)
+	@ModifyArg(method = MixinConstants.UPDATE_ATTACHMENT_POSITION, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/ItemFrame;setBoundingBox(Lnet/minecraft/world/phys/AABB;)V"))
+	private AABB pehkui$updateAttachment$box(AABB box)
 	{
-		final AbstractDecorationEntity entity = (AbstractDecorationEntity) (Object) this;
+		final HangingEntity entity = (HangingEntity) (Object) this;
 		
-		final Direction facing = entity.getHorizontalFacing();
+		final Direction facing = entity.getDirection();
 		
-		final double xLength = box.getLengthX() / -2.0D;
-		final double yLength = box.getLengthY() / -2.0D;
-		final double zLength = box.getLengthZ() / -2.0D;
+		final double xLength = box.getXsize() / -2.0D;
+		final double yLength = box.getYsize() / -2.0D;
+		final double zLength = box.getZsize() / -2.0D;
 		
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
@@ -35,8 +34,8 @@ public abstract class ItemFrameEntityMixin
 			final double dX = xLength * (1.0D - widthScale);
 			final double dY = yLength * (1.0D - heightScale);
 			final double dZ = zLength * (1.0D - widthScale);
-			box = box.expand(dX, dY, dZ);
-			box = box.offset(dX * facing.getOffsetX(), dY * facing.getOffsetY(), dZ * facing.getOffsetZ());
+			box = box.inflate(dX, dY, dZ);
+			box = box.move(dX * facing.getStepX(), dY * facing.getStepY(), dZ * facing.getStepZ());
 		}
 		
 		return box;

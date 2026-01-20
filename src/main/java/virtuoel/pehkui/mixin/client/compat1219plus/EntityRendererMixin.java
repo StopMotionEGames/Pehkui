@@ -1,17 +1,16 @@
 package virtuoel.pehkui.mixin.client.compat1219plus;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.util.math.MatrixStack;
 import virtuoel.pehkui.util.PehkuiEntityRenderStateExtensions;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 
@@ -19,10 +18,10 @@ import virtuoel.pehkui.util.ScaleRenderUtils;
 public class EntityRendererMixin {
 
 	@Inject(
-		method = "render",
+		method = "submit",
 		at = @At(value = "HEAD")
 	)
-	private <S extends EntityRenderState> void pehkui$render$before(S renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState, CallbackInfo ci) {
+	private <S extends EntityRenderState> void pehkui$render$before(S renderState, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState cameraState, CallbackInfo ci) {
 		ScaleRenderUtils.logIfEntityRenderCancelled();
 
 		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) renderState;
@@ -30,25 +29,25 @@ public class EntityRendererMixin {
 		final float widthScale = ext.pehkui$getModelWidthScale();
 		final float heightScale = ext.pehkui$getModelHeighScale();
 
-		matrices.push();
+		matrices.pushPose();
 		matrices.scale(widthScale, heightScale, widthScale);
-		matrices.push();
+		matrices.pushPose();
 
 		ScaleRenderUtils.saveLastRenderedEntity(renderState.entityType);
 	}
 
 	@Inject(
-		method = "render",
+		method = "submit",
 		at = @At(value = "RETURN"))
-	private <S extends EntityRenderState> void pehkui$render$after(S renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraState, CallbackInfo ci) {
+	private <S extends EntityRenderState> void pehkui$render$after(S renderState, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState cameraState, CallbackInfo ci) {
 		ScaleRenderUtils.clearLastRenderedEntity();
 
-		matrices.pop();
-		matrices.pop();
+		matrices.popPose();
+		matrices.popPose();
 	}
 
 	// todo: SEE IF SHADOW is OK!
-	@ModifyVariable(method = "updateShadow(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/world/World;)V", at = @At(value = "STORE"))
+	@ModifyVariable(method = "extractShadow(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/level/Level;)V", at = @At(value = "STORE"))
 	private float pehkui$render$radius(float radius, @Local(argsOnly = true) EntityRenderState state) {
 		return radius * ((PehkuiEntityRenderStateExtensions) state).pehkui$getModelWidthScale();
 	}

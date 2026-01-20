@@ -7,10 +7,9 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ItemPickupParticle;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleRenderUtils;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -25,7 +24,7 @@ public class ItemPickupParticleMixin
 	@ModifyArg(method = MixinConstants.BUILD_GEOMETRY, index = 2, at = @At(value = "INVOKE", target = MixinConstants.LERP, ordinal = 4))
 	private double pehkui$buildGeometry$offset(double value)
 	{
-		final float scale = ScaleUtils.getEyeHeightScale(field_3821, ScaleRenderUtils.getTickProgress(MinecraftClient.getInstance()));
+		final float scale = ScaleUtils.getEyeHeightScale(field_3821, ScaleRenderUtils.getTickProgress(Minecraft.getInstance()));
 		
 		if (scale != 1.0F)
 		{

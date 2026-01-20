@@ -10,13 +10,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -24,23 +23,23 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class EntityCalculateDimensionsMixin
 {
 	@Shadow
-	private World world;
+	private Level level;
 	@Shadow @Final @Mutable
 	private EntityType<?> type;
 	@Shadow
-	public abstract void move(MovementType type, Vec3d movement);
+	public abstract void move(MoverType type, Vec3 movement);
 	
-	@Inject(method = "calculateDimensions", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/entity/Entity;refreshPosition()V"))
+	@Inject(method = "refreshDimensions", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/entity/Entity;reapplyPosition()V"))
 	private void pehkui$calculateDimensions(CallbackInfo info, @Local(ordinal = 0) EntityDimensions previous, @Local(ordinal = 1) EntityDimensions current)
 	{
 		final float currentWidth = ReflectionUtils.getDimensionsWidth(current);
 		final float previousWidth = ReflectionUtils.getDimensionsWidth(previous);
-		if (this.world.isClient() && type == EntityType.PLAYER && currentWidth > previousWidth)
+		if (this.level.isClientSide() && type == EntityType.PLAYER && currentWidth > previousWidth)
 		{
 			final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
 			final float dist = (previousWidth - currentWidth) / 2.0F;
 
-			move(MovementType.SELF, new Vec3d(dist / scale, 0.0D, dist / scale));
+			move(MoverType.SELF, new Vec3(dist / scale, 0.0D, dist / scale));
 		}
 	}
 

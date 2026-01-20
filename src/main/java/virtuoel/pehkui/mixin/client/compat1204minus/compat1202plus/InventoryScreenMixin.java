@@ -1,7 +1,12 @@
 package virtuoel.pehkui.mixin.client.compat1204minus.compat1202plus;
 
 import java.util.Map;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -16,12 +21,6 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
@@ -36,7 +35,7 @@ public abstract class InventoryScreenMixin
 	
 	@Dynamic
 	@Inject(method = MixinConstants.DRAW_ENTITY_WITH_OFFSET, at = @At(value = "HEAD"))
-	private static void pehkui$drawEntity$head(DrawContext drawContext, float x, float y, int size, Vector3f offset, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<Box> bounds)
+	private static void pehkui$drawEntity$head(GuiGraphics drawContext, float x, float y, int size, Vector3f offset, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<AABB> bounds)
 	{
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 		
@@ -53,20 +52,20 @@ public abstract class InventoryScreenMixin
 		bounds.set(entity.getBoundingBox());
 		
 		final EntityDimensions dims = entity.getDimensions(entity.getPose());
-		final Vec3d pos = entity.getEntityPos();
+		final Vec3 pos = entity.position();
 		final double r = ReflectionUtils.getDimensionsWidth(dims) / 2.0D;
 		final double h = ReflectionUtils.getDimensionsHeight(dims);
 		final double xPos = pos.x;
 		final double yPos = pos.y;
 		final double zPos = pos.z;
-		final Box box = new Box(xPos - r, yPos, zPos - r, xPos + r, yPos + h, zPos + r);
+		final AABB box = new AABB(xPos - r, yPos, zPos - r, xPos + r, yPos + h, zPos + r);
 		
 		entity.setBoundingBox(box);
 	}
 	
 	@Dynamic
 	@Inject(method = MixinConstants.DRAW_ENTITY_WITH_OFFSET, at = @At(value = "RETURN"))
-	private static void pehkui$drawEntity$return(DrawContext drawContext, float x, float y, int size, Vector3f offset, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<Box> bounds)
+	private static void pehkui$drawEntity$return(GuiGraphics drawContext, float x, float y, int size, Vector3f offset, Quaternionf quaternionf, @Nullable Quaternionf quaternionf2, LivingEntity entity, CallbackInfo info, @Share("bounds") LocalRef<AABB> bounds)
 	{
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 		

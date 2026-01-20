@@ -7,13 +7,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -27,9 +26,9 @@ public abstract class LivingEntityMixin extends EntityMixin
 		return ScaleUtils.modifyLimbDistance(value, (Entity) (Object) this);
 	}
 	
-	@Unique Vec3d pehkui$initialClimbingPos = null;
+	@Unique Vec3 pehkui$initialClimbingPos = null;
 	
-	@ModifyReturnValue(method = "isClimbing()Z", at = @At("RETURN"))
+	@ModifyReturnValue(method = "onClimbable()Z", at = @At("RETURN"))
 	private boolean pehkui$isClimbing(boolean original)
 	{
 		final LivingEntity self = (LivingEntity) (Object) this;
@@ -43,30 +42,30 @@ public abstract class LivingEntityMixin extends EntityMixin
 		
 		if (width > 1.0F)
 		{
-			final Box bounds = self.getBoundingBox();
+			final AABB bounds = self.getBoundingBox();
 			
-			final double halfUnscaledXLength = (bounds.getLengthX() / width) / 2.0D;
-			final int minX = MathHelper.floor(bounds.minX + halfUnscaledXLength);
-			final int maxX = MathHelper.floor(bounds.maxX - halfUnscaledXLength);
+			final double halfUnscaledXLength = (bounds.getXsize() / width) / 2.0D;
+			final int minX = Mth.floor(bounds.minX + halfUnscaledXLength);
+			final int maxX = Mth.floor(bounds.maxX - halfUnscaledXLength);
 			
-			final int minY = MathHelper.floor(bounds.minY);
+			final int minY = Mth.floor(bounds.minY);
 			
-			final double halfUnscaledZLength = (bounds.getLengthZ() / width) / 2.0D;
-			final int minZ = MathHelper.floor(bounds.minZ + halfUnscaledZLength);
-			final int maxZ = MathHelper.floor(bounds.maxZ - halfUnscaledZLength);
+			final double halfUnscaledZLength = (bounds.getZsize() / width) / 2.0D;
+			final int minZ = Mth.floor(bounds.minZ + halfUnscaledZLength);
+			final int maxZ = Mth.floor(bounds.maxZ - halfUnscaledZLength);
 			
 			pehkui$initialClimbingPos = method_5812();
 			
-			for (final BlockPos pos : BlockPos.iterate(minX, minY, minZ, maxX, minY, maxZ))
+			for (final BlockPos pos : BlockPos.betweenClosed(minX, minY, minZ, maxX, minY, maxZ))
 			{
 				setPosDirectly(pos.getX(), pos.getY(), pos.getZ());
-				if (self.isClimbing())
+				if (self.onClimbable())
 				{
 					return true;
 				}
 			}
 			
-			setPosDirectly(pehkui$initialClimbingPos.getX(), pehkui$initialClimbingPos.getY(), pehkui$initialClimbingPos.getZ());
+			setPosDirectly(pehkui$initialClimbingPos.x(), pehkui$initialClimbingPos.y(), pehkui$initialClimbingPos.z());
 			pehkui$initialClimbingPos = null;
 		}
 		

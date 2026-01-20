@@ -1,21 +1,20 @@
 package virtuoel.pehkui.mixin.compat116plus;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin
 {
 	@Shadow
-	private BlockPos blockPos;
+	private BlockPos blockPosition;
 	
 	@Unique
 	protected void setPosDirectly(final BlockPos pos)
 	{
-		blockPos = pos;
+		blockPosition = pos;
 	}
 }

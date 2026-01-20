@@ -5,19 +5,18 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.phys.AABB;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(ProjectileUtil.class)
 public class ProjectileUtilMixin
 {
-	@WrapOperation(method = "getEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getBoundingBox()Lnet/minecraft/util/math/Box;"))
-	private static Box pehkui$getEntityCollision$getBoundingBox(Entity obj, Operation<Box> original)
+	@WrapOperation(method = "getEntityHitResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getBoundingBox()Lnet/minecraft/world/phys/AABB;"))
+	private static AABB pehkui$getEntityCollision$getBoundingBox(Entity obj, Operation<AABB> original)
 	{
-		final Box bounds = original.call(obj);
+		final AABB bounds = original.call(obj);
 		
 		final float width = ScaleUtils.getBoundingBoxWidthScale(obj);
 		final float height = ScaleUtils.getBoundingBoxHeightScale(obj);
@@ -31,7 +30,7 @@ public class ProjectileUtilMixin
 			final double scaledYLength = 0.3D * ((height * interactionHeight) - 1.0F);
 			final double scaledZLength = 0.3D * ((width * interactionWidth) - 1.0F);
 			
-			return bounds.expand(scaledXLength, scaledYLength, scaledZLength);
+			return bounds.inflate(scaledXLength, scaledYLength, scaledZLength);
 		}
 		
 		return bounds;

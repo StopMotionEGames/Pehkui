@@ -9,11 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import virtuoel.pehkui.util.MixinConstants;
 import virtuoel.pehkui.util.ScaleUtils;
 import virtuoel.pehkui.util.ViewerCountingBlockEntityExtensions;
@@ -35,7 +34,7 @@ public class ChestBlockEntityMixin implements ViewerCountingBlockEntityExtension
 	
 	@Dynamic
 	@Inject(at = @At("HEAD"), method = MixinConstants.ON_OPEN)
-	private void pehkui$onOpen(PlayerEntity player, CallbackInfo info)
+	private void pehkui$onOpen(Player player, CallbackInfo info)
 	{
 		if (field_11928 < 0)
 		{
@@ -59,7 +58,7 @@ public class ChestBlockEntityMixin implements ViewerCountingBlockEntityExtension
 	
 	@Dynamic
 	@Inject(at = @At("HEAD"), method = MixinConstants.ON_CLOSE)
-	private void pehkui$onClose(PlayerEntity player, CallbackInfo info)
+	private void pehkui$onClose(Player player, CallbackInfo info)
 	{
 		if (field_11928 <= 1)
 		{
@@ -71,7 +70,7 @@ public class ChestBlockEntityMixin implements ViewerCountingBlockEntityExtension
 	
 	@Dynamic
 	@ModifyExpressionValue(method = MixinConstants.COUNT_VIEWERS, at = @At(value = "CONSTANT", args = "floatValue=5.0F"))
-	private static float pehkui$countViewers$distance(float value, World world, LockableContainerBlockEntity container, int x, int y, int z)
+	private static float pehkui$countViewers$distance(float value, Level world, BaseContainerBlockEntity container, int x, int y, int z)
 	{
 		if (container instanceof ViewerCountingBlockEntityExtensions)
 		{
