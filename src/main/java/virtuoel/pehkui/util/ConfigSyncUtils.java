@@ -151,7 +151,7 @@ public class ConfigSyncUtils
 	{
 		if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 		{
-			return ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
+			return ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
 		}
 		else
 		{
@@ -159,7 +159,7 @@ public class ConfigSyncUtils
 			
 			new ConfigSyncPacket(configEntries).write(buffer);
 			
-			return ReflectionUtils.createS2CPacket(Pehkui.CONFIG_SYNC_PACKET, buffer);
+			return ReflectionUtils.createClientboundPacket(Pehkui.CONFIG_SYNC_PACKET, buffer);
 		}
 	}
 	
