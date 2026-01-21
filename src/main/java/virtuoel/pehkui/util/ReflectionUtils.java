@@ -48,12 +48,12 @@ public final class ReflectionUtils
 		
 		try
 		{
-			final boolean is117Plus = VersionUtils.MINOR >= 17;
-			final boolean is118Minus = VersionUtils.MINOR <= 18;
-			final boolean is1193Minus = VersionUtils.MINOR < 19 || (VersionUtils.MINOR == 19 && VersionUtils.PATCH <= 3);
-			final boolean is1201Minus = VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 1);
-			final boolean is1204Minus = VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 4);
-			final boolean is1206Minus = VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 6);
+			final boolean is117Plus = VersionUtils.MAJOR >= 26 || VersionUtils.MINOR >= 17;
+			final boolean is118Minus = VersionUtils.MAJOR == 1 && VersionUtils.MINOR <= 18;
+			final boolean is1193Minus = VersionUtils.MAJOR == 1 && VersionUtils.MINOR < 19 || (VersionUtils.MINOR == 19);
+			final boolean is1201Minus = VersionUtils.MAJOR == 1 && VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 1);
+			final boolean is1204Minus = VersionUtils.MAJOR == 1 && VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 4);
+			final boolean is1206Minus = VersionUtils.MAJOR == 1 && VersionUtils.MINOR < 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 6);
 			
 			if (is118Minus)
 			{
@@ -98,11 +98,11 @@ public final class ReflectionUtils
 				h.put(6, lookup.unreflectGetter(f));
 			}
 			
-			if (is1204Minus && ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
-			{
+//			if (is1204Minus && ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
+//			{
 				m = ServerPlayNetworking.class.getMethod("createClientboundPacket", CustomPacketPayload.class);
 				h.put(7, lookup.unreflect(m));
-			}
+//			}
 			
 			if (is1206Minus)
 			{

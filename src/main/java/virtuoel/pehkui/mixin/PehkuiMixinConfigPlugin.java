@@ -54,11 +54,6 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 			);
 		}
 		
-		if (!VersionUtils.shouldApplyCompatibilityMixin(mixinClassName))
-		{
-			return false;
-		}
-		
 		if (mixinClassName.endsWith("InGameOverlayRendererMixin"))
 		{
 			return OPTIFABRIC_LOADED == mixinClassName.contains(".optifine.compat.");
@@ -75,23 +70,6 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 			}
 			
 			return DISABLE_THREAD_SAFETY;
-		}
-		
-		if (mixinClassName.startsWith(MIXIN_PACKAGE + ".reach"))
-		{
-			return REACH_ATTRIBUTES_LOADED == mixinClassName.contains(".reach.compat.");
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".step_height"))
-		{
-			return STEP_HEIGHT_ATTRIBUTES_LOADED == mixinClassName.contains(MIXIN_PACKAGE + ".step_height.compat.");
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".identity.compat"))
-		{
-			return IDENTITY_LOADED;
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".magna.compat"))
-		{
-			return MAGNA_LOADED;
 		}
 		
 		return true;

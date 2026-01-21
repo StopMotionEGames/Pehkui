@@ -24,7 +24,7 @@ public class I18nUtils
 	{
 		if (RESOURCE_LOADER_LOADED)
 		{
-			if (VersionUtils.MINOR < 19)
+			if (VersionUtils.MINOR < 19 && VersionUtils.MAJOR == 1)
 			{
 				try
 				{
@@ -44,7 +44,7 @@ public class I18nUtils
 	
 	public static Component literal(final String text, final Object... args)
 	{
-		if (VersionUtils.MINOR < 19)
+		if (VersionUtils.MINOR < 19 && VersionUtils.MAJOR == 1)
 		{
 			try
 			{

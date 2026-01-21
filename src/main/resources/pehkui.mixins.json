@@ -95,15 +95,10 @@
 		"compat121plus.AbstractHurtingProjectileMixin",
 		"compat121plus.AbstractArrowMixin",
 		"compat121plus.PreEntityTickMixin",
-		"identity.compat.PlayerMixin",
-		"identity.compat118plus.PlayerIdentityMixin",
-		"magna.compat.ReachDistanceHelperMixin",
-		"pehkui.compat.ScaleTypeMixin",
 		"reach.PlayerMixin",
-		"reach.compat.ReachEntityAttributesMixin",
-		"reach.compat1214plus.AbstractChestBoatMixin",
-		"step_height.compat1194plus.EntityMixin",
-		"step_height.compat1205plus.LivingEntityMixin"
+		"reach.AbstractChestBoatMixin",
+		"step_height.EntityMixin",
+		"step_height.LivingEntityMixin"
 	],
 	"client": [
 		"client.LocalPlayerMixin",
@@ -127,8 +122,7 @@
 		"client.compat121plus.CameraMixin",
 		"client.compat121plus.EntityRendererMixin",
 		"client.compat121plus.GameRendererMixin",
-		"compat1212plus.EntityRendererMixin",
-		"reach.compat.client.GameRendererMixin"
+		"compat1212plus.EntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
