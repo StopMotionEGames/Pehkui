@@ -37,7 +37,7 @@ public class Pehkui implements ModInitializer
 	{
 		ScaleTypes.INVALID.getClass();
 		ScaleOperations.NOOP.getClass();
-		PehkuiConfig.BUILDER.config.get();
+		PehkuiConfig.BUILDER.load();
 	}
 	
 	@Override
