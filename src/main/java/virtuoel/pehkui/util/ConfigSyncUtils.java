@@ -26,17 +26,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import virtuoel.kanos_config.api.JsonConfigHandler;
-import virtuoel.kanos_config.api.MutableConfigEntry;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import virtuoel.pehkui.api.MutableConfigEntry;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.PehkuiConfig;
+import virtuoel.pehkui.api.PehkuiConfigBuilder;
 import virtuoel.pehkui.network.ConfigSyncPacket;
 import virtuoel.pehkui.network.ConfigSyncPayload;
 
@@ -287,57 +287,42 @@ public class ConfigSyncUtils
 		
 		configBuilder.then(builder);
 	}
-	
-	public static void registerConfigFileCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder)
+
+	public static void registerConfigFileCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder)
 	{
-		final JsonConfigHandler config = PehkuiConfig.BUILDER.config;
-		
+		// Agora apontamos direto para o nosso novo Builder
+		final PehkuiConfigBuilder builder = PehkuiConfig.BUILDER;
+
 		configBuilder
 			.then(CommandManager.literal("save")
 				.executes(context ->
 				{
-					synchronized (config)
-					{
-						config.save();
-					}
-					
+					builder.save();
 					return 1;
 				})
 			)
 			.then(CommandManager.literal("load")
 				.executes(context ->
 				{
-					synchronized (config)
-					{
-						config.invalidate();
-						config.get();
-						
-						syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
-					}
-					
+					builder.load();
+					syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
 					return 1;
 				})
 			)
 			.then(CommandManager.literal("delete")
 				.executes(context ->
 				{
-					synchronized (config)
+					try
 					{
-						config.onConfigChanged();
-						try
-						{
-							Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
-							config.get();
-							syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
-							
-							return 1;
-						}
-						catch (IOException e)
-						{
-							Pehkui.LOGGER.catching(e);
-							
-							return 0;
-						}
+						Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
+						builder.load(); // Recarrega (criando um config vazio/padrão)
+						syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
+						return 1;
+					}
+					catch (IOException e)
+					{
+						Pehkui.LOGGER.error("Failed to delete config file:", e);
+						return 0;
 					}
 				})
 			);
@@ -352,8 +337,9 @@ public class ConfigSyncUtils
 		for (final String key : CONFIGS.keySet())
 		{
 			keys = splitKeys ? key.split("\\.") : new String[] { key };
-			
-			root = CommandManager.literal(keys[keys.length - 1])
+
+			// Dentro do registerConfigGetterCommands
+			root = Commands.literal(keys[keys.length - 1])
 				.executes(context ->
 				{
 					CommandUtils.sendFeedback(
@@ -361,11 +347,10 @@ public class ConfigSyncUtils
 						() -> I18nUtils.translate(
 							"commands.pehkui.debug.config.get.value",
 							"Config \"%s\" is currently set to \"%s\"",
-							key, String.valueOf(CONFIGS.get(key).getValue())
+							key, String.valueOf(CONFIGS.get(key).get()) // .get() é mais universal
 						),
 						false
 					);
-					
 					return 1;
 				});
 			
