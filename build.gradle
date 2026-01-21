@@ -52,7 +52,6 @@ class McVersion implements Comparable<McVersion> {
 	final int major, minor, patch
 
 	McVersion(String version) {
-		// Limpa sufixos como -Snapshot ou +build
 		def parts = version.split(/[-+]/)[0].split(/\./)
 		this.major = parts.length > 0 ? parts[0].toInteger() : 0
 		this.minor = parts.length > 1 ? parts[1].toInteger() : 0
@@ -69,7 +68,7 @@ class McVersion implements Comparable<McVersion> {
 
 def mcVer = new McVersion(minecraft_version)
 
-static def getJavaVersion(McVersion v) {
+def getJavaVersion(McVersion v) {
 	if (v.major >= 26) return 25 // 26.1+ Game Drops
 	if (v.major == 1) {
 		if (v.minor > 20 || (v.minor == 20 && v.patch >= 5)) return 21
@@ -128,22 +127,7 @@ if (project.hasProperty("fabric_version")) {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-
-
-	if (mcVer.major < 26) {
-		if (project.yarn_mappings.contains(", ") || (project.hasProperty("neoforge_version") && (minor > 20 || (minor == 20 && patch >= 5)))) {
-			mappings loom.layered {
-				project.yarn_mappings.split(", ").each { String mapping ->
-					mappings "net.fabricmc:yarn:${mapping}:v2"
-				}
-				if (project.hasProperty("neoforge_version") && (minor > 20 || (minor == 20 && patch >= 5))) {
-					mappings "dev.architectury:yarn-mappings-patch-neoforge:1.20.5+build.3"
-				}
-			}
-		} else {
-			mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
-		}
-	}
+	mappings loom.officialMojangMappings()
 
 	if (project.hasProperty("neoforge_version") && !project.hasProperty("forge_version")) {
 		neoForge "net.neoforged:neoforge:${neoforge_version}"

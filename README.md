@@ -1,206 +1,121 @@
+# Pehkui: Continued
 
-# Pehkui
-Library mod for the Quilt, NeoForge, Forge, and Fabric mod loaders that allows mod developers to modify the size of entities.  
+**Pehkui: Continued** is an updated and enhanced version of the original Pehkui mod. Pehkui is a library mod
+for the Quilt, NeoForge and Fabric mod loaders that allows mod developers to modify the size of entities
 
-# Information for Players
-<details open>
-<summary>Show/Hide Information for Players</summary><table width=100%><td>
+> [!IMPORTANT]
+> This project is a downstream fork of the original
+> [Virtuoel/Pehkui](https://github.com/Virtuoel/Pehkui) repository. It's an independent fork that
+> is dedicated to ensuring the mod remains up-to-date.
 
-## Required Mods to Run
-<details open>
-<summary>Show/Hide Required Mods</summary><table width=100%><td>
+## For players
 
-### Playing on Quilt
+Here a list of required mods for each supported platform:
 
-- Newest version of the [Quilt mod loader](https://quiltmc.org/en/install/)  
-- Newest version of the [Quilt Stan](https://www.curseforge.com/minecraft/mc-mods/qsl/files/all)[dard Libraries](https://modrinth.com/mod/qsl/versions) for whichever Minecraft version you're playing on
+### Quilt
 
-### Playing on NeoForge
+- Latest version of the [Quilt mod loader](https://quiltmc.org/en/install/)
+- Latest version of the [Quilt Standard Libraries](https://modrinth.com/mod/qsl/versions)
 
-- Newest version of the [NeoForge mod loader](https://neoforged.net/) for whichever Minecraft version you're</br>playing on
+### NeoForge
 
-### Playing on Forge
+- Latest version of the [NeoForge mod loader](https://files.minecraftforge.net/) for whichever Minecraft version you're
+  playing on.
 
-- Newest version of the [Forge mod loader](https://files.minecraftforge.net/net/minecraftforge/forge/) for whichever Minecraft version you're</br>playing on
+### Forge
 
-### Playing on Fabric
+- Latest version of the [Forge mod loader](https://neoforged.net/) for whichever Minecraft version you're playing on
 
-- Newest version of the [Fabric mod loader](https://fabricmc.net/use/installer/)  
-- Newest version of the [Fabric A](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/all)[PI mod](https://modrinth.com/mod/fabric-api/versions) for whichever Minecraft version you're</br>playing on
-</td></table></details>
+### Fabric
 
-## Supported Minecraft Versions
-<details>
-<summary>Show/Hide Supported Minecraft Versions</summary><table width=100%><td>
+- Latest version of the [Fabric mod loader](https://fabricmc.net/use/installer/)
+- Latest version of the [Fabric API mod](https://modrinth.com/mod/fabric-api/versions) for whichever Minecraft version
+  you're playing on
 
-### Fabric/Quilt Versions
-Supported Versions of `Pehkui-x.y.z+1.14.4-1.20.6`:  
-`1.20.6`, `1.20.4`, `1.20.2`, `1.20.1`, `1.19.4`, `1.19.2`, `1.18.2`, `1.17.1`,</br>`1.16.5`, `1.15.2`, `1.14.4`
+## Mod loaders compatibility
 
-### NeoForge Versions
+|  Mod loader  | Current Supported Minecraft versions   |
+|:------------:|:---------------------------------------|
+|  **Fabric**  | 1.14.4-1.21.11                         |
+|  **Quilt**   | 1.14.4-1.21.1                          |
+| **NeoForge** | 1.20.1-1.21.1                          |
+|  **Forge**   | 1.16.5; 1.17.1; 1.18.x; 1.19.x; 1.20.1 |
 
-Supported Versions of `Pehkui-x.y.z+1.20.6-neoforge`:  
-`1.20.6`
+> [!NOTE]
+> Current development is focused on achieving a stable release for **Fabric**.
+> Support for Quilt and NeoForge will be fully updated once the core architecture stabilizes.
 
-Supported Versions of `Pehkui-x.y.z+1.20.4-neoforge`:  
-`1.20.4`
+## What changed in this project
 
-Supported Versions of `Pehkui-x.y.z+1.20.2-neoforge`:  
-`1.20.2`
+#### Branching
 
-### Forge Versions
+- **Version-specific Branches**: Each update for a new Minecraft version now has its own branch;
+- **Stability Flow:** Features are developed in `dev` branches and merged into `main` only after reaching high
+  stability.
+- **Critical Bug Fixing**: Critical bug fixes (if done) will be merged into main branch and development
 
-Supported Versions of `Pehkui-x.y.z+1.20.1-forge`:  
-`1.20.1`
+#### Config System
 
-Supported Versions of `Pehkui-x.y.z+1.19.4-forge`:  
-`1.19.4`
+Replacing the external *Kanos Config* dependency with a **built-in implementation** for handling configurations,
+reducing the number of required dependencies.
 
-Supported Versions of `Pehkui-x.y.z+1.19.2-forge`:  
-`1.19.2`
+## Roadmap to Pehkui 5.0
 
-Supported Versions of `Pehkui-x.y.z+1.18.2-forge`:  
-`1.18.2`
+Minecraft 26.1 is a big change for the mod community. The transition to newer Minecraft versions requires
+a significant refactor of the compatibility system. **Pehkui: Continued** is moving away from the
+"Single JAR" approach (which supported all versions from 1.14 to latest). In newer releases, for older
+Minecraft versions is going to drop the support, while more recent versions is going to have updates for
+bug fixes (specially for versions 1.21.2 to 1.21.11)
 
-Supported Versions of `Pehkui-x.y.z+1.17.1-forge`:  
-`1.17.1`
+### Technical info
 
-Supported Versions of `Pehkui-x.y.z+1.16.5-forge`:  
-`1.16.5`
+#### Minecraft compatibility workflow
 
-</td></table></details>
+Starting from version 5.0.0 for Pehkui, the internal Minecraft compatibility system for Mixins using
+"compat-packages" (e.g. compat1205plus, compat115minus, compat116) is going to be removed. These changes
+make the update workflow for newer Minecraft versions easier, because you won't need to add new Mixins for
+the newer version and keeping an outdated mixin in the project. And this prevents to fail the build process
+if a package or class got renamed. This also brings initialization performance
 
-## Mod Features
-<details>
-<summary>Show/Hide Mod Features</summary><table width=100%><td></br>
+#### Mixins Architectural Refactor
 
-Pehkui allows mod developers to:
+The "compat-packages" system (e.g., `compat1205plus`, `compat115minus`) is going to be removed.
+Mixins is going to be **mirrored to Minecraft's internal package structure**. _This approach
+also improves initialization performance._
 
-- Change the size of entities through modifying scale data
-- Affect other properties of an entity that are considered as dependant on the size</br>(e.g. movement speed, explosion size, reach distance)
-- Have the scalable properties of an entity be affected by other scale data types or by</br>external data through scale modifiers
-</td></table></details>
-</td></table></details>
+*Example:* A Mixin targeting `net.minecraft.world.entity.Entity` is now located at
+`virtuoel.pehkui.mixins.world.entity.EntityMixin`. This makes the code easier to maintain against
+Mojang's renames.
 
-# Information for Developers
-<details>
-<summary>Show/Hide Information for Developers</summary><table width=100%><td>
 
-## Adding a Dependency
-<details open>
-<summary>Show/Hide Dependency Information</summary><table width=100%><td>
+## For developers
 
-### Maven
+To integrate Pehkui into your project, add the following to your `build.gradle`:
 
-<details open>
-<summary>Show/Hide Maven Information</summary><table width=100%><td>
-
-To make use of Pehkui in your own mod, you'll first need to go to the `repositories`</br>block of your `build.gradle`, typically found right before the `dependencies` block,</br>and add the JitPack Maven to the bottom of the block like below:
-
-```groovy
-// ...
-
+``` Gradle
 repositories {
-	// ... your other Maven repositories above, if any ...
-	maven {
-		url = "https://jitpack.io"
-	}
+	maven { url: 'https://jitpack.io }
 }
 
 dependencies {
-	// ...
+// Replace VERSION with your target Minecraft version (e.g., 4.0.0)
+	modImplementation "com.github.StopMotionEGames:Pehkui:VERSION
 }
-
-// ...
-```
-</td></table></details>
-
-### Mod Version and Dependency Configuration
-
-<details open>
-<summary>Show/Hide Dependency Configuration Information</summary><table width=100%><td>
-
-Now that a Maven repository is specified, add `pehkui_version=x.y.z-w` to your</br>`gradle.properties`, replacing `x.y.z-w` with one of the available version strings from</br>the [list of release tags](../../../tags).
-
-Lastly, in your `build.gradle`'s `dependencies` block, add the corresponding line from</br>below depending on your mod loader:
-
-#### Developing on Quilt/Fabric with Loom
-
-```groovy
-modApi("com.github.Virtuoel:Pehkui:${pehkui_version}", {
-	exclude group: "net.fabricmc.fabric-api"
-})
 ```
 
-#### Developing on NeoForge with NeoGradle
+If you want some more flexibility, you can add these lines to your build.gradle:
 
-```groovy
-implementation "com.github.Virtuoel:Pehkui:${pehkui_version}"
+``` Gradle
+dependencies {
+	if (project.hasProperty("pehkui_mod_version")) {
+		modImplementation "com.github.StopMotionEGames:Pehkui:${project.pehkui_mod_version}"
+	}
+}
 ```
 
-#### Developing on Forge with ForgeGradle
+And in your gradle.properties, add this line:
 
-```groovy
-implementation fg.deobf("com.github.Virtuoel:Pehkui:${pehkui_version}")
+``` Gradle
+// Replace VERSION with your target Minecraft version (e.g., 4.0.0)
+pehkui_mod_version=VERSION
 ```
-
-#### Developing on NeoForge/Forge with Architectury Loom
-
-```groovy
-modApi("com.github.Virtuoel:Pehkui:${pehkui_version}")
-```
-</td></table></details>
-
-### Fixing Mixins of Dependencies If Using ForgeGradle
-
-<details>
-<summary>Show/Hide Fix on ForgeGradle</summary><table width=100%><td>
-
-If you're using Forge with ForgeGradle, make sure the `mixingradle` plugin is present and</br>applied:
-
-Make sure the following line is present in your `build.gradle`'s</br>`buildscript { repositories {} }` block.
-
-```groovy
-maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
-```
-
-Then make sure the following line is present in your `build.gradle`'s</br>`buildscript { dependencies {} }` block.
-
-```groovy
-classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
-```
-
-Next, make sure the following line is present in your `build.gradle`.
-
-```groovy
-apply plugin: "org.spongepowered.mixin"
-```
-
-Then regenerate your run configurations with `genEclipseRuns`, `genIntellijRuns`, or</br>`genVSCodeRuns` depending on your IDE.
-</td></table></details>
-<details>
-
-<summary>Show/Hide Fix on Older ForgeGradle (4 and below)</summary><table width=100%><td>
-
-If you're using Forge with ForgeGradle 4 or older, make sure refmap remapping is enabled</br>in your `build.gradle`'s run configuration blocks.
-
-Make sure the following lines are present in the `client {}`, `server {}`, and `data {}`</br>run configuration blocks.
-
-```groovy
-property 'mixin.env.remapRefMap', 'true'
-property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-```
-
-Then regenerate your run configurations with `genEclipseRuns`, `genIntellijRuns`, or</br>`genVSCodeRuns` depending on your IDE.
-</td></table></details>
-</td></table></details>
-<!--
-## API Information
-<details>
-<summary>Show/Hide API Information</summary><table width=100%><td>
-
-### WIP
-
-</td></table></details>
--->
-</td></table></details>
