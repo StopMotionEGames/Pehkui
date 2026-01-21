@@ -79,7 +79,7 @@
 		"client.renderer.entity.ItemFrameRendererMixin",
 		"client.renderer.entity.player.AvatarRendererMixin",
 		"client.renderer.LevelRendererMixin",
-		"client.compat115plus.optifine.compat.ScreenEffectRendererMixin",
+		"client.optifine.compat.ScreenEffectRendererMixin",
 		"world.entity.item.ItemEntityMixin",
 		"client.multiplayer.ClientPacketListenerMixin",
 		"client.player.LocalPlayerMixin",

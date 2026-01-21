@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.client.compat115plus.optifine.compat;
+package virtuoel.pehkui.mixin.client.optifine.compat;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
