@@ -3,7 +3,8 @@
 **Pehkui: Continued** is an updated and enhanced version of the original Pehkui mod. Pehkui is a library mod
 for the Quilt, NeoForge and Fabric mod loaders that allows mod developers to modify the size of entities
 
-> [!IMPORTANT] This project is a downstream fork of the original
+> [!IMPORTANT]
+> This project is a downstream fork of the original
 > [Virtuoel/Pehkui](https://github.com/Virtuoel/Pehkui) repository. It's an independent fork that
 > is dedicated to ensuring the mod remains up-to-date.
 
@@ -58,7 +59,7 @@ Here a list of required mods for each supported platform:
 Replacing the external *Kanos Config* dependency with a **built-in implementation** for handling configurations,
 reducing the number of required dependencies.
 
-## What is coming on Pehkui for Minecraft version 26.1?
+## Roadmap to Pehkui 5.0
 
 Minecraft 26.1 is a big change for the mod community. The transition to newer Minecraft versions requires
 a significant refactor of the compatibility system. **Pehkui: Continued** is moving away from the
