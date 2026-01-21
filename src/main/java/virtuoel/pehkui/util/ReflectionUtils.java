@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.Nullable;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -99,7 +100,7 @@ public final class ReflectionUtils
 			
 			if (is1204Minus && ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
 			{
-				m = ServerPlayNetworking.class.getMethod("createS2CPacket", Identifier.class, FriendlyByteBuf.class);
+				m = ServerPlayNetworking.class.getMethod("createClientboundPacket", CustomPacketPayload.class);
 				h.put(7, lookup.unreflect(m));
 			}
 			
@@ -134,7 +135,7 @@ public final class ReflectionUtils
 		CONSTRUCT_ID_FROM_STRINGS = h.get(10);
 	}
 	
-	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channelName, FriendlyByteBuf buf)
+	public static Packet<ClientCommonPacketListener> createClientboundPacket(Identifier channelName, FriendlyByteBuf buf)
 	{
 		try
 		{

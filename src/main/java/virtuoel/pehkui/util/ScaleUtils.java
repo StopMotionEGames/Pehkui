@@ -26,12 +26,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import virtuoel.pehkui.Pehkui;
-import virtuoel.pehkui.api.PehkuiConfig;
-import virtuoel.pehkui.api.ScaleData;
-import virtuoel.pehkui.api.ScaleModifier;
-import virtuoel.pehkui.api.ScaleRegistries;
-import virtuoel.pehkui.api.ScaleType;
-import virtuoel.pehkui.api.ScaleTypes;
+import virtuoel.pehkui.api.*;
 import virtuoel.pehkui.network.ScalePacket;
 import virtuoel.pehkui.network.ScalePayload;
 
@@ -258,7 +253,7 @@ public class ScaleUtils
 			{
 				if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 				{
-					packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
+					packetSender.accept(ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
 				}
 				else
 				{
@@ -266,7 +261,7 @@ public class ScaleUtils
 					
 					new ScalePacket(entity, syncedScales).write(buffer);
 					
-					packetSender.accept(ReflectionUtils.createS2CPacket(Pehkui.SCALE_PACKET, buffer));
+					packetSender.accept(ReflectionUtils.createClientboundPacket(Pehkui.SCALE_PACKET, buffer));
 				}
 			}
 			
