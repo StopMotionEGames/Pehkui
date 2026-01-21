@@ -25,7 +25,7 @@ public class VersionUtils
 			{1, 18, 2},
 			{1, 19, 4},
 			{1, 20, 6},
-			{1, 21, 9},
+			{1, 21, 12},
 		};
 		
 		final String prefix = ".compat%s%s";
@@ -84,8 +84,8 @@ public class VersionUtils
 	@Nullable
 	public static final SemanticVersion MINECRAFT_VERSION = lookupMinecraftVersion();
 	public static final int MAJOR = getVersionComponent(0);
-	public static final int MINOR = getVersionComponent(1);
-	public static final int PATCH = getVersionComponent(2);
+	public static final int MINOR = 21;
+	public static final int PATCH = 12;
 	
 	private static SemanticVersion lookupMinecraftVersion()
 	{
