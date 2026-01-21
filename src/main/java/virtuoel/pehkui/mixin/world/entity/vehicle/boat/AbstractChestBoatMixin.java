@@ -1,0 +1,41 @@
+package virtuoel.pehkui.mixin.world.entity.vehicle.boat;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.boat.ChestBoat;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.boat.AbstractChestBoat;
+import virtuoel.pehkui.util.ScaleUtils;
+
+@Mixin(AbstractChestBoat.class)
+public abstract class AbstractChestBoatMixin
+{
+	@ModifyReturnValue(method = "getSinglePassengerXOffset", at = @At("RETURN"))
+	private float pehkui$getSinglePassengerXOffset(float original)
+	{
+		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
+		
+		return scale != 1.0F ? original * scale : original;
+	}
+
+	@ModifyReturnValue(method = "stillValid", at = @At("RETURN"))
+	private boolean pehkui$stillValid(boolean original, Player playerEntity)
+	{
+		if (!original)
+		{
+			final float scale = ScaleUtils.getEntityReachScale(playerEntity);
+
+			final ChestBoat self = (ChestBoat) (Object) this;
+
+			if (scale > 1.0F && !self.isRemoved() && self.position().closerThan(playerEntity.position(), 8.0 * scale))
+			{
+				return true;
+			}
+		}
+
+		return original;
+	}
+}

@@ -1,0 +1,21 @@
+package virtuoel.pehkui.mixin.client.player;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.Entity;
+import virtuoel.pehkui.util.ScaleUtils;
+
+@Mixin(LocalPlayer.class)
+public class LocalPlayerMixin
+{
+	@ModifyExpressionValue(method = "sendPosition", at = @At(value = "CONSTANT", args = "doubleValue=2.0E-4D"))
+	private double pehkui$sendMovementPackets$minVelocity(double value)
+	{
+		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
+		
+		return scale < 1.0F ? scale * value : value;
+	}
+}

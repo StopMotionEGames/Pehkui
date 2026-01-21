@@ -1,0 +1,29 @@
+package virtuoel.pehkui.mixin.world.entity;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import virtuoel.pehkui.util.ScaleUtils;
+
+@Mixin(AreaEffectCloud.class)
+public class AreaEffectCloudMixin
+{
+	@ModifyExpressionValue(method = "serverTick", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
+	private float pehkui$tick$minRadius(float value)
+	{
+		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
+		
+		return scale != 1.0F ? scale * value : value;
+	}
+	
+	@ModifyExpressionValue(method = "getDimensions", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
+	private float pehkui$getDimensions$height(float value)
+	{
+		final float scale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+		
+		return scale != 1.0F ? scale * value : value;
+	}
+}
