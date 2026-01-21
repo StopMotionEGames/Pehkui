@@ -48,7 +48,6 @@ group = project.maven_group
 base.archivesName = project.archives_base_name
 version = project.mod_version + "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}-" : "") + (project.hasProperty("metadata_minecraft_versions") ? project.metadata_minecraft_versions : project.minecraft_version)
 
-// Classe auxiliar para substituir o VersionNumber (compatível com Gradle 9)
 class McVersion implements Comparable<McVersion> {
 	final int major, minor, patch
 
@@ -70,7 +69,6 @@ class McVersion implements Comparable<McVersion> {
 
 def mcVer = new McVersion(minecraft_version)
 
-// Lógica de Versão do Java atualizada para 26.1 (Java 25)
 static def getJavaVersion(McVersion v) {
 	if (v.major >= 26) return 25 // 26.1+ Game Drops
 	if (v.major == 1) {

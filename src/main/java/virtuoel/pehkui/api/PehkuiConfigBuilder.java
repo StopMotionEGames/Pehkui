@@ -25,7 +25,6 @@ public class PehkuiConfigBuilder {
 	}
 
 	public <T> MutableConfigEntry<T> createConfigEntry(String name, T defaultValue, Supplier<T> supplier, Consumer<T> consumer) {
-		// Implementação padrão caso não seja sobrescrito (opcional)
 		return null;
 	}
 
