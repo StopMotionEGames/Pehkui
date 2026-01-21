@@ -290,7 +290,6 @@ public class ConfigSyncUtils
 	
 	public static void registerConfigFileCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder)
 	{
-		// Agora apontamos direto para o nosso novo Builder
 		final PehkuiConfigBuilder builder = PehkuiConfig.BUILDER;
 
 		configBuilder
@@ -305,7 +304,7 @@ public class ConfigSyncUtils
 				.executes(context ->
 				{
 					builder.load();
-					syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
+					syncConfigs(context.getSource().getServer().getPlayerManager().getPlayerList());
 					return 1;
 				})
 			)
@@ -315,8 +314,8 @@ public class ConfigSyncUtils
 					try
 					{
 						Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
-						builder.load(); // Recarrega (criando um config vazio/padrão)
-						syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
+						builder.load();
+						syncConfigs(context.getSource().getServer().getPlayerManager().getPlayerList());
 						return 1;
 					}
 					catch (IOException e)
@@ -346,7 +345,7 @@ public class ConfigSyncUtils
 						() -> I18nUtils.translate(
 							"commands.pehkui.debug.config.get.value",
 							"Config \"%s\" is currently set to \"%s\"",
-							key, String.valueOf(CONFIGS.get(key).get()) // .get() é mais universal
+							key, String.valueOf(CONFIGS.get(key).get())
 						),
 						false
 					);
