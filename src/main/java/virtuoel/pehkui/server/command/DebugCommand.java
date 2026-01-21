@@ -98,7 +98,7 @@ public class DebugCommand
 							
 							if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 							{
-								packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
+								packet = ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
 							}
 							else
 							{
@@ -106,7 +106,7 @@ public class DebugCommand
 								
 								new DebugPacket(PacketType.GARBAGE_COLLECT).write(buffer);
 								
-								packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
+								packet = ReflectionUtils.createClientboundPacket(Pehkui.DEBUG_PACKET, buffer);
 							}
 							
 							ReflectionUtils.sendPacket(context.getSource().getPlayerOrException().connection, packet);
@@ -218,7 +218,7 @@ public class DebugCommand
 			
 			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
 			{
-				packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
+				packet = ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
 			}
 			else
 			{
@@ -226,7 +226,7 @@ public class DebugCommand
 				
 				new DebugPacket(PacketType.MIXIN_AUDIT).write(buffer);
 				
-				packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
+				packet = ReflectionUtils.createClientboundPacket(Pehkui.DEBUG_PACKET, buffer);
 			}
 			
 			ReflectionUtils.sendPacket(((ServerPlayer) executor).connection, packet);
