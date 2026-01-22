@@ -4,11 +4,6 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
-
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.storage.ReadView;
-import net.minecraft.util.ErrorReporter;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -28,7 +23,12 @@ import net.minecraft.commands.arguments.NbtPathArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.commands.data.EntityDataAccessor;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import org.slf4j.Logger;
+import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleModifier;
@@ -1016,12 +1016,15 @@ public class ScaleCommand {
 
 		@Override
 		public void setData(CompoundTag nbt) throws CommandSyntaxException {
-			((PehkuiEntityExtensions) entity).pehkui_readScaleNbt(nbt);
+			try (ProblemReporter.ScopedCollector logging = new ProblemReporter.ScopedCollector(this.entity.problemPath(), (Logger) Pehkui.LOGGER)) {
+
+				((PehkuiEntityExtensions) this.entity).pehkui_readScaleNbt(TagValueInput.create(logging, this.entity.registryAccess(), nbt));
+			}
 		}
 
 		@Override
 		public CompoundTag getData() {
-			return ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(new CompoundTag());
+			return ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(TagValueOutput.createWithoutContext((ProblemReporter) Pehkui.LOGGER));
 		}
 	}
 

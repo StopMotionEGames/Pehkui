@@ -1,5 +1,6 @@
 package virtuoel.pehkui.mixin.world.entity.projectile;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,10 +43,12 @@ public abstract class AbstractArrowMixin {
 		}
 	}
 
-	@ModifyArg(method = "findHitEntity", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/ProjectileUtil;getEntityHitResult(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Lnet/minecraft/world/phys/EntityHitResult;"))
-	private AABB pehkui$getEntityCollision$expand(Level world, Entity entity, Vec3 vec3d, Vec3 vec3d2, AABB box, Predicate<Entity> predicate) {
-		final float width = ScaleUtils.getBoundingBoxWidthScale(entity);
-		final float height = ScaleUtils.getBoundingBoxHeightScale(entity);
+	@ModifyArg(method = "findHitEntity", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/ProjectileUtil;getEntityHitResult(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/projectile/Projectile;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Lnet/minecraft/world/phys/EntityHitResult;"))
+	private AABB pehkui$getEntityCollision$expand(AABB box) {
+		Projectile projectile = (Projectile) (Object) this;
+
+		final float width = ScaleUtils.getBoundingBoxWidthScale(projectile);
+		final float height = ScaleUtils.getBoundingBoxHeightScale(projectile);
 
 		if (width != 1.0F || height != 1.0F) {
 			return box.inflate(width - 1.0D, height - 1.0D, width - 1.0D);

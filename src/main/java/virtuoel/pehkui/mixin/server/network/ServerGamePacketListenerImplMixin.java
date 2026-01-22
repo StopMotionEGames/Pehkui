@@ -16,11 +16,12 @@ public class ServerGamePacketListenerImplMixin {
 	@Shadow
 	ServerPlayer player;
 
-	@ModifyArg(method = "handleMoveVehicle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;deflate(D)Lnet/minecraft/world/phys/AABB;"))
-	private double pehkui$onVehicleMove$contract(double value) {
-		final float scale = ScaleUtils.getMotionScale(player);
-		return scale < 1.0F ? value * scale : value;
-	}
+//	todo: see if still works!
+//	@ModifyArg(method = "handleMoveVehicle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;deflate(D)Lnet/minecraft/world/phys/AABB;"))
+//	private double pehkui$onVehicleMove$contract(double value) {
+//		final float scale = ScaleUtils.getMotionScale(player);
+//		return scale < 1.0F ? value * scale : value;
+//	}
 
 	@ModifyArg(method = "handleMoveVehicle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V"))
 	private Vec3 pehkui$onVehicleMove$move(MoverType moverType, Vec3 movement) {

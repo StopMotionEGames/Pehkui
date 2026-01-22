@@ -11,6 +11,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -84,61 +86,64 @@ public abstract class EntityExtensionsMixin implements PehkuiEntityExtensions {
 	}
 
 	@Inject(at = @At("HEAD"), method = "load")
-	private void pehkui$readNbt(CompoundTag tag, CallbackInfo info) {
-		pehkui_readScaleNbt(tag);
+	private void pehkui$readNbt(ValueInput valueInput, CallbackInfo ci) {
+		pehkui_readScaleNbt(valueInput);
 	}
 
 	@Override
-	public void pehkui_readScaleNbt(CompoundTag nbt) {
+	public void pehkui_readScaleNbt(ValueInput input) {
 		if (pehkui_shouldIgnoreScaleNbt()) {
 			return;
 		}
 
-		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt)) {
-			final CompoundTag typeData = nbt.getCompoundOrEmpty(Pehkui.MOD_ID + ":scale_data_types");
-
-			String key;
-			ScaleData scaleData;
+		String key = Pehkui.MOD_ID + ":scale_data_types";
+		input.read(key, CompoundTag.CODEC).ifPresent(typeData -> {
+//			todo: See if nothing breaks
+//			if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
 			for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
-				key = entry.getKey().toString();
+				String scaleKey = entry.getKey().toString();
 
-				if (typeData.contains(key)) {
-					scaleData = pehkui_getScaleData(entry.getValue());
-					scaleData.readNbt(typeData.getCompoundOrEmpty(key));
+				if (typeData.contains(scaleKey)) {
+					ScaleData scaleData = pehkui_getScaleData(entry.getValue());
+					scaleData.readNbt(typeData.getCompoundOrEmpty(scaleKey));
 				}
 			}
-		}
+		});
 	}
 
 	@Inject(at = @At("HEAD"), method = "saveWithoutId")
-	private void pehkui$writeNbt(CompoundTag tag, CallbackInfoReturnable<CompoundTag> info) {
-		pehkui_writeScaleNbt(tag);
+	private void pehkui$writeNbt(ValueOutput valueOutput, CallbackInfo ci) {
+		pehkui_writeScaleNbt(valueOutput);
 	}
 
 	@Override
-	public CompoundTag pehkui_writeScaleNbt(CompoundTag nbt) {
+	public CompoundTag pehkui_writeScaleNbt(ValueOutput output) {
 		if (pehkui_shouldIgnoreScaleNbt()) {
-			return nbt;
+			return new CompoundTag();
 		}
 
 		final CompoundTag typeData = new CompoundTag();
 
-		CompoundTag compound;
 		for (final ScaleData scaleData : pehkui_getScales().values()) {
 			if (scaleData != null) {
-				compound = scaleData.writeNbt(new CompoundTag());
-
-				if (compound.size() != 0) {
-					typeData.put(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, scaleData.getScaleType()).toString(), compound);
+				CompoundTag compound = scaleData.writeNbt(new CompoundTag());
+				if (!compound.isEmpty()) {
+					typeData.put(
+						ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, scaleData.getScaleType()).toString(),
+						compound
+					);
 				}
 			}
 		}
 
-		if (typeData.size() > 0) {
-			nbt.put(Pehkui.MOD_ID + ":scale_data_types", typeData);
+		final CompoundTag rootContainer = new CompoundTag();
+		if (!typeData.isEmpty()) {
+			output.store(Pehkui.MOD_ID + ":scale_data_types", CompoundTag.CODEC, typeData);
+
+			rootContainer.put(Pehkui.MOD_ID + ":scale_data_types", typeData);
 		}
 
-		return nbt;
+		return rootContainer;
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")
@@ -165,7 +170,7 @@ public abstract class EntityExtensionsMixin implements PehkuiEntityExtensions {
 		ScaleUtils.syncScalesOnTrackingStart((Entity) (Object) this, player.connection);
 	}
 
-	@ModifyVariable(method = "spawnAtLocation(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;F)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "STORE"))
+	@ModifyVariable(method = "spawnAtLocation(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "STORE"))
 	private ItemEntity pehkui$dropStack(ItemEntity entity) {
 		ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);
 		return entity;

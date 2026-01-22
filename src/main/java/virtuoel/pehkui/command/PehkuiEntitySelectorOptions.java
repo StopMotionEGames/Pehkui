@@ -8,6 +8,8 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
@@ -62,7 +64,7 @@ public class PehkuiEntitySelectorOptions {
 				final CompoundTag parsed = (TagParser.parseCompoundAsArgument(r.getReader()));
 				r.addPredicate(entity ->
 				{
-					final CompoundTag nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(new CompoundTag());
+					final CompoundTag nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(TagValueOutput.createWithoutContext((ProblemReporter) Pehkui.LOGGER));
 
 					return NbtUtils.compareNbt(parsed, nbt, true) != negated;
 				});
