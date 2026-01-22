@@ -56,8 +56,8 @@ public class GameRendererMixin {
 		method = "bobView",
 		at = @At(value = "STORE"),
 		ordinal = 2)
-	private float pehkui$bobView$strength(float value, @Local(argsOnly = true) float tickProgress) {
-		return value / ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity(), tickProgress);
+	private float pehkui$bobView$strength(float value, @Local(argsOnly = true) float tickDelta) {
+		return value / ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity(), tickDelta);
 	}
 
 	@ModifyExpressionValue(method = "getProjectionMatrix", at = @At(value = "CONSTANT", args = "floatValue=0.05F"))

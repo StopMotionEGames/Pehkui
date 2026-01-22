@@ -11,7 +11,7 @@ public abstract class PlayerRendererMixin {
 //	{
 //		if (original != Vec3d.ZERO)
 //		{
-//			return original.multiply(ScaleUtils.getModelHeightScale(entity, tickProgress));
+//			return original.multiply(ScaleUtils.getModelHeightScale(entity, tickDelta));
 //		}
 //
 //		return original;

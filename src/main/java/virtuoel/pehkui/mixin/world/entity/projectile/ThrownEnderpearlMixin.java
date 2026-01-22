@@ -14,11 +14,9 @@ import net.minecraft.world.phys.HitResult;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(ThrownEnderpearl.class)
-public class ThrownEnderpearlMixin
-{
+public class ThrownEnderpearlMixin {
 	@Inject(method = "onHit(Lnet/minecraft/world/phys/HitResult;)V", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-	private void pehkui$onCollision(HitResult hitResult, CallbackInfo info, @Local Endermite endermiteEntity)
-	{
+	private void pehkui$onCollision(HitResult hitResult, CallbackInfo info, @Local Endermite endermiteEntity) {
 		ScaleUtils.loadScale(endermiteEntity, (Entity) (Object) this);
 	}
 }

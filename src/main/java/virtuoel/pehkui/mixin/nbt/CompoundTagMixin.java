@@ -9,19 +9,17 @@ import virtuoel.pehkui.util.CompoundTagExtensions;
 
 @Mixin(CompoundTag.class)
 public abstract class CompoundTagMixin implements CompoundTagExtensions {
-	@Shadow
-	abstract boolean hasUUID(String key);
-
-	@Shadow
-	abstract UUID getUUID(String key);
-
 	@Override
-	public boolean pehkui_containsUuid(String key) {
-		return hasUUID(key);
+	public boolean pehkui_containsUuid(String key)
+	{
+		CompoundTag self = (CompoundTag) (Object) this;
+		return self.get(key) instanceof net.minecraft.nbt.IntArrayTag array && array.size() == 4;
 	}
 
 	@Override
-	public UUID pehkui_getUuid(String key) {
-		return getUUID(key);
+	public UUID pehkui_getUuid(String key)
+	{
+		CompoundTag self = (CompoundTag) (Object) this;
+		return self.read(key, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 	}
 }

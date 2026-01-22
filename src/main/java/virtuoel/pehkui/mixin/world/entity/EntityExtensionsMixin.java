@@ -94,17 +94,17 @@ public abstract class EntityExtensionsMixin implements PehkuiEntityExtensions {
 			return;
 		}
 
-		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types", Tag.TAG_COMPOUND) && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt)) {
-			final CompoundTag typeData = nbt.getCompound(Pehkui.MOD_ID + ":scale_data_types");
+		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt)) {
+			final CompoundTag typeData = nbt.getCompoundOrEmpty(Pehkui.MOD_ID + ":scale_data_types");
 
 			String key;
 			ScaleData scaleData;
 			for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
 				key = entry.getKey().toString();
 
-				if (typeData.contains(key, Tag.TAG_COMPOUND)) {
+				if (typeData.contains(key)) {
 					scaleData = pehkui_getScaleData(entry.getValue());
-					scaleData.readNbt(typeData.getCompound(key));
+					scaleData.readNbt(typeData.getCompoundOrEmpty(key));
 				}
 			}
 		}

@@ -20,52 +20,50 @@ import virtuoel.pehkui.util.PehkuiEntityExtensions;
 import virtuoel.pehkui.util.PehkuiEntitySelectorReaderExtensions;
 import virtuoel.pehkui.util.ReflectionUtils;
 
-public class PehkuiEntitySelectorOptions
-{
+public class PehkuiEntitySelectorOptions {
 	public static final Component SCALE_RANGE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_range.description", "Entities with scale value");
 	public static final Component SCALE_TYPE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_type.description", "Entities with scale type");
 	public static final Component SCALE_NBT_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_nbt.description", "Entities with scale NBT");
-	
-	public static void register()
-	{
+
+	public static void register() {
 		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setScaleRange(MinMaxBounds.Doubles.fromReader(r.getReader())),
 			r -> ReflectionUtils.isDummy(cast(r).pehkui_getScaleRange()),
 			SCALE_RANGE_DESCRIPTION
 		);
-		
+
 		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale_type").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setScaleType(parseScaleType(r)),
 			r -> cast(r).pehkui_getScaleType() == ScaleTypes.INVALID,
 			SCALE_TYPE_DESCRIPTION
 		);
-		
+
 		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("computed_scale").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setComputedScaleRange(MinMaxBounds.Doubles.fromReader(r.getReader())),
 			r -> ReflectionUtils.isDummy(cast(r).pehkui_getComputedScaleRange()),
 			SCALE_RANGE_DESCRIPTION
 		);
-		
+
 		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("computed_scale_type").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setComputedScaleType(parseScaleType(r)),
 			r -> cast(r).pehkui_getComputedScaleType() == ScaleTypes.INVALID,
 			SCALE_TYPE_DESCRIPTION
 		);
-		
+
 		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale_nbt").toString().replace(':', '.'),
 			r ->
 			{
 				final boolean negated = r.shouldInvertValue();
-				final CompoundTag parsed = (new TagParser(r.getReader())).readStruct();
+				final CompoundTag parsed = (TagParser.parseCompoundAsArgument(r.getReader()));
 				r.addPredicate(entity ->
 				{
 					final CompoundTag nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(new CompoundTag());
-					
+
 					return NbtUtils.compareNbt(parsed, nbt, true) != negated;
 				});
 			},
@@ -73,14 +71,12 @@ public class PehkuiEntitySelectorOptions
 			SCALE_NBT_DESCRIPTION
 		);
 	}
-	
-	private static PehkuiEntitySelectorReaderExtensions cast(EntitySelectorParser reader)
-	{
+
+	private static PehkuiEntitySelectorReaderExtensions cast(EntitySelectorParser reader) {
 		return ((PehkuiEntitySelectorReaderExtensions) reader);
 	}
-	
-	private static ScaleType parseScaleType(EntitySelectorParser reader) throws CommandSyntaxException
-	{
+
+	private static ScaleType parseScaleType(EntitySelectorParser reader) throws CommandSyntaxException {
 		reader.setSuggestions((builder, consumer) ->
 		{
 			CommandUtils.suggestIdentifiersIgnoringNamespace(
@@ -88,24 +84,23 @@ public class PehkuiEntitySelectorOptions
 				ScaleRegistries.SCALE_TYPES.keySet(),
 				builder
 			);
-			
+
 			return builder.buildFuture();
 		});
-		
+
 		final int i = reader.getReader().getCursor();
-		
+
 		final ResourceLocation id = ResourceLocation.read(reader.getReader());
 		final ScaleType scaleType = ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, id);
-		
+
 		final ResourceLocation defaultId = ScaleRegistries.getDefaultId(ScaleRegistries.SCALE_TYPES);
 		final ScaleType defaultType = ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, defaultId);
-		
-		if (scaleType == null || (scaleType == defaultType && !id.equals(defaultId)))
-		{
+
+		if (scaleType == null || (scaleType == defaultType && !id.equals(defaultId))) {
 			reader.getReader().setCursor(i);
 			throw ScaleTypeArgumentType.INVALID_ENTRY_EXCEPTION.createWithContext(reader.getReader(), id.toString());
 		}
-		
+
 		return scaleType;
 	}
 }

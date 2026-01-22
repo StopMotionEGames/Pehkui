@@ -12,7 +12,7 @@ import virtuoel.pehkui.util.ScaleRenderUtils;
 public class LevelRendererMixin {
 	@Inject(method = "checkPoseStack", at = @At(value = "HEAD"))
 	private void pehkui$checkEmpty(PoseStack matrices, CallbackInfo info) {
-		if (!matrices.clear()) {
+		if (!matrices.isEmpty()) {
 			ScaleRenderUtils.logIfRenderCancelled();
 		}
 	}

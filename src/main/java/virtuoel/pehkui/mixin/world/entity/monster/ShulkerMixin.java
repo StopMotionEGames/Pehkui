@@ -14,7 +14,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Shulker.class)
 public class ShulkerMixin {
-	@ModifyReturnValue(method = "makeBoundingBox()Lnet/minecraft/world/phys/AABB;", at = @At("RETURN"))
+	@ModifyReturnValue(method = "makeBoundingBox", at = @At("RETURN"))
 	private AABB pehkui$calculateBoundingBox(AABB originalBox) {
 		final Shulker entity = (Shulker) (Object) this;
 

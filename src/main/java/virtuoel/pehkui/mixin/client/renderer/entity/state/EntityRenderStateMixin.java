@@ -1,6 +1,7 @@
 package virtuoel.pehkui.mixin.client.renderer.entity.state;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,7 +29,7 @@ public class EntityRenderStateMixin implements PehkuiEntityRenderStateExtensions
 
 	private float pehkui$targetingMargin = 0.0f;
 
-	private Box pehkui$currentBoundingBox = new Box(0, 0, 0, 0, 0, 0);
+	private AABB pehkui$currentBoundingBox = new AABB(0, 0, 0, 0, 0, 0);
 
 	@Override
 	public float pehkui$getModelWidthScale() {
@@ -101,12 +102,12 @@ public class EntityRenderStateMixin implements PehkuiEntityRenderStateExtensions
 	}
 
 	@Override
-	public Box pehkui$getCurrentBoundingBox() {
+	public AABB pehkui$getCurrentBoundingBox() {
 		return pehkui$currentBoundingBox;
 	}
 
 	@Override
-	public void pehkui$setCurrentBoundingBox(Box box) {
+	public void pehkui$setCurrentBoundingBox(AABB box) {
 		pehkui$currentBoundingBox = box;
 	}
 }

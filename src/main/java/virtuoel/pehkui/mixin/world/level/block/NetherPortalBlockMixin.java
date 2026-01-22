@@ -2,6 +2,7 @@ package virtuoel.pehkui.mixin.world.level.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,10 +16,10 @@ import virtuoel.pehkui.util.PehkuiBlockStateExtensions;
 @Mixin(NetherPortalBlock.class)
 public abstract class NetherPortalBlockMixin {
 	@Inject(at = @At("HEAD"), method = "entityInside", cancellable = true)
-	private void pehkui$onEntityCollision(BlockState state, Level world, BlockPos pos, Entity entity, CallbackInfo info) {
+	private void pehkui$onEntityCollision(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier insideBlockEffectApplier, CallbackInfo ci) {
 		if (PehkuiConfig.COMMON.accurateNetherPortals.get()) {
-			if (!entity.getBoundingBox().intersects(((PehkuiBlockStateExtensions) state).pehkui_getOutlineShape(world, pos).bounds().move(pos))) {
-				info.cancel();
+			if (!entity.getBoundingBox().intersects(((PehkuiBlockStateExtensions) blockState).pehkui_getOutlineShape(level, blockPos).bounds().move(blockPos))) {
+				ci.cancel();
 			}
 		}
 	}

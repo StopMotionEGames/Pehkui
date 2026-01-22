@@ -46,8 +46,8 @@ public abstract class EntityMixin {
 		return scale < 1.0F ? value * scale : value;
 	}
 
-	@ModifyArg(method = "checkFallDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;F)V"))
-	private float pehkui$fall$fallDistance(float distance) {
+	@ModifyArg(method = "checkFallDamage",index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;D)V"))
+	private double pehkui$fall$fallDistance(double distance) {
 		final float scale = ScaleUtils.getFallingScale((Entity) (Object) this);
 
 		if (scale != 1.0F) {

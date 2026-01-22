@@ -15,20 +15,20 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
 	@Inject(method = "extractRenderState", at = @At("RETURN"))
-	private void pehkui$copyScale(T entity, S state, float tickProgress, CallbackInfo ci) {
+	private void pehkui$copyScale(T entity, S state, float tickDelta, CallbackInfo ci) {
 		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) state;
 
-		ext.pehkui$setModelWidthScale(ScaleUtils.getModelWidthScale(entity, tickProgress));
-		ext.pehkui$setModelHeightScale(ScaleUtils.getModelHeightScale(entity, tickProgress));
-		ext.pehkui$setBoundingBoxWidthScale(ScaleUtils.getBoundingBoxWidthScale(entity, tickProgress));
-		ext.pehkui$setBoundingBoxHeightScale(ScaleUtils.getBoundingBoxHeightScale(entity, tickProgress));
+		ext.pehkui$setModelWidthScale(ScaleUtils.getModelWidthScale(entity, tickDelta));
+		ext.pehkui$setModelHeightScale(ScaleUtils.getModelHeightScale(entity, tickDelta));
+		ext.pehkui$setBoundingBoxWidthScale(ScaleUtils.getBoundingBoxWidthScale(entity, tickDelta));
+		ext.pehkui$setBoundingBoxHeightScale(ScaleUtils.getBoundingBoxHeightScale(entity, tickDelta));
 	}
 
 	//	@Inject(method = "renderLeash", at = @At(value = "HEAD"))
 //	private <E extends Entity> void pehkui$renderLeash$head(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState.LeashData leashData, CallbackInfo ci)
 //	{
-//		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickProgress);
-//		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickProgress);
+//		final float widthScale = ScaleUtils.getModelWidthScale(entity, tickDelta);
+//		final float heightScale = ScaleUtils.getModelHeightScale(entity, tickDelta);
 //
 //		final float inverseWidthScale = 1.0F / widthScale;
 //		final float inverseHeightScale = 1.0F / heightScale;

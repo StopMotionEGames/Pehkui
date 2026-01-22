@@ -135,7 +135,7 @@ public class DebugCommand {
 			return true;
 		}
 
-		final CompoundTagExtensions compound = ((CompoundTagExtensions) nbt);
+		final CompoundTagExtensions compound = ((CompoundTagExtensions) (Object) nbt);
 
 		return compound.pehkui_containsUuid("UUID") && MARKED_UUIDS.remove(compound.pehkui_getUuid("UUID"));
 	}
@@ -170,8 +170,8 @@ public class DebugCommand {
 			w.setBlockAndUpdate(mut, Blocks.POLISHED_ANDESITE.defaultBlockState());
 			final Entity e = t.create(w, EntitySpawnReason.COMMAND);
 
-			e.absMoveTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
-			e.moveTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
+			e.absSnapTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
+			e.snapTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
 			e.setYHeadRot(opposite.toYRot());
 
 			e.addTag("pehkui");

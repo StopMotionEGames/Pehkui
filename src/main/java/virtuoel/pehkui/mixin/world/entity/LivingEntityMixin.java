@@ -99,7 +99,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		return scale != 1.0F ? scale * strength : strength;
 	}
 
-	@ModifyArg(method = "blockedByShield", at = @At(value = "INVOKE", args = "floatValue=0.5F", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
+	@ModifyArg(method = "blockedByItem", at = @At(value = "INVOKE", args = "floatValue=0.5F", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
 	private double pehkui$knockback$knockback(double value, @Local(argsOnly = true) LivingEntity target)
 	{
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
