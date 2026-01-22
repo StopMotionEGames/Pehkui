@@ -1,5 +1,6 @@
 package virtuoel.pehkui.mixin.server.level;
 
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,14 +18,15 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class ServerEntityMixin {
 	@Shadow
 	@Final
-	Entity entity;
+	private Entity entity;
 
 	@Shadow
-	abstract void broadcastAndSend(Packet<?> packet);
+	@Final
+	private ServerEntity.Synchronizer synchronizer;
 
 	@Inject(at = @At("TAIL"), method = "sendChanges")
 	private void pehkui$tick(CallbackInfo info) {
-		ScaleUtils.syncScalesIfNeeded(entity, p -> this.broadcastAndSend(p));
+		ScaleUtils.syncScalesIfNeeded(entity, p -> this.synchronizer.sendToTrackingPlayersAndSelf((Packet<? super ClientGamePacketListener>) p));
 	}
 
 	@ModifyExpressionValue(method = "sendChanges", at = @At(value = "CONSTANT", args = "doubleValue=7.62939453125E-6D"))
@@ -36,6 +38,6 @@ public abstract class ServerEntityMixin {
 
 	@Inject(at = @At("HEAD"), method = "sendDirtyEntityData")
 	private void pehkui$syncEntityData(CallbackInfo info) {
-		ScaleUtils.syncScalesIfNeeded(entity, p -> this.broadcastAndSend(p));
+		ScaleUtils.syncScalesIfNeeded(entity, p -> this.synchronizer.sendToTrackingPlayersAndSelf((Packet<? super ClientGamePacketListener>) p));
 	}
 }

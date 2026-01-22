@@ -11,7 +11,7 @@ import virtuoel.pehkui.util.PehkuiEntityRenderStateExtensions;
 
 @Mixin(ItemFrameRenderer.class)
 public class ItemFrameRendererMixin {
-	@ModifyVariable(method = "render(Lnet/minecraft/client/renderer/entity/state/ItemFrameRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "STORE"))
+	@ModifyVariable(method = "submit(Lnet/minecraft/client/renderer/entity/state/ItemFrameRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At(value = "STORE"))
 	private Vec3 pehkui$render(Vec3 value, ItemFrameRenderState state) {
 		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) state;
 		final float widthScale = ext.pehkui$getBoundingBoxWidthScale();

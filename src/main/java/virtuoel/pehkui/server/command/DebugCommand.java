@@ -131,7 +131,7 @@ public class DebugCommand {
 	private static final Collection<String> MARKED_USERNAMES = new HashSet<>();
 
 	public static boolean unmarkEntityForScaleReset(final Entity entity, final CompoundTag nbt) {
-		if (entity instanceof Player && MARKED_USERNAMES.remove(((Player) entity).getGameProfile().getName().toLowerCase(Locale.ROOT))) {
+		if (entity instanceof Player && MARKED_USERNAMES.remove(((Player) entity).getGameProfile().name().toLowerCase(Locale.ROOT))) {
 			return true;
 		}
 

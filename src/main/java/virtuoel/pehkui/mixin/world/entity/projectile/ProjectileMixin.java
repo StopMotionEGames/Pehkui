@@ -16,7 +16,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Projectile.class)
 public abstract class ProjectileMixin {
-	@ModifyExpressionValue(method = "checkLeftOwner", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(D)Lnet/minecraft/world/phys/AABB;"))
+	@ModifyExpressionValue(method = "isOutsideOwnerCollisionRange", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(D)Lnet/minecraft/world/phys/AABB;"))
 	private AABB pehkui$shouldLeaveOwner$expand(AABB value) {
 		final Entity self = (Entity) (Object) this;
 		final float width = ScaleUtils.getBoundingBoxWidthScale(self);

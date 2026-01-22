@@ -187,7 +187,7 @@ public class ScaleRenderUtils {
 
 	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final AABB box, final float red, final float green, final float blue, final float alpha) {
 		if (VersionUtils.MINOR >= 15) {
-			ShapeRenderer.renderLineBox((PoseStack) matrices, (VertexConsumer) vertices, box, red, green, blue, alpha);
+			ShapeRenderer.renderLineBox(((PoseStack) matrices).last(), (VertexConsumer) vertices, box, red, green, blue, alpha);
 		} else if (DRAW_BOX_OUTLINE != null) {
 			try {
 				DRAW_BOX_OUTLINE.invoke(box, red, green, blue, alpha);

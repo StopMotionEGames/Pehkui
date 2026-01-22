@@ -49,7 +49,7 @@ public class Pehkui implements ModInitializer {
 		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1")) {
 			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			{
-				if (!server.isSingleplayerOwner(handler.player.getGameProfile())) {
+				if (!server.isSingleplayerOwner(handler.player.nameAndId())) {
 					ConfigSyncUtils.syncConfigs(handler);
 				} else {
 					ConfigSyncUtils.resetSyncedConfigs();

@@ -28,9 +28,10 @@ public class ItemEntityMixin {
 			heightScale != 1.0F ? heightScale * yExpand : yExpand,
 			widthScale != 1.0F ? widthScale * zExpand : zExpand);
 	}
+	// todo: see if items doesn't break
 
-	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/world/entity/item/ItemEntity;)V")
-	private void pehkui$construct(ItemEntity entity, CallbackInfo info) {
-		ScaleUtils.loadScale((Entity) (Object) this, entity);
-	}
+//	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/world/entity/item/ItemEntity;)V")
+//	private void pehkui$construct(ItemEntity entity, CallbackInfo info) {
+//		ScaleUtils.loadScale((Entity) (Object) this, entity);
+//	}
 }

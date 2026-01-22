@@ -26,7 +26,7 @@ public abstract class EntityRefreshDimensionsMixin {
 
 		final float currentWidth = ReflectionUtils.getDimensionsWidth(current);
 		final float previousWidth = ReflectionUtils.getDimensionsWidth(previous);
-		if (world.isClientSide && self.getType() == EntityType.PLAYER && currentWidth > previousWidth) {
+		if (world.isClientSide() && self.getType() == EntityType.PLAYER && currentWidth > previousWidth) {
 			final double prevW = Math.min(previousWidth, 4.0D);
 			final double prevH = Math.min(ReflectionUtils.getDimensionsHeight(previous), 4.0D);
 			final double currW = Math.min(currentWidth, 4.0D);

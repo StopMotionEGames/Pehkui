@@ -16,6 +16,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 public class TargetGoalMixin {
 	@Shadow
 	protected LivingEntity targetMob;
+
 	@Shadow
 	@Final
 	@Mutable
