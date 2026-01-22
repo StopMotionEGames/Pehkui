@@ -9,21 +9,25 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(WitherBoss.class)
-public class WhiterBossMixin
-{
+public class WhiterBossMixin {
 	@ModifyExpressionValue(method = "getHeadX", at = @At(value = "CONSTANT", args = "doubleValue=1.3D"))
-	private double pehkui$getHeadX$offset(double value)
-	{
+	private double pehkui$getHeadX$offset(double value) {
 		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		
+
 		return scale != 1.0F ? scale * value : value;
 	}
-	
+
+	@ModifyExpressionValue(method = "getHeadY", at = {@At(value = "CONSTANT", args = "floatValue=3.0F"), @At(value = "CONSTANT", args = "floatValue=2.2F")})
+	private float pehkui$getHeadY$offset(float value) {
+		final float scale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);
+
+		return scale != 1.0F ? scale * value : value;
+	}
+
 	@ModifyExpressionValue(method = "getHeadZ", at = @At(value = "CONSTANT", args = "doubleValue=1.3D"))
-	private double pehkui$getHeadZ$offset(double value)
-	{
+	private double pehkui$getHeadZ$offset(double value) {
 		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
-		
+
 		return scale != 1.0F ? scale * value : value;
 	}
 }

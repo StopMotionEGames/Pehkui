@@ -7,34 +7,27 @@ import net.minecraft.server.commands.data.DataCommands;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-public interface DataCommandInvoker
-{
+public interface DataCommandInvoker {
 	@Mixin(DataCommands.class)
-	interface Get
-	{
+	interface Get {
 		@Invoker
-		static int callGetData(CommandSourceStack source, DataAccessor object)
-		{
+		static int callGetData(CommandSourceStack source, DataAccessor object) {
 			throw new NoSuchMethodError();
 		}
 	}
-	
+
 	@Mixin(DataCommands.class)
-	interface Path
-	{
+	interface Path {
 		@Invoker
-		static int callGetData(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path)
-		{
+		static int callGetData(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path) {
 			throw new NoSuchMethodError();
 		}
 	}
-	
+
 	@Mixin(DataCommands.class)
-	interface Scaled
-	{
+	interface Scaled {
 		@Invoker
-		static int callGetNumeric(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path, double scale)
-		{
+		static int callGetNumeric(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path, double scale) {
 			throw new NoSuchMethodError();
 		}
 	}

@@ -27,67 +27,57 @@ import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
 @ApiStatus.Internal
-public class Pehkui implements ModInitializer
-{
+public class Pehkui implements ModInitializer {
 	public static final String MOD_ID = "pehkui";
-	
+
 	public static final ILogger LOGGER = MixinService.getService().getLogger(MOD_ID);
-	
-	public Pehkui()
-	{
+
+	public Pehkui() {
 		ScaleTypes.INVALID.getClass();
 		ScaleOperations.NOOP.getClass();
 		PehkuiConfig.BUILDER.load();
 	}
-	
+
 	@Override
-	public void onInitialize()
-	{
+	public void onInitialize() {
 		CommandUtils.registerArgumentTypes();
-		
+
 		PehkuiEntitySelectorOptions.register();
-		
+
 		CommandUtils.registerCommands();
-		
-		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
-		{
+
+		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1")) {
 			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			{
-				if (!server.isSingleplayerOwner(handler.player.getGameProfile()))
-				{
+				if (!server.isSingleplayerOwner(handler.player.getGameProfile())) {
 					ConfigSyncUtils.syncConfigs(handler);
-				}
-				else
-				{
+				} else {
 					ConfigSyncUtils.resetSyncedConfigs();
 				}
 			});
-			
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
-			{
+
+			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
 				PayloadTypeRegistry.playS2C().register(ScalePayload.ID, ScalePayload.CODEC);
 				PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
 				PayloadTypeRegistry.playS2C().register(DebugPayload.ID, DebugPayload.CODEC);
 			}
 		}
-		
+
 		GravityChangerCompatibility.INSTANCE.getClass();
 		IdentityCompatibility.INSTANCE.getClass();
 		ImmersivePortalsCompatibility.INSTANCE.getClass();
 		MulticonnectCompatibility.INSTANCE.getClass();
 		ReachEntityAttributesCompatibility.INSTANCE.getClass();
 	}
-	
-	public static ResourceLocation id(String path)
-	{
+
+	public static ResourceLocation id(String path) {
 		return ReflectionUtils.constructIdentifier(MOD_ID, path);
 	}
-	
-	public static ResourceLocation id(String path, String... paths)
-	{
+
+	public static ResourceLocation id(String path, String... paths) {
 		return id(paths.length == 0 ? path : path + "/" + String.join("/", paths));
 	}
-	
+
 	public static final ResourceLocation SCALE_PACKET = id("scale");
 	public static final ResourceLocation CONFIG_SYNC_PACKET = id("config_sync");
 	public static final ResourceLocation DEBUG_PACKET = id("debug");

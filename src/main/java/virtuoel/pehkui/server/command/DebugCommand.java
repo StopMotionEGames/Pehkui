@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -40,24 +41,21 @@ import virtuoel.pehkui.network.DebugPayload;
 import virtuoel.pehkui.util.CommandUtils;
 import virtuoel.pehkui.util.ConfigSyncUtils;
 import virtuoel.pehkui.util.I18nUtils;
-import virtuoel.pehkui.util.NbtCompoundExtensions;
+import virtuoel.pehkui.util.CompoundTagExtensions;
 import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
-public class DebugCommand
-{
-	public static void register(final CommandDispatcher<CommandSourceStack> commandDispatcher)
-	{
+public class DebugCommand {
+	public static void register(final CommandDispatcher<CommandSourceStack> commandDispatcher) {
 		final LiteralArgumentBuilder<CommandSourceStack> builder =
 			Commands.literal("scale")
-			.requires(source -> source.hasPermission(2));
-		
+				.requires(source -> source.hasPermission(2));
+
 		builder.then(Commands.literal("debug")
 			.then(ConfigSyncUtils.registerConfigCommands())
 		);
-		
-		if (FabricLoader.getInstance().isDevelopmentEnvironment() || PehkuiConfig.COMMON.enableCommands.get())
-		{
+
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() || PehkuiConfig.COMMON.enableCommands.get()) {
 			builder
 				.then(Commands.literal("debug")
 					.then(Commands.literal("delete_scale_data")
@@ -66,17 +64,14 @@ public class DebugCommand
 								.executes(context ->
 								{
 									final String uuidString = StringArgumentType.getString(context, "uuid");
-									
-									try
-									{
+
+									try {
 										MARKED_UUIDS.add(UUID.fromString(uuidString));
-									}
-									catch (IllegalArgumentException e)
-									{
+									} catch (IllegalArgumentException e) {
 										context.getSource().sendFailure(I18nUtils.translate("commands.pehkui.debug.delete.uuid.invalid", "Invalid UUID \"%s\".", uuidString));
 										return 0;
 									}
-									
+
 									return 1;
 								})
 							)
@@ -86,7 +81,7 @@ public class DebugCommand
 								.executes(context ->
 								{
 									MARKED_USERNAMES.add(StringArgumentType.getString(context, "username").toLowerCase(Locale.ROOT));
-									
+
 									return 1;
 								})
 							)
@@ -96,32 +91,28 @@ public class DebugCommand
 						.executes(context ->
 						{
 							final Packet<?> packet;
-							
-							if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
-							{
+
+							if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
 								packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
-							}
-							else
-							{
+							} else {
 								final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-								
+
 								new DebugPacket(PacketType.GARBAGE_COLLECT).write(buffer);
-								
+
 								packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
 							}
-							
+
 							ReflectionUtils.sendPacket(context.getSource().getPlayerOrException().connection, packet);
-							
+
 							System.gc();
-							
+
 							return 1;
 						})
 					)
 				);
 		}
-		
-		if (FabricLoader.getInstance().isDevelopmentEnvironment() || PehkuiConfig.COMMON.enableDebugCommands.get())
-		{
+
+		if (FabricLoader.getInstance().isDevelopmentEnvironment() || PehkuiConfig.COMMON.enableDebugCommands.get()) {
 			builder
 				.then(Commands.literal("debug")
 					.then(Commands.literal("run_mixin_tests")
@@ -132,111 +123,101 @@ public class DebugCommand
 					)
 				);
 		}
-		
+
 		commandDispatcher.register(builder);
 	}
-	
+
 	private static final Collection<UUID> MARKED_UUIDS = new HashSet<>();
 	private static final Collection<String> MARKED_USERNAMES = new HashSet<>();
-	
-	public static boolean unmarkEntityForScaleReset(final Entity entity, final CompoundTag nbt)
-	{
-		if (entity instanceof Player && MARKED_USERNAMES.remove(((Player) entity).getGameProfile().getName().toLowerCase(Locale.ROOT)))
-		{
+
+	public static boolean unmarkEntityForScaleReset(final Entity entity, final CompoundTag nbt) {
+		if (entity instanceof Player && MARKED_USERNAMES.remove(((Player) entity).getGameProfile().getName().toLowerCase(Locale.ROOT))) {
 			return true;
 		}
-		
-		final NbtCompoundExtensions compound = ((NbtCompoundExtensions) nbt);
-		
+
+		final CompoundTagExtensions compound = ((CompoundTagExtensions) nbt);
+
 		return compound.pehkui_containsUuid("UUID") && MARKED_UUIDS.remove(compound.pehkui_getUuid("UUID"));
 	}
-	
+
 	private static final List<EntityType<? extends Entity>> TYPES = Arrays.asList(
 		EntityType.ZOMBIE,
 		EntityType.CREEPER,
 		EntityType.END_CRYSTAL,
 		EntityType.BLAZE
 	);
-	
-	private static int runTests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
+
+	private static int runTests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		Entity entity = context.getSource().getEntityOrException();
-		
+
 		Direction dir = entity.getDirection();
 		Direction opposite = dir.getOpposite();
-		
+
 		Direction left = dir.getCounterClockWise();
 		Direction right = dir.getClockWise();
-		
+
 		int distance = 4;
 		int spacing = 2;
-		
+
 		int width = ((TYPES.size() - 1) * (spacing + 1)) + 1;
-		
+
 		Vec3 pos = entity.position();
 		BlockPos.MutableBlockPos mut = new BlockPos.MutableBlockPos(pos.x, pos.y, pos.z).move(dir, distance).move(left, width / 2);
-		
+
 		Level w = entity.level();
-		
-		for (EntityType<?> t : TYPES)
-		{
+
+		for (EntityType<?> t : TYPES) {
 			w.setBlockAndUpdate(mut, Blocks.POLISHED_ANDESITE.defaultBlockState());
 			final Entity e = t.create(w, EntitySpawnReason.COMMAND);
-			
+
 			e.absMoveTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
 			e.moveTo(mut.getX() + 0.5, mut.getY() + 1, mut.getZ() + 0.5, opposite.toYRot(), 0);
 			e.setYHeadRot(opposite.toYRot());
-			
+
 			e.addTag("pehkui");
-			
+
 			w.addFreshEntity(e);
-			
+
 			mut.move(right, spacing + 1);
 		}
-		
+
 		// TODO set command block w/ entity to void and block destroy under player pos
-		
+
 		int successes = -1;
 		int total = -1;
-		
+
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.test.success", "Tests succeeded: %d/%d", successes, total), false);
-		
+
 		return 1;
 	}
-	
-	public enum PacketType
-	{
+
+	public enum PacketType {
 		MIXIN_AUDIT,
 		GARBAGE_COLLECT
 	}
-	
-	private static int runMixinTests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
+
+	private static int runMixinTests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		final Entity executor = context.getSource().getEntity();
-		if (executor instanceof ServerPlayer)
-		{
+		if (executor instanceof ServerPlayer) {
 			final Packet<?> packet;
-			
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
-			{
+
+			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
 				packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
-			}
-			else
-			{
+			} else {
 				final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-				
+
 				new DebugPacket(PacketType.MIXIN_AUDIT).write(buffer);
-				
+
 				packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
 			}
-			
+
 			ReflectionUtils.sendPacket(((ServerPlayer) executor).connection, packet);
 		}
-		
+
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.audit.start", "Starting Mixin environment audit..."), false);
 		MixinEnvironment.getCurrentEnvironment().audit();
 		CommandUtils.sendFeedback(context.getSource(), () -> I18nUtils.translate("commands.pehkui.debug.audit.end", "Mixin environment audit complete!"), false);
-		
+
 		return 1;
 	}
 }

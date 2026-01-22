@@ -1,7 +1,6 @@
 package virtuoel.pehkui.util;
 
-public class MixinConstants
-{
+public class MixinConstants {
 	private static final String METHOD_6078 = "method_6078";
 	private static final String METHOD_6108 = "method_6108";
 	private static final String METHOD_8649 = "method_8649";
@@ -105,9 +104,9 @@ public class MixinConstants
 	private static final String METHOD_18382 = "method_18382";
 	private static final String METHOD_5773 = "method_5773";
 	private static final String METHOD_19318 = "method_19318";
-	
+
 	private static final String CLASS_4019$CLASS_4024 = "net.minecraft.class_4019$class_4024";
-	
+
 	private static final String CLASS_1937 = "net/minecraft/class_1937";
 	private static final String CLASS_1297 = "net/minecraft/class_1297";
 	private static final String CLASS_287 = "net/minecraft/class_287";
@@ -157,16 +156,16 @@ public class MixinConstants
 	private static final String CLASS_2394 = "net/minecraft/class_2394";
 	private static final String CLASS_3414 = "net/minecraft/class_3414";
 	private static final String CLASS_2561 = "net/minecraft/class_2561";
-	
+
 	private static final String CLASS_809$CLASS_811 = "net/minecraft/class_809$class_811";
 	private static final String CLASS_1927$CLASS_4179 = "net/minecraft/class_1927$class_4179";
 	private static final String CLASS_3959$CLASS_242 = "net/minecraft/class_3959$class_242";
 	private static final String CLASS_1937$CLASS_7867 = "net/minecraft/class_1937$class_7867";
-	
+
 	// 1.14
 	public static final String DEATH = METHOD_6078;
 	public static final String POST_DEATH = METHOD_6108;
-	
+
 	// 1.14 Client
 	public static final String RENDER_SECOND_PASS = METHOD_3887 + "(L" + CLASS_1690 + ";DDDFF)V";
 	public static final String RENDER_PASS = "L" + CLASS_554 + ";" + METHOD_2836 + "(L" + CLASS_1297 + ";FFFFFF)V";
@@ -192,15 +191,15 @@ public class MixinConstants
 	public static final String RENDER_HELD_ITEM = METHOD_4016 + "(L" + CLASS_1799 + ";L" + CLASS_1309 + ";L" + CLASS_809$CLASS_811 + ";Z)V";
 	public static final String RENDER_LEASH = METHOD_4073;
 	public static final String SETUP_TRANSFORMS = METHOD_4058;
-	
+
 	// 1.15
 	public static final String EXPLOSIVE_PROJECTILE_ON_COLLISION = METHOD_7469;
 	public static final String ZOMBIE_REFRESH_POS_AND_ANGLES = "L" + CLASS_1642 + ";" + METHOD_5808 + "(DDDFF)V";
-	
+
 	// 1.15 Client
 	public static final String RENDER_SHADOW_PART = METHOD_23163;
 	public static final String RENDER_LABEL_STRING_IF_PRESENT = METHOD_3926 + "(L" + CLASS_1297 + ";Ljava/lang/String;L" + CLASS_4587 + ";L" + CLASS_4597 + ";I)V";
-	
+
 	// 1.15 Minus
 	public static final String ON_COLLISION = METHOD_7492 + "(L" + CLASS_239 + ";)V";
 	public static final String EXPLOSION_INIT = "<init>(L" + CLASS_1937 + ";L" + CLASS_1297 + ";DDDFZL" + CLASS_1927$CLASS_4179 + ";)V";
@@ -228,32 +227,32 @@ public class MixinConstants
 	public static final String ZOMBIE_VILLAGER_COPY_POS_AND_ROT = "L" + CLASS_1641 + ";" + METHOD_5719 + "(L" + CLASS_1297 + ";)V";
 	public static final String FINISH_CONVERSION = METHOD_7197 + "(L" + CLASS_3218 + ";)V";
 	public static final String VILLAGER_COPY_POS_AND_ROT = "L" + CLASS_1646 + ";" + METHOD_5719 + "(L" + CLASS_1297 + ";)V";
-	
+
 	// 1.15 Minus Reach
 	public static final String ANVIL_CAN_USE_LAMBDA = METHOD_17366;
 	public static final String ITEM_RAYCAST = METHOD_7872 + "(L" + CLASS_1937 + ";L" + CLASS_1657 + ";L" + CLASS_3959$CLASS_242 + ";)L" + CLASS_239 + ";";
 	public static final String GET_VALUE = "L" + CLASS_1324 + ";" + METHOD_6194 + "()D";
-	
+
 	// 1.15 Minus Client
 	public static final String GET_HEIGHT = "L" + CLASS_1297 + ";" + METHOD_17682 + "()F";
-	
+
 	// ----COMMIT_READY_START----
-	
+
 	// 1.15 Plus 1.16 Minus
 	public static final String DROP_XP = METHOD_23883;
-	
+
 	// 1.15 Plus 1.16 Minus Client
 	public static final String RENDER_ITEM = METHOD_23177 + "(L" + CLASS_1309 + ";L" + CLASS_1799 + ";L" + CLASS_809$CLASS_811 + ";ZL" + CLASS_4587 + ";L" + CLASS_4597 + ";L" + CLASS_1937 + ";II)V";
-	
+
 	// 1.15 Plus 1.19.2 Minus Client
 	public static final String GET_BASIC_PROJECTION_MATRIX = METHOD_22973;
-	
+
 	// 1.15 Plus 1.20.4 Minus Client
 	public static final String SHULKER_ENTITY_SETUP_TRANSFORMS = METHOD_4114;
-	
+
 	// 1.16
 	public static final String IS_INSIDE_WALL = METHOD_5757 + "()Z";
-	
+
 	// 1.16 Minus
 	public static final String ON_OPEN = METHOD_5435 + "(L" + CLASS_1657 + ";)V";
 	public static final String ON_CLOSE = METHOD_5432 + "(L" + CLASS_1657 + ";)V";
@@ -263,89 +262,89 @@ public class MixinConstants
 	public static final String ON_LANDED_UPON = "L" + CLASS_2248 + ";" + METHOD_9554 + "(L" + CLASS_1937 + ";L" + CLASS_2338 + ";L" + CLASS_1297 + ";F)V";
 	public static final String SPAWN_ENTITY = "L" + CLASS_1937 + ";" + METHOD_8649 + "(L" + CLASS_1297 + ";)Z";
 	public static final String REMOVE = METHOD_5650;
-	
+
 	// 1.16 Minus Client
 	public static final String RENDER_STATUS_BARS = METHOD_1760;
 	public static final String GET_ABSORPTION_AMOUNT = "L" + CLASS_1657 + ";" + METHOD_6067 + "()F";
 	public static final String PROJECTILE_RAYCAST = METHOD_18075;
-	
+
 	// 1.16.2 - 1.16.5 Client
 	public static final String ON_PLAYER_RESPAWN = METHOD_11117 + "(L" + CLASS_2724 + ";)V";
 	public static final String AFTER_SPAWN = "L" + CLASS_746 + ";" + METHOD_5823 + "()V";
-	
+
 	// 1.16 Plus 1.18 Minus
 	public static final String GIVE_TO_VEC3D = METHOD_19949 + "(L" + CLASS_1309 + ";L" + CLASS_1799 + ";L" + CLASS_243 + ";)V";
-	
+
 	// 1.16 Plus 1.19 Minus
 	public static final String GET_COLLISION = METHOD_18074 + "(L" + CLASS_1297 + ";Ljava/util/function/Predicate;)L" + CLASS_239 + ";";
-	
+
 	// 1.16 Plus 1.19.3 Minus
 	public static final String UPDATE_LIMBS = METHOD_29242 + "(L" + CLASS_1309 + ";Z)V";
-	
+
 	// 1.16 Plus 1.20.2 Minus
 	public static final String GET_COLLISION_FROM_POSITION = METHOD_18074 + "(L" + CLASS_243 + ";L" + CLASS_1297 + ";Ljava/util/function/Predicate;L" + CLASS_243 + ";L" + CLASS_1937 + ";)L" + CLASS_239 + ";";
-	
+
 	// 1.17 Plus 1.19.3 Minus Client
 	public static final String RENDER_ITEM_WITH_SEED = METHOD_23177 + "(L" + CLASS_1309 + ";L" + CLASS_1799 + ";L" + CLASS_809$CLASS_811 + ";ZL" + CLASS_4587 + ";L" + CLASS_4597 + ";L" + CLASS_1937 + ";III)V";
-	
+
 	// 1.17 Plus 1.20.1 Minus
 	public static final String SQUARED_ATTACK_RANGE = METHOD_33191;
-	
+
 	// 1.18 Minus
 	public static final String PROCESS_BLOCK_BREAKING_ACTION = METHOD_14263;
-	
+
 	// 1.18 Plus 1.19.2 Minus
 	public static final String FOR_EACH = METHOD_31765 + "(L" + CLASS_238 + ";Ljava/util/function/Consumer;)V";
 	public static final String FOR_EACH_FILTERED = METHOD_31762 + "(L" + CLASS_5575 + ";L" + CLASS_238 + ";Ljava/util/function/Consumer;)V";
-	
+
 	// 1.19 Minus
 	public static final String UPDATE_PASSENGER_POSITION = METHOD_5865;
-	
+
 	// 1.19 Plus 1.20.4 Minus
 	public static final String FIELD_37280 = "field_37280";
 	public static final String MAX_BREAK_SQUARED_DISTANCE = "L" + CLASS_3244 + ";" + FIELD_37280 + ":D";
-	
+
 	// 1.19.2 Minus
 	public static final String CREATE_EXPLOSION = "L" + CLASS_1937 + ";" + METHOD_8437 + "(L" + CLASS_1297 + ";DDDFL" + CLASS_1927$CLASS_4179 + ";)L" + CLASS_1927 + ";";
 	public static final String CREATE_EXPLOSION_OPTIONAL_FIRE = "L" + CLASS_1937 + ";" + METHOD_8537 + "(L" + CLASS_1297 + ";DDDFZL" + CLASS_1927$CLASS_4179 + ";)L" + CLASS_1927 + ";";
-	
+
 	// 1.19.3 Minus
 	public static final String DRAW_ENTITY_MOUSE_LOOK = METHOD_2486 + "(IIIFFL" + CLASS_1309 + ";)V";
 	public static final String CAN_PLAYER_USE = METHOD_5443;
 	public static final String ENDER_CHEST_CAN_PLAYER_USE = METHOD_11218;
 	public static final String FIELD_6013 = "field_6013";
 	public static final String STEP_HEIGHT = "L" + CLASS_1297 + ";" + FIELD_6013 + ":F";
-	
+
 	// 1.19.3 Plus 1.20.2 Minus
 	public static final String CREATE_EXPLOSION_TYPED = "L" + CLASS_1937 + ";" + METHOD_8454 + "(L" + CLASS_1297 + ";L" + CLASS_1282 + ";L" + CLASS_5362 + ";DDDFZL" + CLASS_1937$CLASS_7867 + ";)L" + CLASS_1927 + ";";
-	
+
 	// 1.19.4
 	public static final String DRAW_ENTITY_ROTATED = METHOD_48472 + "(L" + CLASS_4587 + ";IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;L" + CLASS_1309 + ";)V";
-	
+
 	// 1.20 - 1.20.1
 	public static final String DRAW_ENTITY_NO_TRANSLATION = METHOD_48472 + "(L" + CLASS_332 + ";IIILorg/joml/Quaternionf;Lorg/joml/Quaternionf;L" + CLASS_1309 + ";)V";
-	
+
 	// 1.20.1 Minus
 	public static final String GET_MOUNTED_HEIGHT_OFFSET = METHOD_5621 + "()D";
 	public static final String GET_PASSENGER_ATTACHMENT_Y = METHOD_45346 + "(ZF)D";
 	public static final String GET_HEIGHT_OFFSET = METHOD_5678 + "()D";
 	public static final String ON_PLAYER_CONNECT = METHOD_14570;
-	
+
 	// 1.20.2 Minus
 	public static final String PERSISTENT_PROJECTILE_ENTITY_INIT = "<init>(L" + CLASS_1299 + ";L" + CLASS_1309 + ";L" + CLASS_1937 + ";)V";
-	
+
 	// 1.16 Plus 1.20.2 Minus
 	public static final String EXPLOSION_WITH_DAMAGE_SOURCE_INIT = "<init>(L" + CLASS_1937 + ";L" + CLASS_1297 + ";L" + CLASS_1282 + ";L" + CLASS_5362 + ";DDDFZL" + CLASS_1927$CLASS_4179 + ";)V";
-	
+
 	// 1.20 Plus 1.20.2 Minus
 	public static final String GET_HIT_RESULT = METHOD_49999 + "(L" + CLASS_1309 + ";)L" + CLASS_239 + ";";
-	
+
 	// 1.20.2 Plus 1.20.4 Minus
 	public static final String GET_RIDING_OFFSET = METHOD_52536;
-	
+
 	// 1.20.2 Plus 1.20.4 Minus Client
 	public static final String DRAW_ENTITY_WITH_OFFSET = METHOD_48472 + "(L" + CLASS_332 + ";FFILorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;L" + CLASS_1309 + ";)V";
-	
+
 	// 1.20.4 Minus
 	public static final String GET_IN_RANGE_VIEWER_COUNT = METHOD_31680;
 	public static final String SHOOT = METHOD_7763;
@@ -361,24 +360,24 @@ public class MixinConstants
 	public static final String THROWN_ENTITY_SET_VELOCITY = "L" + CLASS_1682 + ";" + METHOD_18800 + "(DDD)V";
 	public static final String GET_NAME_LABEL_HEIGHT = "L" + CLASS_1297 + ";" + METHOD_51152 + "()F";
 	public static final String EXPLOSION_WITH_PARTICLES_AND_SOUND_INIT = "<init>(L" + CLASS_1937 + ";L" + CLASS_1297 + ";L" + CLASS_1282 + ";L" + CLASS_5362 + ";DDDFZL" + CLASS_1927$CLASS_4179 + ";L" + CLASS_2394 + ";L" + CLASS_2394 + ";L" + CLASS_3414 + ";)V";
-	
+
 	// 1.20.4 Minus Client
 	public static final String GET_REACH_DISTANCE = METHOD_2904;
 	public static final String RENDER_WORLD = METHOD_3188;
 	public static final String RENDER_LABEL_IF_PRESENT = METHOD_3926 + "(L" + CLASS_1297 + ";L" + CLASS_2561 + ";L" + CLASS_4587 + ";L" + CLASS_4597 + ";I)V";
-	
+
 	// 1.20.6 Minus
 	public static final String UPDATE_ATTACHMENT_POSITION = METHOD_6895;
 	public static final String EXPLOSIVE_PROJECTILE_ENTITY_INIT = "<init>(L" + CLASS_1299 + ";L" + CLASS_1309 + ";DDDL" + CLASS_1937 + ";)V";
 	public static final String CALCULATE_DIMENSIONS = METHOD_18382;
 	public static final String TICK = METHOD_5773;
-	
+
 	// 1.20.6 Minus Client
 	public static final String CLIP_TO_SPACE = METHOD_19318;
-	
+
 	// 1.20.6 Minus 1.20.3 Plus
 	public static final String PERSISTENT_PROJECTILE_ENTITY_WITH_STACK_INIT = "<init>(L" + CLASS_1299 + ";L" + CLASS_1309 + ";L" + CLASS_1937 + ";L" + CLASS_1799 + ";)V";
-	
+
 	// 1.20.6 Minus 1.20.5 Plus
 	public static final String RENDER_LABEL_IF_PRESENT_WITH_DELTA = METHOD_3926 + "(L" + CLASS_1297 + ";L" + CLASS_2561 + ";L" + CLASS_4587 + ";L" + CLASS_4597 + ";IF)V";
 }

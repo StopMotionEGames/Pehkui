@@ -13,24 +13,23 @@ import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(TargetGoal.class)
-public class TargetGoalMixin
-{
+public class TargetGoalMixin {
 	@Shadow
 	protected LivingEntity targetMob;
-	@Shadow @Final @Mutable
+	@Shadow
+	@Final
+	@Mutable
 	protected Mob mob;
-	
+
 	@ModifyReturnValue(method = "getFollowDistance", at = @At("RETURN"))
-	private double pehkui$getFollowRange(double original)
-	{
+	private double pehkui$getFollowRange(double original) {
 		LivingEntity target = this.mob.getTarget();
-		if (target == null && (target = this.targetMob) == null)
-		{
+		if (target == null && (target = this.targetMob) == null) {
 			return original;
 		}
-		
+
 		final float scale = ScaleUtils.getVisibilityScale(target);
-		
+
 		return scale != 1.0F ? original * scale : original;
 	}
 }
