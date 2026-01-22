@@ -8,9 +8,8 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Identifier;
-import virtuoel.kanos_config.api.JsonConfigBuilder;
-import virtuoel.kanos_config.api.MutableConfigEntry;
+import net.minecraft.resources.ResourceLocation;
+import virtuoel.pehkui.api.MutableConfigEntry;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.util.ClampingScaleModifier;
 import virtuoel.pehkui.util.ConfigSyncUtils;
@@ -20,7 +19,7 @@ import virtuoel.pehkui.util.VersionUtils;
 public class PehkuiConfig
 {
 	@ApiStatus.Internal
-	public static final JsonConfigBuilder BUILDER = new JsonConfigBuilder(
+	public static final PehkuiConfigBuilder BUILDER = new PehkuiConfigBuilder(
 		Pehkui.MOD_ID,
 		FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize()
 	)
@@ -38,25 +37,25 @@ public class PehkuiConfig
 	
 	public static final class Common
 	{
-		public final Supplier<Boolean> keepAllScalesOnRespawn;
-		public final Supplier<List<String>> scalesKeptOnRespawn;
+		public final MutableConfigEntry<Boolean> keepAllScalesOnRespawn;
+		public final MutableConfigEntry<List<String>> scalesKeptOnRespawn;
 		
-		public final Supplier<Boolean> accurateNetherPortals;
+		public final MutableConfigEntry<Boolean> accurateNetherPortals;
 		
-		public final Supplier<Boolean> enableCommands;
-		public final Supplier<Boolean> enableDebugCommands;
+		public final MutableConfigEntry<Boolean> enableCommands;
+		public final MutableConfigEntry<Boolean> enableDebugCommands;
 		
-		public final Supplier<Boolean> scaledFallDamage;
-		public final Supplier<Boolean> scaledMotion;
-		public final Supplier<Boolean> scaledReach;
-		public final Supplier<Boolean> scaledAttack;
-		public final Supplier<Boolean> scaledDefense;
-		public final Supplier<Boolean> scaledHealth;
-		public final Supplier<Boolean> scaledItemDrops;
-		public final Supplier<Boolean> scaledProjectiles;
-		public final Supplier<Boolean> scaledExplosions;
+		public final MutableConfigEntry<Boolean> scaledFallDamage;
+		public final MutableConfigEntry<Boolean> scaledMotion;
+		public final MutableConfigEntry<Boolean> scaledReach;
+		public final MutableConfigEntry<Boolean> scaledAttack;
+		public final MutableConfigEntry<Boolean> scaledDefense;
+		public final MutableConfigEntry<Boolean> scaledHealth;
+		public final MutableConfigEntry<Boolean> scaledItemDrops;
+		public final MutableConfigEntry<Boolean> scaledProjectiles;
+		public final MutableConfigEntry<Boolean> scaledExplosions;
 		
-		private Common(final JsonConfigBuilder builder)
+		private Common(final PehkuiConfigBuilder builder)
 		{
 			this.keepAllScalesOnRespawn = builder.booleanConfig(synced("keepAllScalesOnRespawn", "boolean"), false);
 			this.scalesKeptOnRespawn = builder.stringListConfig(synced("scalesKeptOnRespawn", "string_list"));
@@ -76,11 +75,11 @@ public class PehkuiConfig
 			this.scaledProjectiles = builder.booleanConfig(synced("scaledProjectiles", "boolean"), true);
 			this.scaledExplosions = builder.booleanConfig(synced("scaledExplosions", "boolean"), true);
 			
-			Identifier id;
+			ResourceLocation id;
 			String namespace, path;
 			ScaleType type;
 			Supplier<Double> min, max;
-			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
+			for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
 			{
 				id = entry.getKey();
 				namespace = id.getNamespace();
@@ -115,7 +114,7 @@ public class PehkuiConfig
 	{
 		public final Supplier<Double> minimumCameraDepth;
 		
-		private Client(final JsonConfigBuilder builder)
+		private Client(final PehkuiConfigBuilder builder)
 		{
 			this.minimumCameraDepth = builder.doubleConfig("minimumCameraDepth", 1.0D / 32767.0D);
 		}
@@ -123,7 +122,7 @@ public class PehkuiConfig
 	
 	public static final class Server
 	{
-		private Server(final JsonConfigBuilder builder)
+		private Server(final PehkuiConfigBuilder builder)
 		{
 			
 		}

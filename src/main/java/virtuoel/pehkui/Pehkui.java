@@ -7,7 +7,7 @@ import org.spongepowered.asm.service.MixinService;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.api.ScaleOperations;
 import virtuoel.pehkui.api.ScaleTypes;
@@ -27,68 +27,58 @@ import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.VersionUtils;
 
 @ApiStatus.Internal
-public class Pehkui implements ModInitializer
-{
+public class Pehkui implements ModInitializer {
 	public static final String MOD_ID = "pehkui";
-	
+
 	public static final ILogger LOGGER = MixinService.getService().getLogger(MOD_ID);
-	
-	public Pehkui()
-	{
+
+	public Pehkui() {
 		ScaleTypes.INVALID.getClass();
 		ScaleOperations.NOOP.getClass();
-		PehkuiConfig.BUILDER.config.get();
+		PehkuiConfig.BUILDER.load();
 	}
-	
+
 	@Override
-	public void onInitialize()
-	{
+	public void onInitialize() {
 		CommandUtils.registerArgumentTypes();
-		
+
 		PehkuiEntitySelectorOptions.register();
-		
+
 		CommandUtils.registerCommands();
-		
-		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1"))
-		{
+
+		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1")) {
 			ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			{
-				if (!server.isHost(handler.player.getGameProfile()))
-				{
+				if (!server.isSingleplayerOwner(handler.player.getGameProfile())) {
 					ConfigSyncUtils.syncConfigs(handler);
-				}
-				else
-				{
+				} else {
 					ConfigSyncUtils.resetSyncedConfigs();
 				}
 			});
-			
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
-			{
+
+			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
 				PayloadTypeRegistry.playS2C().register(ScalePayload.ID, ScalePayload.CODEC);
 				PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
 				PayloadTypeRegistry.playS2C().register(DebugPayload.ID, DebugPayload.CODEC);
 			}
 		}
-		
+
 		GravityChangerCompatibility.INSTANCE.getClass();
 		IdentityCompatibility.INSTANCE.getClass();
 		ImmersivePortalsCompatibility.INSTANCE.getClass();
 		MulticonnectCompatibility.INSTANCE.getClass();
 		ReachEntityAttributesCompatibility.INSTANCE.getClass();
 	}
-	
-	public static Identifier id(String path)
-	{
+
+	public static ResourceLocation id(String path) {
 		return ReflectionUtils.constructIdentifier(MOD_ID, path);
 	}
-	
-	public static Identifier id(String path, String... paths)
-	{
+
+	public static ResourceLocation id(String path, String... paths) {
 		return id(paths.length == 0 ? path : path + "/" + String.join("/", paths));
 	}
-	
-	public static final Identifier SCALE_PACKET = id("scale");
-	public static final Identifier CONFIG_SYNC_PACKET = id("config_sync");
-	public static final Identifier DEBUG_PACKET = id("debug");
+
+	public static final ResourceLocation SCALE_PACKET = id("scale");
+	public static final ResourceLocation CONFIG_SYNC_PACKET = id("config_sync");
+	public static final ResourceLocation DEBUG_PACKET = id("debug");
 }

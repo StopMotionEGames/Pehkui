@@ -26,35 +26,33 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import virtuoel.kanos_config.api.JsonConfigHandler;
-import virtuoel.kanos_config.api.MutableConfigEntry;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import virtuoel.pehkui.api.MutableConfigEntry;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.PehkuiConfig;
+import virtuoel.pehkui.api.PehkuiConfigBuilder;
 import virtuoel.pehkui.network.ConfigSyncPacket;
 import virtuoel.pehkui.network.ConfigSyncPayload;
 
-public class ConfigSyncUtils
-{
+public class ConfigSyncUtils {
 	public static final Map<String, MutableConfigEntry<?>> CONFIGS = new HashMap<>();
 	private static final Map<String, SyncableConfigEntry<?>> SYNCED_CONFIGS = new HashMap<>();
 	private static final Map<String, ConfigEntryCodec<?>> SYNCED_CONFIG_CODECS = new HashMap<>();
 	private static final Map<String, ConfigEntryCodec<?>> CODECS = new HashMap<>();
-	
-	static
-	{
+
+	static {
 		CODECS.put("double", new ConfigEntryCodec<Double>(
 			(b, e) -> ((ByteBuf) b).writeDouble(e.getValue()),
 			(b, e) ->
 			{
 				final double v = b.readDouble();
-				
+
 				return () -> e.setSyncedValue(v);
 			},
 			DoubleArgumentType::doubleArg,
@@ -65,7 +63,7 @@ public class ConfigSyncUtils
 			(b, e) ->
 			{
 				final boolean v = b.readBoolean();
-				
+
 				return () -> e.setSyncedValue(v);
 			},
 			BoolArgumentType::bool,
@@ -75,285 +73,234 @@ public class ConfigSyncUtils
 			(b, e) ->
 			{
 				final List<String> list = e.getValue();
-				
+
 				b.writeVarInt(list.size());
-				for (final String v : list)
-				{
-					b.writeString(v);
+				for (final String v : list) {
+					b.writeUtf(v);
 				}
 			},
 			(b, e) ->
 			{
 				final List<String> v = new ArrayList<>();
-				
+
 				final int size = b.readVarInt();
-				for (int i = 0; i < size; i++)
-				{
-					v.add(b.readString());
+				for (int i = 0; i < size; i++) {
+					v.add(b.readUtf());
 				}
-				
+
 				return () -> e.setSyncedValue(v);
 			}
 		));
 	}
-	
-	public static void resetSyncedConfigs()
-	{
+
+	public static void resetSyncedConfigs() {
 		SYNCED_CONFIGS.values().forEach((entry) ->
 		{
 			entry.setSyncedValue(null);
 		});
 	}
-	
-	public static void syncConfigs(final Collection<ServerPlayerEntity> players)
-	{
-		for (final ServerPlayerEntity player : players)
-		{
-			syncConfigs(player.networkHandler, SYNCED_CONFIGS.values());
+
+	public static void syncConfigs(final Collection<ServerPlayer> players) {
+		for (final ServerPlayer player : players) {
+			syncConfigs(player.connection, SYNCED_CONFIGS.values());
 		}
 	}
-	
-	public static void syncConfigs(final ServerPlayNetworkHandler networkHandler)
-	{
+
+	public static void syncConfigs(final ServerGamePacketListenerImpl networkHandler) {
 		syncConfigs(networkHandler, SYNCED_CONFIGS.values());
 	}
-	
-	public static void syncConfigs(final ServerPlayNetworkHandler networkHandler, final String... configEntryKeys)
-	{
+
+	public static void syncConfigs(final ServerGamePacketListenerImpl networkHandler, final String... configEntryKeys) {
 		final List<SyncableConfigEntry<?>> entries = new ArrayList<>();
-		
+
 		SyncableConfigEntry<?> entry;
-		for (final String key : configEntryKeys)
-		{
-			if (SYNCED_CONFIGS.containsKey(key) && (entry = SYNCED_CONFIGS.get(key)) != null)
-			{
+		for (final String key : configEntryKeys) {
+			if (SYNCED_CONFIGS.containsKey(key) && (entry = SYNCED_CONFIGS.get(key)) != null) {
 				entries.add(entry);
 			}
 		}
-		
+
 		syncConfigs(networkHandler, entries);
 	}
-	
+
 	private static final boolean NETWORKING_API_LOADED = ModLoaderUtils.isModLoaded("fabric-networking-api-v1");
-	
-	public static void syncConfigs(final ServerPlayNetworkHandler networkHandler, final Collection<SyncableConfigEntry<?>> configEntries)
-	{
-		if (NETWORKING_API_LOADED)
-		{
-			if (ServerPlayNetworking.canSend(networkHandler, Pehkui.CONFIG_SYNC_PACKET))
-			{
+
+	public static void syncConfigs(final ServerGamePacketListenerImpl networkHandler, final Collection<SyncableConfigEntry<?>> configEntries) {
+		if (NETWORKING_API_LOADED) {
+			if (ServerPlayNetworking.canSend(networkHandler, Pehkui.CONFIG_SYNC_PACKET)) {
 				ReflectionUtils.sendPacket(networkHandler, createConfigSyncPacket(configEntries));
 			}
 		}
 	}
-	
-	public static Packet<?> createConfigSyncPacket(final Collection<SyncableConfigEntry<?>> configEntries)
-	{
-		if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5))
-		{
-			return ServerPlayNetworking.createS2CPacket((CustomPayload) new ConfigSyncPayload(configEntries));
-		}
-		else
-		{
-			final PacketByteBuf buffer = new PacketByteBuf(Unpooled.buffer());
-			
+
+	public static Packet<?> createConfigSyncPacket(final Collection<SyncableConfigEntry<?>> configEntries) {
+		if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
+			return ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
+		} else {
+			final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+
 			new ConfigSyncPacket(configEntries).write(buffer);
-			
+
 			return ReflectionUtils.createS2CPacket(Pehkui.CONFIG_SYNC_PACKET, buffer);
 		}
 	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void write(final Collection<SyncableConfigEntry<?>> configEntries, final PacketByteBuf buffer)
-	{
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static void write(final Collection<SyncableConfigEntry<?>> configEntries, final FriendlyByteBuf buffer) {
 		buffer.writeVarInt(configEntries.size());
-		for (SyncableConfigEntry<?> entry : configEntries)
-		{
-			buffer.writeString(entry.getName());
+		for (SyncableConfigEntry<?> entry : configEntries) {
+			buffer.writeUtf(entry.getName());
 			((ConfigEntryCodec) SYNCED_CONFIG_CODECS.get(entry.getName())).write(buffer, entry);
 		}
 	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Runnable readConfigs(final PacketByteBuf buffer)
-	{
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static Runnable readConfigs(final FriendlyByteBuf buffer) {
 		final int qty = buffer.readVarInt();
-		
+
 		final List<Runnable> tasks = new ArrayList<>();
-		
+
 		String name;
 		ConfigEntryCodec codec;
 		SyncableConfigEntry entry;
-		for (int i = 0; i < qty; i++)
-		{
-			name = buffer.readString();
-			
+		for (int i = 0; i < qty; i++) {
+			name = buffer.readUtf();
+
 			entry = SYNCED_CONFIGS.get(name);
 			codec = SYNCED_CONFIG_CODECS.get(name);
-			if (entry == null)
-			{
+			if (entry == null) {
 				Pehkui.LOGGER.warn("Received unknown config \"{}\" from server.", name);
 				break;
-			}
-			else if (codec == null)
-			{
+			} else if (codec == null) {
 				Pehkui.LOGGER.warn("Codec \"{}\" not found. Could not parse config \"{}\" from server.", codec, name);
 				break;
 			}
-			
+
 			tasks.add(codec.read(buffer, entry));
 		}
-		
+
 		return () -> tasks.forEach(Runnable::run);
 	}
 
-	private record ConfigEntryCodec<T>(BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer,
-									   BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader,
+	private record ConfigEntryCodec<T>(BiConsumer<FriendlyByteBuf, SyncableConfigEntry<T>> writer,
+									   BiFunction<FriendlyByteBuf, SyncableConfigEntry<T>, Runnable> reader,
 									   Supplier<ArgumentType<T>> argumentGetter,
 									   BiFunction<CommandContext<?>, String, T> argumentFunction) {
-			public ConfigEntryCodec(final BiConsumer<PacketByteBuf, SyncableConfigEntry<T>> writer, final BiFunction<PacketByteBuf, SyncableConfigEntry<T>, Runnable> reader) {
-				this(writer, reader, () -> null, (c, n) -> null);
-			}
+		public ConfigEntryCodec(final BiConsumer<FriendlyByteBuf, SyncableConfigEntry<T>> writer, final BiFunction<FriendlyByteBuf, SyncableConfigEntry<T>, Runnable> reader) {
+			this(writer, reader, () -> null, (c, n) -> null);
+		}
 
-		public void write(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry) {
-				writer.accept(buffer, entry);
-			}
+		public void write(final FriendlyByteBuf buffer, final SyncableConfigEntry<T> entry) {
+			writer.accept(buffer, entry);
+		}
 
-		public Runnable read(final PacketByteBuf buffer, final SyncableConfigEntry<T> entry) {
-				return reader.apply(buffer, entry);
-			}
+		public Runnable read(final FriendlyByteBuf buffer, final SyncableConfigEntry<T> entry) {
+			return reader.apply(buffer, entry);
+		}
 
 		public @Nullable ArgumentType<T> getArgumentType() {
-				return argumentGetter.get();
-			}
+			return argumentGetter.get();
+		}
 
 		public T getArgument(final CommandContext<?> context, final String name) {
-				return argumentFunction.apply(context, name);
-			}
+			return argumentFunction.apply(context, name);
 		}
-	
-	public static <T> MutableConfigEntry<T> createConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer)
-	{
-		if (SYNCED_CONFIGS.containsKey(name))
-		{
+	}
+
+	public static <T> MutableConfigEntry<T> createConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer) {
+		if (SYNCED_CONFIGS.containsKey(name)) {
 			@SuppressWarnings("unchecked")
 			SyncableConfigEntry<T> entry = (SyncableConfigEntry<T>) SYNCED_CONFIGS.get(name);
-			if (entry == null)
-			{
+			if (entry == null) {
 				SYNCED_CONFIGS.put(name, entry = new SyncableConfigEntry<T>(name, defaultValue, supplier, consumer));
 				CONFIGS.put(name, entry);
 			}
-			
+
 			return entry;
 		}
-		
+
 		final MutableConfigEntry<T> entry = new NamedConfigEntry<T>(name, defaultValue, supplier, consumer);
-		
+
 		CONFIGS.put(name, entry);
-		
+
 		return entry;
 	}
-	
-	public static void setupSyncableConfig(final String name, final String codecKey)
-	{
+
+	public static void setupSyncableConfig(final String name, final String codecKey) {
 		SYNCED_CONFIGS.put(name, null);
 		SYNCED_CONFIG_CODECS.put(name, Objects.requireNonNull(CODECS.get(codecKey), String.format("Codec \"%s\" not found for config \"%s\"", codecKey, name)));
 	}
-	
-	public static ArgumentBuilder<ServerCommandSource, ?> registerConfigCommands()
-	{
+
+	public static ArgumentBuilder<CommandSourceStack, ?> registerConfigCommands() {
 		final boolean splitConfigs = true;
-		
-		final ArgumentBuilder<ServerCommandSource, ?> builder = CommandManager.literal("config");
-		
+
+		final ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("config");
+
 		ConfigSyncUtils.registerConfigSyncCommands(builder);
 		ConfigSyncUtils.registerConfigFileCommands(builder);
 		ConfigSyncUtils.registerConfigGetterCommands(builder, splitConfigs);
 		ConfigSyncUtils.registerConfigSetterCommands(builder, splitConfigs);
 		ConfigSyncUtils.registerConfigResetCommands(builder, splitConfigs);
-		
+
 		return builder;
 	}
-	
-	public static void registerConfigSyncCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder)
-	{
-		final ArgumentBuilder<ServerCommandSource, ?> builder = CommandManager.literal("sync")
+
+	public static void registerConfigSyncCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder) {
+		final ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("sync")
 			.executes(context ->
 			{
-				syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
-				
+				syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
+
 				return 1;
 			});
-		
+
 		configBuilder.then(builder);
 	}
-	
-	public static void registerConfigFileCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder)
-	{
-		final JsonConfigHandler config = PehkuiConfig.BUILDER.config;
-		
+
+	public static void registerConfigFileCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder) {
+		final PehkuiConfigBuilder builder = PehkuiConfig.BUILDER;
+
 		configBuilder
-			.then(CommandManager.literal("save")
+			.then(Commands.literal("save")
 				.executes(context ->
 				{
-					synchronized (config)
-					{
-						config.save();
-					}
-					
+					builder.save();
 					return 1;
 				})
 			)
-			.then(CommandManager.literal("load")
+			.then(Commands.literal("load")
 				.executes(context ->
 				{
-					synchronized (config)
-					{
-						config.invalidate();
-						config.get();
-						
-						syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
-					}
-					
+					builder.load();
+					syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
 					return 1;
 				})
 			)
-			.then(CommandManager.literal("delete")
+			.then(Commands.literal("delete")
 				.executes(context ->
 				{
-					synchronized (config)
-					{
-						config.onConfigChanged();
-						try
-						{
-							Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
-							config.get();
-							syncConfigs(context.getSource().getWorld().getServer().getPlayerManager().getPlayerList());
-							
-							return 1;
-						}
-						catch (IOException e)
-						{
-							Pehkui.LOGGER.catching(e);
-							
-							return 0;
-						}
+					try {
+						Files.deleteIfExists(FabricLoader.getInstance().getConfigDir().resolve(Pehkui.MOD_ID).resolve("config.json").normalize());
+						builder.load();
+						syncConfigs(context.getSource().getServer().getPlayerList().getPlayers());
+						return 1;
+					} catch (IOException e) {
+						Pehkui.LOGGER.error("Failed to delete config file:", e);
+						return 0;
 					}
 				})
 			);
 	}
-	
-	public static void registerConfigGetterCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder, final boolean splitKeys)
-	{
-		final ArgumentBuilder<ServerCommandSource, ?> builder = CommandManager.literal("get");
-		
+
+	public static void registerConfigGetterCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder, final boolean splitKeys) {
+		final ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("get");
+
 		String[] keys;
-		ArgumentBuilder<ServerCommandSource, ?> root, temp;
-		for (final String key : CONFIGS.keySet())
-		{
-			keys = splitKeys ? key.split("\\.") : new String[] { key };
-			
-			root = CommandManager.literal(keys[keys.length - 1])
+		ArgumentBuilder<CommandSourceStack, ?> root, temp;
+		for (final String key : CONFIGS.keySet()) {
+			keys = splitKeys ? key.split("\\.") : new String[]{key};
+
+			root = Commands.literal(keys[keys.length - 1])
 				.executes(context ->
 				{
 					CommandUtils.sendFeedback(
@@ -361,49 +308,44 @@ public class ConfigSyncUtils
 						() -> I18nUtils.translate(
 							"commands.pehkui.debug.config.get.value",
 							"Config \"%s\" is currently set to \"%s\"",
-							key, String.valueOf(CONFIGS.get(key).getValue())
+							key, String.valueOf(CONFIGS.get(key).get())
 						),
 						false
 					);
-					
 					return 1;
 				});
-			
-			for (int i = keys.length - 2; i >= 0; i--)
-			{
-				temp = CommandManager.literal(keys[i]);
+
+			for (int i = keys.length - 2; i >= 0; i--) {
+				temp = Commands.literal(keys[i]);
 				temp.then(root);
 				root = temp;
 			}
-			
+
 			builder.then(root);
 		}
-		
+
 		configBuilder.then(builder);
 	}
-	
-	public static void registerConfigSetterCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder, final boolean splitKeys)
-	{
-		final ArgumentBuilder<ServerCommandSource, ?> builder = CommandManager.literal("set");
-		
+
+	public static void registerConfigSetterCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder, final boolean splitKeys) {
+		final ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("set");
+
 		registerConfigModificationCommands(builder, true, splitKeys);
-		
+
 		configBuilder.then(builder);
 	}
-	
-	public static void registerConfigResetCommands(final ArgumentBuilder<ServerCommandSource, ?> configBuilder, final boolean splitKeys)
-	{
-		final ArgumentBuilder<ServerCommandSource, ?> builder = CommandManager.literal("reset");
-		
+
+	public static void registerConfigResetCommands(final ArgumentBuilder<CommandSourceStack, ?> configBuilder, final boolean splitKeys) {
+		final ArgumentBuilder<CommandSourceStack, ?> builder = Commands.literal("reset");
+
 		registerConfigModificationCommands(builder, false, splitKeys);
-		
+
 		builder.executes(context ->
 		{
-			for (final Map.Entry<String, SyncableConfigEntry<?>> entry : SYNCED_CONFIGS.entrySet())
-			{
+			for (final Map.Entry<String, SyncableConfigEntry<?>> entry : SYNCED_CONFIGS.entrySet()) {
 				entry.getValue().reset();
 			}
-			
+
 			CommandUtils.sendFeedback(
 				context.getSource(),
 				() -> I18nUtils.translate(
@@ -413,54 +355,47 @@ public class ConfigSyncUtils
 				),
 				false
 			);
-			
-			for (final ServerPlayerEntity p : context.getSource().getWorld().getServer().getPlayerManager().getPlayerList())
-			{
-				syncConfigs(p.networkHandler);
+
+			for (final ServerPlayer p : context.getSource().getServer().getPlayerList().getPlayers()) {
+				syncConfigs(p.connection);
 			}
-			
+
 			return 1;
 		});
-		
+
 		configBuilder.then(builder);
 	}
-	
-	private static void registerConfigModificationCommands(final ArgumentBuilder<ServerCommandSource, ?> builder, final boolean asSetterCommands, final boolean splitKeys)
-	{
+
+	private static void registerConfigModificationCommands(final ArgumentBuilder<CommandSourceStack, ?> builder, final boolean asSetterCommands, final boolean splitKeys) {
 		ArgumentType<?> argType;
 		String[] keys;
-		ArgumentBuilder<ServerCommandSource, ?> root, temp;
-		for (final Map.Entry<String, SyncableConfigEntry<?>> entry : SYNCED_CONFIGS.entrySet())
-		{
+		ArgumentBuilder<CommandSourceStack, ?> root, temp;
+		for (final Map.Entry<String, SyncableConfigEntry<?>> entry : SYNCED_CONFIGS.entrySet()) {
 			final String key = entry.getKey();
 			final ConfigEntryCodec<?> codec = SYNCED_CONFIG_CODECS.get(key);
 			argType = codec.getArgumentType();
-			
-			if (argType == null)
-			{
+
+			if (argType == null) {
 				continue;
 			}
-			
-			keys = splitKeys ? key.split("\\.") : new String[] { key };
-			
-			root = (asSetterCommands ? CommandManager.argument("value", argType) : CommandManager.literal(keys[keys.length - 1]))
+
+			keys = splitKeys ? key.split("\\.") : new String[]{key};
+
+			root = (asSetterCommands ? Commands.argument("value", argType) : Commands.literal(keys[keys.length - 1]))
 				.executes(context ->
 				{
 					final SyncableConfigEntry<?> cfg = entry.getValue();
-					
+
 					final String oldValue = String.valueOf(cfg.getValue());
-					
-					if (asSetterCommands)
-					{
+
+					if (asSetterCommands) {
 						setConfigValue(cfg, codec.getArgument(context, "value"));
-					}
-					else
-					{
+					} else {
 						cfg.reset();
 					}
-					
+
 					final String newValue = String.valueOf(cfg.getValue());
-					
+
 					CommandUtils.sendFeedback(
 						context.getSource(),
 						() -> I18nUtils.translate(
@@ -470,128 +405,109 @@ public class ConfigSyncUtils
 						),
 						false
 					);
-					
+
 					final Collection<SyncableConfigEntry<?>> cfgs = Collections.singleton(cfg);
-					
-					for (final ServerPlayerEntity p : context.getSource().getWorld().getServer().getPlayerManager().getPlayerList())
-					{
-						syncConfigs(p.networkHandler, cfgs);
+
+					for (final ServerPlayer p : context.getSource().getServer().getPlayerList().getPlayers()) {
+						syncConfigs(p.connection, cfgs);
 					}
-					
+
 					return 1;
 				});
-			
-			for (int i = keys.length - (asSetterCommands ? 1 : 2); i >= 0; i--)
-			{
-				temp = CommandManager.literal(keys[i]);
+
+			for (int i = keys.length - (asSetterCommands ? 1 : 2); i >= 0; i--) {
+				temp = Commands.literal(keys[i]);
 				temp.then(root);
 				root = temp;
 			}
-			
+
 			builder.then(root);
 		}
 	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static void setConfigValue(final MutableConfigEntry cfg, final Object value)
-	{
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void setConfigValue(final MutableConfigEntry cfg, final Object value) {
 		cfg.setValue(value);
 	}
-	
-	public static class SyncableConfigEntry<T> extends NamedConfigEntry<T>
-	{
+
+	public static class SyncableConfigEntry<T> extends NamedConfigEntry<T> {
 		protected T syncedValue = null;
-		
-		public SyncableConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer)
-		{
+
+		public SyncableConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer) {
 			super(name, defaultValue, supplier, consumer);
 		}
-		
-		public void setSyncedValue(final T value)
-		{
+
+		public void setSyncedValue(final T value) {
 			syncedValue = value;
 		}
-		
-		public boolean isSynced()
-		{
+
+		public boolean isSynced() {
 			return syncedValue != null;
 		}
-		
+
 		@Override
-		public T get()
-		{
+		public T get() {
 			return isSynced() ? syncedValue : super.get();
 		}
-		
+
 		@Override
-		public void accept(T t)
-		{
+		public void accept(T t) {
 			setSyncedValue(null);
-			
+
 			super.accept(t);
 		}
-		
+
 		@Override
-		public T getValue()
-		{
+		public T getValue() {
 			return isSynced() ? syncedValue : super.getValue();
 		}
-		
+
 		@Override
-		public void setValue(T t)
-		{
+		public void setValue(T t) {
 			setSyncedValue(null);
-			
+
 			super.setValue(t);
 		}
 	}
-	
-	private static class NamedConfigEntry<T> implements MutableConfigEntry<T>
-	{
+
+	private static class NamedConfigEntry<T> implements MutableConfigEntry<T> {
 		protected final String name;
 		protected final Supplier<T> supplier;
 		protected final Consumer<T> consumer;
 		protected final T defaultValue;
-		
-		public NamedConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer)
-		{
+
+		public NamedConfigEntry(final String name, final T defaultValue, final Supplier<T> supplier, final Consumer<T> consumer) {
 			this.name = name;
 			this.supplier = supplier;
 			this.consumer = consumer;
 			this.defaultValue = defaultValue;
 		}
-		
-		public String getName()
-		{
+
+		public String getName() {
 			return name;
 		}
-		
-		public void reset()
-		{
+
+		public void reset() {
 			setValue(defaultValue);
 		}
-		
+
 		@Override
-		public T get()
-		{
+		public T get() {
 			return supplier.get();
 		}
-		
+
 		@Override
-		public void accept(final T t)
-		{
+		public void accept(final T t) {
 			consumer.accept(t);
 		}
-		
+
 		@Override
-		public T getValue()
-		{
+		public T getValue() {
 			return supplier.get();
 		}
-		
+
 		@Override
-		public void setValue(final T t)
-		{
+		public void setValue(final T t) {
 			consumer.accept(t);
 		}
 	}
