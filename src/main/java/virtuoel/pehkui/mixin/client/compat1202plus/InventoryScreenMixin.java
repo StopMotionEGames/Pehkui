@@ -5,15 +5,14 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.LivingEntity;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin
 {
-	@WrapOperation(method = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getHeight()F"))
+	@WrapOperation(method = "renderEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBbHeight()F"))
 	private static float pehkui$drawEntity$getHeight(LivingEntity obj, Operation<Float> original)
 	{
 		final float value = original.call(obj);

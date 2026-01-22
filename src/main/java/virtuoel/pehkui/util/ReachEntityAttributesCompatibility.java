@@ -3,8 +3,7 @@ package virtuoel.pehkui.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
-
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class ReachEntityAttributesCompatibility
 {

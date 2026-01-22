@@ -1,10 +1,16 @@
 package virtuoel.pehkui.mixin;
 
 import java.util.Map;
-
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,16 +25,6 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleRegistries;
@@ -41,10 +37,10 @@ import virtuoel.pehkui.util.ScaleUtils;
 public abstract class EntityMixin implements PehkuiEntityExtensions
 {
 	@Shadow boolean onGround;
-	@Shadow boolean firstUpdate;
+	@Shadow boolean firstTick;
 
 	@Shadow
-	public abstract Direction getHorizontalFacing();
+	public abstract Direction getDirection();
 
 	private boolean pehkui_shouldSyncScales = false;
 	private boolean pehkui_shouldIgnoreScaleNbt = false;
@@ -92,31 +88,31 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		pehkui_shouldIgnoreScaleNbt = ignore;
 	}
 	
-	@Inject(at = @At("HEAD"), method = "readNbt")
-	private void pehkui$readNbt(NbtCompound tag, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "load")
+	private void pehkui$readNbt(CompoundTag tag, CallbackInfo info)
 	{
 		pehkui_readScaleNbt(tag);
 	}
 	
 	@Override
-	public void pehkui_readScaleNbt(NbtCompound nbt)
+	public void pehkui_readScaleNbt(CompoundTag nbt)
 	{
 		if (pehkui_shouldIgnoreScaleNbt())
 		{
 			return;
 		}
 		
-		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types", NbtElement.COMPOUND_TYPE) && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
+		if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types", Tag.TAG_COMPOUND) && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
 		{
-			final NbtCompound typeData = nbt.getCompound(Pehkui.MOD_ID + ":scale_data_types");
+			final CompoundTag typeData = nbt.getCompound(Pehkui.MOD_ID + ":scale_data_types");
 			
 			String key;
 			ScaleData scaleData;
-			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
+			for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet())
 			{
 				key = entry.getKey().toString();
 				
-				if (typeData.contains(key, NbtElement.COMPOUND_TYPE))
+				if (typeData.contains(key, Tag.TAG_COMPOUND))
 				{
 					scaleData = pehkui_getScaleData(entry.getValue());
 					scaleData.readNbt(typeData.getCompound(key));
@@ -125,37 +121,37 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		}
 	}
 	
-	@Inject(at = @At("HEAD"), method = "writeNbt")
-	private void pehkui$writeNbt(NbtCompound tag, CallbackInfoReturnable<NbtCompound> info)
+	@Inject(at = @At("HEAD"), method = "saveWithoutId")
+	private void pehkui$writeNbt(CompoundTag tag, CallbackInfoReturnable<CompoundTag> info)
 	{
 		pehkui_writeScaleNbt(tag);
 	}
 	
 	@Override
-	public NbtCompound pehkui_writeScaleNbt(NbtCompound nbt)
+	public CompoundTag pehkui_writeScaleNbt(CompoundTag nbt)
 	{
 		if (pehkui_shouldIgnoreScaleNbt())
 		{
 			return nbt;
 		}
 		
-		final NbtCompound typeData = new NbtCompound();
+		final CompoundTag typeData = new CompoundTag();
 		
-		NbtCompound compound;
+		CompoundTag compound;
 		for (final ScaleData scaleData : pehkui_getScales().values())
 		{
 			if (scaleData != null)
 			{
-				compound = scaleData.writeNbt(new NbtCompound());
+				compound = scaleData.writeNbt(new CompoundTag());
 				
-				if (compound.getSize() != 0)
+				if (compound.size() != 0)
 				{
 					typeData.put(ScaleRegistries.getId(ScaleRegistries.SCALE_TYPES, scaleData.getScaleType()).toString(), compound);
 				}
 			}
 		}
 		
-		if (typeData.getSize() > 0)
+		if (typeData.size() > 0)
 		{
 			nbt.put(Pehkui.MOD_ID + ":scale_data_types", typeData);
 		}
@@ -180,19 +176,19 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		
 		if (widthScale != 1.0F || heightScale != 1.0F)
 		{
-			return original.scaled(widthScale, heightScale);
+			return original.scale(widthScale, heightScale);
 		}
 		
 		return original;
 	}
 	
-	@Inject(at = @At("HEAD"), method = "onStartedTrackingBy")
-	private void pehkui$onStartedTrackingBy(ServerPlayerEntity player, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "startSeenByPlayer")
+	private void pehkui$onStartedTrackingBy(ServerPlayer player, CallbackInfo info)
 	{
-		ScaleUtils.syncScalesOnTrackingStart((Entity) (Object) this, player.networkHandler);
+		ScaleUtils.syncScalesOnTrackingStart((Entity) (Object) this, player.connection);
 	}
 	
-	@ModifyVariable(method = "dropStack(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;F)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "STORE"))
+	@ModifyVariable(method = "spawnAtLocation(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;F)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "STORE"))
 	private ItemEntity pehkui$dropStack(ItemEntity entity)
 	{
 		ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);
@@ -207,18 +203,18 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		return scale < 1.0F ? scale * scale * value : value;
 	}
 	
-	@ModifyArg(method = "move", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;adjustMovementForSneaking(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/entity/MovementType;)Lnet/minecraft/util/math/Vec3d;"))
-	private Vec3d pehkui$move$adjustMovementForSneaking(Vec3d movement, MovementType type)
+	@ModifyArg(method = "move", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;maybeBackOffFromEdge(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/entity/MoverType;)Lnet/minecraft/world/phys/Vec3;"))
+	private Vec3 pehkui$move$adjustMovementForSneaking(Vec3 movement, MoverType type)
 	{
-		if (type == MovementType.SELF || type == MovementType.PLAYER)
+		if (type == MoverType.SELF || type == MoverType.PLAYER)
 		{
-			return movement.multiply(ScaleUtils.getMotionScale((Entity) (Object) this));
+			return movement.scale(ScaleUtils.getMotionScale((Entity) (Object) this));
 		}
 		
 		return movement;
 	}
 	
-	@WrapOperation(method = "pushAwayFrom", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
+	@WrapOperation(method = "push(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/entity/Entity;push(DDD)V"))
 	private void pehkui$pushSelfAwayFrom$other(Entity obj, double x, double y, double z, Operation<Void> original, @Local(argsOnly = true) Entity other)
 	{
 		final float otherScale = ScaleUtils.getMotionScale(other);
@@ -232,7 +228,7 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		original.call(obj, x, y, z);
 	}
 	
-	@WrapOperation(method = "pushAwayFrom", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
+	@WrapOperation(method = "push(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/entity/Entity;push(DDD)V"))
 	private void pehkui$pushSelfAwayFrom$self(Entity obj, double x, double y, double z, Operation<Void> original)
 	{
 		final float ownScale = ScaleUtils.getMotionScale((Entity) (Object) this);
@@ -246,7 +242,7 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 		original.call(obj, x, y, z);
 	}
 	
-	@Inject(at = @At("HEAD"), method = "spawnSprintingParticles", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "spawnSprintParticle", cancellable = true)
 	private void pehkui$spawnSprintingParticles(CallbackInfo info)
 	{
 		if (ScaleUtils.getMotionScale((Entity) (Object) this) < 1.0F)
@@ -258,7 +254,7 @@ public abstract class EntityMixin implements PehkuiEntityExtensions
 	@Override
 	public boolean pehkui_isFirstUpdate()
 	{
-		return this.firstUpdate;
+		return this.firstTick;
 	}
 	
 	@Override

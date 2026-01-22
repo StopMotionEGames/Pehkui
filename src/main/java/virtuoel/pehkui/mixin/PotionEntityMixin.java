@@ -6,17 +6,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.phys.AABB;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(PotionEntity.class)
+@Mixin(ThrownPotion.class)
 public class PotionEntityMixin
 {
-	@WrapOperation(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
-	private Box pehkui$applyWater$expand(Box obj, double x, double y, double z, Operation<Box> original)
+	@WrapOperation(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))
+	private AABB pehkui$applyWater$expand(AABB obj, double x, double y, double z, Operation<AABB> original)
 	{
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);

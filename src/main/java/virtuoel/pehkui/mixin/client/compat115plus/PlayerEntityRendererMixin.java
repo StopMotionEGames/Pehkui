@@ -1,10 +1,9 @@
 package virtuoel.pehkui.mixin.client.compat115plus;
 
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-
-@Mixin(PlayerEntityRenderer.class)
+@Mixin(PlayerRenderer.class)
 public abstract class PlayerEntityRendererMixin
 {
 	// todo: see this!

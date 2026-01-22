@@ -1,18 +1,17 @@
 package virtuoel.pehkui.mixin.compat1212plus;
 
-import net.minecraft.entity.vehicle.AbstractBoatEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(AbstractBoatEntity.class)
+@Mixin(AbstractBoat.class)
 public abstract class AbstractBoatEntityMixin
 {
-	@ModifyExpressionValue(method = "updateVelocity", at = @At(value = "CONSTANT", args = "doubleValue=0.65D"))
+	@ModifyExpressionValue(method = "floatBoat", at = @At(value = "CONSTANT", args = "doubleValue=0.65D"))
 	private double pehkui$updateVelocity$multiplier(double value)
 	{
 		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);

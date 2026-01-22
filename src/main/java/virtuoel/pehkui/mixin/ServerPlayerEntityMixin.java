@@ -1,27 +1,26 @@
 package virtuoel.pehkui.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(ServerPlayerEntity.class)
+@Mixin(ServerPlayer.class)
 public abstract class ServerPlayerEntityMixin
 {
-	@Inject(at = @At("HEAD"), method = "copyFrom")
-	private void pehkui$copyFrom(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "restoreFrom")
+	private void pehkui$copyFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo info)
 	{
-		ScaleUtils.loadScaleOnRespawn((ServerPlayerEntity) (Object) this, oldPlayer, alive);
+		ScaleUtils.loadScaleOnRespawn((ServerPlayer) (Object) this, oldPlayer, alive);
 	}
-	@Inject(at = @At("RETURN"), method = "dropItem")
+	@Inject(at = @At("RETURN"), method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;")
 	private void pehkui$dropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir)
 	{
 		final ItemEntity entity = cir.getReturnValue();
@@ -35,9 +34,9 @@ public abstract class ServerPlayerEntityMixin
 
 			if (scale != 1.0F)
 			{
-				final Vec3d pos = entity.getPos();
+				final Vec3 pos = entity.position();
 
-				entity.setPosition(pos.x, pos.y + ((1.0F - scale) * 0.3D), pos.z);
+				entity.setPos(pos.x, pos.y + ((1.0F - scale) * 0.3D), pos.z);
 			}
 		}
 	}

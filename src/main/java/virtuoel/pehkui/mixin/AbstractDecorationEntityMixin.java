@@ -2,38 +2,35 @@ package virtuoel.pehkui.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.decoration.AbstractDecorationEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(AbstractDecorationEntity.class)
+@Mixin(HangingEntity.class)
 public abstract class AbstractDecorationEntityMixin {
-	@ModifyVariable(method = "dropStack", at = @At(value = "STORE"))
+	@ModifyVariable(method = "spawnAtLocation", at = @At(value = "STORE"))
 	private ItemEntity pehkui$dropStack(ItemEntity entity) {
 		ScaleUtils.setScaleOfDrop(entity, (Entity) (Object) this);
 		return entity;
 	}
 
-	@ModifyArg(method = "updateAttachmentPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/decoration/AbstractDecorationEntity;setBoundingBox(Lnet/minecraft/util/math/Box;)V"))
-	private Box pehkui$updateAttachmentPosition$setBoundingBox(Box box) {
-		final AbstractDecorationEntity entity = (AbstractDecorationEntity) (Object) this;
+	@ModifyArg(method = "recalculateBoundingBox", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/decoration/HangingEntity;setBoundingBox(Lnet/minecraft/world/phys/AABB;)V"))
+	private AABB pehkui$updateAttachmentPosition$setBoundingBox(AABB box) {
+		final HangingEntity entity = (HangingEntity) (Object) this;
 
-		final Direction facing = entity.getHorizontalFacing();
+		final Direction facing = entity.getDirection();
 
-		final double xLength = box.getLengthX() / -2.0D;
-		final double yLength = box.getLengthY() / -2.0D;
-		final double zLength = box.getLengthZ() / -2.0D;
+		final double xLength = box.getXsize() / -2.0D;
+		final double yLength = box.getYsize() / -2.0D;
+		final double zLength = box.getZsize() / -2.0D;
 
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(entity);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(entity);
@@ -42,8 +39,8 @@ public abstract class AbstractDecorationEntityMixin {
 			final double dX = xLength * (1.0D - widthScale);
 			final double dY = yLength * (1.0D - heightScale);
 			final double dZ = zLength * (1.0D - widthScale);
-			box = box.expand(dX, dY, dZ);
-			box = box.offset(dX * facing.getOffsetX(), dY * facing.getOffsetY(), dZ * facing.getOffsetZ());
+			box = box.inflate(dX, dY, dZ);
+			box = box.move(dX * facing.getStepX(), dY * facing.getStepY(), dZ * facing.getStepZ());
 		}
 
 		return box;

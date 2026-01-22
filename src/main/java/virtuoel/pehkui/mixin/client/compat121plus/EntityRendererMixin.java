@@ -1,15 +1,14 @@
 package virtuoel.pehkui.mixin.client.compat121plus;
 
-import net.minecraft.client.render.entity.state.EntityRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin<T extends Entity>
@@ -29,10 +28,10 @@ public class EntityRendererMixin<T extends Entity>
 //	}
 	
 	@Inject(method = "renderLeash", at = @At(value = "RETURN"))
-	private static <E extends Entity> void pehkui$renderLeash$return(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState.LeashData leashData, CallbackInfo ci)
+	private static <E extends Entity> void pehkui$renderLeash$return(PoseStack matrices, MultiBufferSource vertexConsumers, EntityRenderState.LeashState leashData, CallbackInfo ci)
 	{
-		matrices.pop();
-		matrices.pop();
+		matrices.popPose();
+		matrices.popPose();
 	}
 //	todo: See this!
 //	@ModifyExpressionValue(method = "renderLabelIfPresent", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))

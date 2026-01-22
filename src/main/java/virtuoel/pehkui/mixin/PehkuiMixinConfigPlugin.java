@@ -37,11 +37,6 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 	
 	@ApiStatus.Experimental
 	private static final boolean DISABLE_THREAD_SAFETY = Boolean.parseBoolean(System.getProperty("pehkui.disableThreadSafety"));
-	
-	private static final boolean REACH_ATTRIBUTES_LOADED = ModLoaderUtils.isModLoaded("reach-entity-attributes");
-	private static final boolean STEP_HEIGHT_ATTRIBUTES_LOADED = ModLoaderUtils.isModLoaded("step-height-entity-attribute");
-	private static final boolean IDENTITY_LOADED = ModLoaderUtils.isModLoaded("identity");
-	private static final boolean MAGNA_LOADED = ModLoaderUtils.isModLoaded("magna");
 	private static final boolean OPTIFABRIC_LOADED = ModLoaderUtils.isModLoaded("optifabric");
 	
 	@Override
@@ -52,11 +47,6 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 			throw new IllegalArgumentException(
 				String.format("Invalid package for class \"%s\": Expected \"%s\", but found \"%s\".", targetClassName, MIXIN_PACKAGE, mixinClassName)
 			);
-		}
-		
-		if (!VersionUtils.shouldApplyCompatibilityMixin(mixinClassName))
-		{
-			return false;
 		}
 		
 		if (mixinClassName.endsWith("InGameOverlayRendererMixin"))
@@ -77,23 +67,6 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 			return DISABLE_THREAD_SAFETY;
 		}
 		
-		if (mixinClassName.startsWith(MIXIN_PACKAGE + ".reach"))
-		{
-			return REACH_ATTRIBUTES_LOADED == mixinClassName.contains(".reach.compat.");
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".step_height"))
-		{
-			return STEP_HEIGHT_ATTRIBUTES_LOADED == mixinClassName.contains(MIXIN_PACKAGE + ".step_height.compat.");
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".identity.compat"))
-		{
-			return IDENTITY_LOADED;
-		}
-		else if (mixinClassName.startsWith(MIXIN_PACKAGE + ".magna.compat"))
-		{
-			return MAGNA_LOADED;
-		}
-		
 		return true;
 	}
 	
@@ -112,10 +85,7 @@ public class PehkuiMixinConfigPlugin implements IMixinConfigPlugin
 	@Override
 	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo)
 	{
-		if (mixinClassName.equals(MIXIN_PACKAGE + ".pehkui.compat.ScaleTypeMixin"))
-		{
-			BackwardsCompatibility.addFieldsIfNeeded(name -> targetClass.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, name, "L" + targetClass.name + ";", null, null));
-		}
+
 	}
 	
 	@Override

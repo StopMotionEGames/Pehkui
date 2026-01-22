@@ -5,17 +5,16 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.AABB;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(MobEntity.class)
+@Mixin(Mob.class)
 public abstract class MobEntityMixin
 {
-	@WrapOperation(method = "getAttackBox", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Box;expand(DDD)Lnet/minecraft/util/math/Box;"))
-	private Box pehkui$getAttackBox$expand(Box obj, double x, double y, double z, Operation<Box> original)
+	@WrapOperation(method = "getAttackBoundingBox", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))
+	private AABB pehkui$getAttackBox$expand(AABB obj, double x, double y, double z, Operation<AABB> original)
 	{
 		final float scale = ScaleUtils.getEntityReachScale((Entity) (Object) this);
 		

@@ -11,16 +11,15 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.block.ScaffoldingBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ScaffoldingBlock;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import virtuoel.pehkui.util.MulticonnectCompatibility;
 import virtuoel.pehkui.util.PehkuiBlockStateExtensions;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -28,8 +27,8 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin
 {
-	@Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(DDD)V", shift = Shift.AFTER))
-	private void pehkui$tickMovement$minVelocity(CallbackInfo info, @Local Vec3d velocity)
+	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setDeltaMovement(DDD)V", shift = Shift.AFTER))
+	private void pehkui$tickMovement$minVelocity(CallbackInfo info, @Local Vec3 velocity)
 	{
 		final LivingEntity self = (LivingEntity) (Object) this;
 		
@@ -58,14 +57,14 @@ public abstract class LivingEntityMixin
 				vZ = 0.0D;
 			}
 			
-			self.setVelocity(vX, vY, vZ);
+			self.setDeltaMovement(vX, vY, vZ);
 		}
 	}
 	
-	@ModifyVariable(method = "applyArmorToDamage(Lnet/minecraft/entity/damage/DamageSource;F)F", at = @At("HEAD"), argsOnly = true)
+	@ModifyVariable(method = "getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F", at = @At("HEAD"), argsOnly = true)
 	private float pehkui$applyArmorToDamage(float value, DamageSource source, float amount)
 	{
-		final Entity attacker = source.getAttacker();
+		final Entity attacker = source.getEntity();
 		final float attackScale = attacker == null ? 1.0F : ScaleUtils.getAttackScale(attacker);
 		final float defenseScale = ScaleUtils.getDefenseScale((Entity) (Object) this);
 		
@@ -85,7 +84,7 @@ public abstract class LivingEntityMixin
 		return scale != 1.0F ? original * scale : original;
 	}
 	
-	@ModifyReturnValue(method = "getAttackDistanceScalingFactor", at = @At("RETURN"))
+	@ModifyReturnValue(method = "getVisibilityPercent", at = @At("RETURN"))
 	private double pehkui$getAttackDistanceScalingFactor(double original)
 	{
 		final float scale = ScaleUtils.getVisibilityScale((Entity) (Object) this);
@@ -93,12 +92,12 @@ public abstract class LivingEntityMixin
 		return scale != 1.0F ? original * scale : original;
 	}
 	
-	@ModifyReturnValue(method = "applyClimbingSpeed(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At("RETURN"))
-	private Vec3d pehkui$applyClimbingSpeed(Vec3d original)
+	@ModifyReturnValue(method = "handleOnClimbable(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;", at = @At("RETURN"))
+	private Vec3 pehkui$applyClimbingSpeed(Vec3 original)
 	{
 		final LivingEntity self = (LivingEntity) (Object) this;
 		
-		if (!self.isClimbing())
+		if (!self.onClimbable())
 		{
 			return original;
 		}
@@ -107,25 +106,25 @@ public abstract class LivingEntityMixin
 		
 		if (width > 1.0F)
 		{
-			final Box bounds = self.getBoundingBox();
+			final AABB bounds = self.getBoundingBox();
 			
-			final double halfUnscaledXLength = (bounds.getLengthX() / width) / 2.0D;
-			final int minX = MathHelper.floor(bounds.minX + halfUnscaledXLength);
-			final int maxX = MathHelper.floor(bounds.maxX - halfUnscaledXLength);
+			final double halfUnscaledXLength = (bounds.getXsize() / width) / 2.0D;
+			final int minX = Mth.floor(bounds.minX + halfUnscaledXLength);
+			final int maxX = Mth.floor(bounds.maxX - halfUnscaledXLength);
 			
-			final int minY = MathHelper.floor(bounds.minY);
+			final int minY = Mth.floor(bounds.minY);
 			
-			final double halfUnscaledZLength = (bounds.getLengthZ() / width) / 2.0D;
-			final int minZ = MathHelper.floor(bounds.minZ + halfUnscaledZLength);
-			final int maxZ = MathHelper.floor(bounds.maxZ - halfUnscaledZLength);
+			final double halfUnscaledZLength = (bounds.getZsize() / width) / 2.0D;
+			final int minZ = Mth.floor(bounds.minZ + halfUnscaledZLength);
+			final int maxZ = Mth.floor(bounds.maxZ - halfUnscaledZLength);
 			
-			final World world = self.getEntityWorld();
+			final Level world = self.getCommandSenderWorld();
 			
-			for (final BlockPos pos : BlockPos.iterate(minX, minY, minZ, maxX, minY, maxZ))
+			for (final BlockPos pos : BlockPos.betweenClosed(minX, minY, minZ, maxX, minY, maxZ))
 			{
 				if (((PehkuiBlockStateExtensions) world.getBlockState(pos)).pehkui_getBlock() instanceof ScaffoldingBlock)
 				{
-					return new Vec3d(original.x, Math.max(self.getVelocity().y, -0.15D), original.z);
+					return new Vec3(original.x, Math.max(self.getDeltaMovement().y, -0.15D), original.z);
 				}
 			}
 		}
@@ -133,21 +132,21 @@ public abstract class LivingEntityMixin
 		return original;
 	}
 	
-	@WrapOperation(method = "tickCramming", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getBoundingBox()Lnet/minecraft/util/math/Box;"))
-	private Box pehkui$tickCramming$getBoundingBox(LivingEntity obj, Operation<Box> original)
+	@WrapOperation(method = "pushEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBoundingBox()Lnet/minecraft/world/phys/AABB;"))
+	private AABB pehkui$tickCramming$getBoundingBox(LivingEntity obj, Operation<AABB> original)
 	{
-		final Box bounds = original.call(obj);
+		final AABB bounds = original.call(obj);
 		
 		final float interactionWidth = ScaleUtils.getInteractionBoxWidthScale(obj);
 		final float interactionHeight = ScaleUtils.getInteractionBoxHeightScale(obj);
 		
 		if (interactionWidth != 1.0F || interactionHeight != 1.0F)
 		{
-			final double scaledXLength = bounds.getLengthX() * 0.5D * (interactionWidth - 1.0F);
-			final double scaledYLength = bounds.getLengthY() * 0.5D * (interactionHeight - 1.0F);
-			final double scaledZLength = bounds.getLengthZ() * 0.5D * (interactionWidth - 1.0F);
+			final double scaledXLength = bounds.getXsize() * 0.5D * (interactionWidth - 1.0F);
+			final double scaledYLength = bounds.getYsize() * 0.5D * (interactionHeight - 1.0F);
+			final double scaledZLength = bounds.getZsize() * 0.5D * (interactionWidth - 1.0F);
 			
-			return bounds.expand(scaledXLength, scaledYLength, scaledZLength);
+			return bounds.inflate(scaledXLength, scaledYLength, scaledZLength);
 		}
 		
 		return bounds;
