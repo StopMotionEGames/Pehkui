@@ -1,41 +1,33 @@
 package virtuoel.pehkui.mixin;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.NbtPathArgument;
+import net.minecraft.server.commands.data.DataAccessor;
+import net.minecraft.server.commands.data.DataCommands;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.command.DataCommandObject;
-import net.minecraft.command.argument.NbtPathArgumentType;
-import net.minecraft.server.command.DataCommand;
-import net.minecraft.server.command.ServerCommandSource;
+public interface DataCommandInvoker {
+	@Mixin(DataCommands.class)
+	interface Get {
+		@Invoker
+		static int callGetData(CommandSourceStack source, DataAccessor object) {
+			throw new NoSuchMethodError();
+		}
+	}
 
-public interface DataCommandInvoker
-{
-	@Mixin(DataCommand.class)
-	interface Get
-	{
+	@Mixin(DataCommands.class)
+	interface Path {
 		@Invoker
-		static int callExecuteGet(ServerCommandSource source, DataCommandObject object)
-		{
+		static int callGetData(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path) {
 			throw new NoSuchMethodError();
 		}
 	}
-	
-	@Mixin(DataCommand.class)
-	interface Path
-	{
+
+	@Mixin(DataCommands.class)
+	interface Scaled {
 		@Invoker
-		static int callExecuteGet(ServerCommandSource source, DataCommandObject object, NbtPathArgumentType.NbtPath path)
-		{
-			throw new NoSuchMethodError();
-		}
-	}
-	
-	@Mixin(DataCommand.class)
-	interface Scaled
-	{
-		@Invoker
-		static int callExecuteGet(ServerCommandSource source, DataCommandObject object, NbtPathArgumentType.NbtPath path, double scale)
-		{
+		static int callGetNumeric(CommandSourceStack source, DataAccessor object, NbtPathArgument.NbtPath path, double scale) {
 			throw new NoSuchMethodError();
 		}
 	}
