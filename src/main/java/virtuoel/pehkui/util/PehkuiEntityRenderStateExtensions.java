@@ -1,6 +1,6 @@
 package virtuoel.pehkui.util;
 
-import net.minecraft.util.math.Box;
+import net.minecraft.world.phys.AABB;
 
 public interface PehkuiEntityRenderStateExtensions {
 	float pehkui$getModelWidthScale();
@@ -31,7 +31,7 @@ public interface PehkuiEntityRenderStateExtensions {
 
 	void pehkui$setTargetingMargin(float targetingMargin);
 
-	Box pehkui$getCurrentBoundingBox();
+	AABB pehkui$getCurrentBoundingBox();
 
-	void pehkui$setCurrentBoundingBox(Box box);
+	void pehkui$setCurrentBoundingBox(AABB box);
 }
