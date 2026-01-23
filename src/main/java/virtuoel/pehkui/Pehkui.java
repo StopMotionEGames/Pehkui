@@ -24,7 +24,6 @@ import virtuoel.pehkui.util.ModLoaderUtils;
 import virtuoel.pehkui.util.MulticonnectCompatibility;
 import virtuoel.pehkui.util.ReachEntityAttributesCompatibility;
 import virtuoel.pehkui.util.ReflectionUtils;
-import virtuoel.pehkui.util.VersionUtils;
 
 @ApiStatus.Internal
 public class Pehkui implements ModInitializer {
@@ -56,11 +55,10 @@ public class Pehkui implements ModInitializer {
 				}
 			});
 
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-				PayloadTypeRegistry.playS2C().register(ScalePayload.ID, ScalePayload.CODEC);
-				PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
-				PayloadTypeRegistry.playS2C().register(DebugPayload.ID, DebugPayload.CODEC);
-			}
+			PayloadTypeRegistry.playS2C().register(ScalePayload.ID, ScalePayload.CODEC);
+			PayloadTypeRegistry.playS2C().register(ConfigSyncPayload.ID, ConfigSyncPayload.CODEC);
+			PayloadTypeRegistry.playS2C().register(DebugPayload.ID, DebugPayload.CODEC);
+
 		}
 
 		GravityChangerCompatibility.INSTANCE.getClass();
