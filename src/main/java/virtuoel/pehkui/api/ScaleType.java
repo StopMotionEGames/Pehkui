@@ -1,21 +1,19 @@
 package virtuoel.pehkui.api;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.function.ToDoubleBiFunction;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.entity.Entity;
-import virtuoel.pehkui.util.BackwardsCompatibility;
+import org.jetbrains.annotations.ApiStatus;
 import virtuoel.pehkui.util.PehkuiEntityExtensions;
 import virtuoel.pehkui.util.ReflectionUtils;
 import virtuoel.pehkui.util.ScaleUtils;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.function.ToDoubleBiFunction;
 
 public class ScaleType
 {
@@ -318,10 +316,5 @@ public class ScaleType
 				}
 			}
 		);
-	}
-	
-	static
-	{
-		BackwardsCompatibility.populateFieldsIfNeeded();
 	}
 }
