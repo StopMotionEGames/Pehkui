@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,14 +24,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.api.ScaleData;
 import virtuoel.pehkui.api.ScaleModifier;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
 import virtuoel.pehkui.api.ScaleTypes;
-import virtuoel.pehkui.network.ScalePacket;
 import virtuoel.pehkui.network.ScalePayload;
 
 public class ScaleUtils {
@@ -91,8 +88,6 @@ public class ScaleUtils {
 			type.getScaleData(target).fromScale(type.getScaleData(source));
 		}
 	}
-
-	public static final double DEFAULT_MAXIMUM_REACH_BELOW_1_17 = 32.0D * 16.0D / 4.0D;
 
 	public static final float DEFAULT_MINIMUM_POSITIVE_SCALE = 0x1P-96F;
 	public static final float DEFAULT_MAXIMUM_POSITIVE_SCALE = 0x1P32F;
@@ -217,15 +212,7 @@ public class ScaleUtils {
 
 		if (!syncedScales.isEmpty()) {
 			if (NETWORKING_API_LOADED) {
-				if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-					packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
-				} else {
-					final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-
-					new ScalePacket(entity, syncedScales).write(buffer);
-
-					packetSender.accept(ReflectionUtils.createS2CPacket(Pehkui.SCALE_PACKET, buffer));
-				}
+				packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
 			}
 
 			syncedScales.clear();

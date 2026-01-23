@@ -35,14 +35,12 @@ public abstract class EntitySelectorParserMixin implements PehkuiEntitySelectorR
 	{
 		if (!this.pehkui$scaleRange.isAny())
 		{
-			final ScaleType scaleType = this.pehkui$scaleType == ScaleTypes.INVALID ? ScaleTypes.BASE : this.pehkui$scaleType;
-			addPredicate(e -> CommandUtils.testFloatRange(this.pehkui$scaleRange, scaleType.getScaleData(e).getBaseScale()));
+			addPredicate(e -> false);
 		}
 		
 		if (!this.pehkui$computedScaleRange.isAny())
 		{
-			final ScaleType scaleType = this.pehkui$computedScaleType == ScaleTypes.INVALID ? ScaleTypes.BASE : this.pehkui$computedScaleType;
-			addPredicate(e -> CommandUtils.testFloatRange(this.pehkui$computedScaleRange, scaleType.getScaleData(e).getScale()));
+			addPredicate(e -> false);
 		}
 	}
 	
