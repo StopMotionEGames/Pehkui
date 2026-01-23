@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -88,7 +88,7 @@ public class ScaleRenderUtils {
 					mapped = "net.fabricmc.fabric.api.networking.v1.PacketSender";
 					classes[0] = Class.forName(mapped);
 
-					m = networkingClass.getMethod("registerGlobalReceiver", ResourceLocation.class, handlerClass);
+					m = networkingClass.getMethod("registerGlobalReceiver", Identifier.class, handlerClass);
 					methods.put(2, m);
 
 					m = handlerClass.getDeclaredMethod("receive", Minecraft.class, ClientPacketListener.class, FriendlyByteBuf.class, classes[0]);
@@ -124,7 +124,7 @@ public class ScaleRenderUtils {
 		GET_TICK_DELTA = handles.get(6);
 	}
 
-	public static void registerPacketHandler(ResourceLocation id, Class<?> clazz, String methodName) {
+	public static void registerPacketHandler(Identifier id, Class<?> clazz, String methodName) {
 		if (REGISTER_GLOBAL_RECEIVER != null && RECEIVE_TYPE != null && FACTORY_METHOD_TYPE != null && PACKET_SENDER != null) {
 			try {
 				final Method staticRegister = clazz.getDeclaredMethod(methodName, Minecraft.class, ClientPacketListener.class, FriendlyByteBuf.class, Object.class);
@@ -181,21 +181,21 @@ public class ScaleRenderUtils {
 		return packet.shouldKeep((byte) 1);
 	}
 
-	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final AABB box) {
-		renderInteractionBox(matrices, vertices, box, 0.25F, 1.0F, 0.0F, 1.0F);
-	}
-
-	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final AABB box, final float red, final float green, final float blue, final float alpha) {
-		if (VersionUtils.MINOR >= 15) {
-			ShapeRenderer.renderLineBox(((PoseStack) matrices).last(), (VertexConsumer) vertices, box, red, green, blue, alpha);
-		} else if (DRAW_BOX_OUTLINE != null) {
-			try {
-				DRAW_BOX_OUTLINE.invoke(box, red, green, blue, alpha);
-			} catch (Throwable e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+//	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final AABB box) {
+//		renderInteractionBox(matrices, vertices, box, 0.25F, 1.0F, 0.0F, 1.0F);
+//	}
+//
+//	public static void renderInteractionBox(@Nullable final Object matrices, @Nullable final Object vertices, final AABB box, final float red, final float green, final float blue, final float alpha) {
+//		if (VersionUtils.MINOR >= 15) {
+//			ShapeRenderer.renderShape(((PoseStack) matrices), (VertexConsumer) vertices, box, red, green, blue, alpha);
+//		} else if (DRAW_BOX_OUTLINE != null) {
+//			try {
+//				DRAW_BOX_OUTLINE.invoke(box, red, green, blue, alpha);
+//			} catch (Throwable e) {
+//				throw new RuntimeException(e);
+//			}
+//		}
+//	}
 
 	public static float modifyProjectionMatrixDepthByWidth(float depth, @Nullable Entity entity, float tickDelta) {
 		return entity == null ? depth : modifyProjectionMatrixDepth(ScaleUtils.getBoundingBoxWidthScale(entity, tickDelta), depth, entity, tickDelta);
@@ -276,7 +276,7 @@ public class ScaleRenderUtils {
 	private static void logIfEntityRenderCancelled(final boolean force) {
 		if (lastRenderedEntity != null && (force || entityRecursionDepth >= maxEntityRecursionDepth)) {
 			if (force || !loggedEntityTypes.contains(lastRenderedEntity)) {
-				final ResourceLocation id = EntityType.getKey(lastRenderedEntity);
+				final Identifier id = EntityType.getKey(lastRenderedEntity);
 
 				Pehkui.LOGGER.error("[{}]: Did something cancel entity rendering early? Matrix stack was not popped after rendering entity {}.", Pehkui.MOD_ID, id);
 
@@ -304,7 +304,7 @@ public class ScaleRenderUtils {
 		}
 
 		if (lastRenderedEntity != null) {
-			final ResourceLocation id = EntityType.getKey(lastRenderedEntity);
+			final Identifier id = EntityType.getKey(lastRenderedEntity);
 
 			section.setDetail("pehkui:debug/render/entity", id);
 		}

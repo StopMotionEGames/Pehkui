@@ -1,7 +1,6 @@
 package virtuoel.pehkui.mixin.client.gui.screens.inventory;
 
 import java.util.Map;
-
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,9 +9,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,8 +32,8 @@ public abstract class InventoryScreenMixin {
 	@Unique
 	private static final ScaleData pehkui$IDENTITY = ScaleData.Builder.create().build();
 
-	@Inject(method = "renderEntityInInventory", at = @At(value = "HEAD"))
-	private static void pehkui$drawEntity$head(GuiGraphics guiGraphics, int i, int j, int k, int l, float f, Vector3f vector3f, Quaternionf quaternionf, Quaternionf quaternionf2, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
+	@Inject(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "HEAD"))
+	private static void pehkui$drawEntity$head(GuiGraphics guiGraphics, int i, int j, int k, int l, int m, float f, float g, float h, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 
 		ScaleData data;
@@ -54,17 +50,17 @@ public abstract class InventoryScreenMixin {
 		final EntityDimensions dims = livingEntity.getDimensions(livingEntity.getPose());
 		final Vec3 pos = livingEntity.position();
 		final double r = ReflectionUtils.getDimensionsWidth(dims) / 2.0D;
-		final double h = ReflectionUtils.getDimensionsHeight(dims);
+		final double height = ReflectionUtils.getDimensionsHeight(dims);
 		final double xPos = pos.x;
 		final double yPos = pos.y;
 		final double zPos = pos.z;
-		final AABB box = new AABB(xPos - r, yPos, zPos - r, xPos + r, yPos + h, zPos + r);
+		final AABB box = new AABB(xPos - r, yPos, zPos - r, xPos + r, yPos + height, zPos + r);
 
 		livingEntity.setBoundingBox(box);
 	}
 
-	@Inject(method = "renderEntityInInventory", at = @At(value = "RETURN"))
-	private static void pehkui$drawEntity$return(GuiGraphics guiGraphics, int i, int j, int k, int l, float f, Vector3f vector3f, Quaternionf quaternionf, Quaternionf quaternionf2, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
+	@Inject(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "RETURN"))
+	private static void pehkui$drawEntity$return(GuiGraphics guiGraphics, int i, int j, int k, int l, int m, float f, float g, float h, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 
 		for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
@@ -74,11 +70,6 @@ public abstract class InventoryScreenMixin {
 		livingEntity.setBoundingBox(bounds.get());
 	}
 
-	@WrapOperation(method = "renderEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphics;IIIIIFFFLnet/minecraft/world/entity/LivingEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBbHeight()F"))
-	private static float pehkui$drawEntity$getHeight(LivingEntity obj, Operation<Float> original) {
-		final float value = original.call(obj);
-		final float scale = ScaleUtils.getBoundingBoxHeightScale(obj);
 
-		return scale != 1.0F ? ScaleUtils.divideClamped(value, scale) : value;
 	}
 }

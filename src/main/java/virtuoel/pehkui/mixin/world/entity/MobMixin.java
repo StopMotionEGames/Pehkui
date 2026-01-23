@@ -12,12 +12,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Mob.class)
 public abstract class MobMixin {
-	@ModifyExpressionValue(method = "doHurtTarget", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
+	@ModifyArg(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;causeExtraKnockback(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/phys/Vec3;)V"))
 	private float pehkui$tryAttack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 

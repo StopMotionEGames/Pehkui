@@ -1,13 +1,13 @@
-package virtuoel.pehkui.mixin.world.entity.vehicle;
+package virtuoel.pehkui.mixin.world.entity.vehicle.boat;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.ChestBoat;
+import net.minecraft.world.entity.vehicle.boat.ChestBoat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.vehicle.AbstractChestBoat;
+import net.minecraft.world.entity.vehicle.boat.AbstractChestBoat;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(AbstractChestBoat.class)

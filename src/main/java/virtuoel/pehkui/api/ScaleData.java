@@ -15,7 +15,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import virtuoel.pehkui.util.PehkuiEntityExtensions;
@@ -407,14 +407,14 @@ public class ScaleData {
 			.writeInt(this.differingModifierCache.size());
 
 		for (final ScaleModifier modifier : this.differingModifierCache) {
-			buffer.writeResourceLocation(ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, modifier));
+			buffer.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_MODIFIERS, modifier));
 		}
 
 		((ByteBuf) buffer).writeByte(this.persistent == null ? -1 : this.persistent ? 1 : 0);
 
 		if (this.easing != null) {
 			((ByteBuf) buffer).writeBoolean(true);
-			buffer.writeResourceLocation(ScaleRegistries.getId(ScaleRegistries.SCALE_EASINGS, this.easing));
+			buffer.writeIdentifier(ScaleRegistries.getId(ScaleRegistries.SCALE_EASINGS, this.easing));
 		} else {
 			((ByteBuf) buffer).writeBoolean(false);
 		}
@@ -435,7 +435,7 @@ public class ScaleData {
 
 		this.persistent = tag.getBooleanOr("persistent", false);
 
-		this.easing = tag.contains("easing") ? ScaleRegistries.getEntry(ScaleRegistries.SCALE_EASINGS, ResourceLocation.tryParse(tag.getString("easing").get())) : null;
+		this.easing = tag.contains("easing") ? ScaleRegistries.getEntry(ScaleRegistries.SCALE_EASINGS, Identifier.tryParse(tag.getString("easing").get())) : null;
 
 		this.trackModifierChanges = false;
 
@@ -450,15 +450,15 @@ public class ScaleData {
 			final ListTag modifiers = tag.asList().get();
 			final byte elementType = modifiers.getId();
 
-			ResourceLocation id;
+			Identifier id;
 			ScaleModifier modifier;
 			for (int i = 0; i < modifiers.size(); i++) {
 				if (elementType == Tag.TAG_STRING) {
-					id = ResourceLocation.tryParse(String.valueOf(modifiers.getString(i)));
+					id = Identifier.tryParse(String.valueOf(modifiers.getString(i)));
 					modifier = ScaleRegistries.getEntry(ScaleRegistries.SCALE_MODIFIERS, id);
 				} else if (elementType == Tag.TAG_COMPOUND) {
 					final CompoundTag compound = modifiers.getCompound(i).get();
-					id = ResourceLocation.tryParse(compound.getString("id").get());
+					id = Identifier.tryParse(compound.getString("id").get());
 					modifier = ScaleRegistries.getEntry(ScaleRegistries.SCALE_MODIFIERS, id);
 				} else {
 					modifier = null;

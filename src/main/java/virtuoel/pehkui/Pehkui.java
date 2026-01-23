@@ -7,7 +7,7 @@ import org.spongepowered.asm.service.MixinService;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.api.ScaleOperations;
 import virtuoel.pehkui.api.ScaleTypes;
@@ -70,15 +70,15 @@ public class Pehkui implements ModInitializer {
 		ReachEntityAttributesCompatibility.INSTANCE.getClass();
 	}
 
-	public static ResourceLocation id(String path) {
+	public static Identifier id(String path) {
 		return ReflectionUtils.constructIdentifier(MOD_ID, path);
 	}
 
-	public static ResourceLocation id(String path, String... paths) {
+	public static Identifier id(String path, String... paths) {
 		return id(paths.length == 0 ? path : path + "/" + String.join("/", paths));
 	}
 
-	public static final ResourceLocation SCALE_PACKET = id("scale");
-	public static final ResourceLocation CONFIG_SYNC_PACKET = id("config_sync");
-	public static final ResourceLocation DEBUG_PACKET = id("debug");
+	public static final Identifier SCALE_PACKET = id("scale");
+	public static final Identifier CONFIG_SYNC_PACKET = id("config_sync");
+	public static final Identifier DEBUG_PACKET = id("debug");
 }

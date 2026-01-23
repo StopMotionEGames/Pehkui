@@ -14,12 +14,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.ResourceLocationException;
-import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.IdentifierException;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientCommonPacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
@@ -91,7 +91,7 @@ public final class ReflectionUtils {
 			}
 
 			if (is1204Minus && ModLoaderUtils.isModLoaded("fabric-networking-api-v1")) {
-				m = ServerPlayNetworking.class.getMethod("createS2CPacket", ResourceLocation.class, FriendlyByteBuf.class);
+				m = ServerPlayNetworking.class.getMethod("createS2CPacket", Identifier.class, FriendlyByteBuf.class);
 				h.put(7, lookup.unreflect(m));
 			}
 
@@ -100,9 +100,9 @@ public final class ReflectionUtils {
 				m = Mob.class.getMethod(mapped);
 				h.put(8, lookup.unreflect(m));
 
-				h.put(9, lookup.unreflectConstructor(ResourceLocation.class.getDeclaredConstructor(String.class)));
+				h.put(9, lookup.unreflectConstructor(Identifier.class.getDeclaredConstructor(String.class)));
 
-				h.put(10, lookup.unreflectConstructor(ResourceLocation.class.getDeclaredConstructor(String.class, String.class)));
+				h.put(10, lookup.unreflectConstructor(Identifier.class.getDeclaredConstructor(String.class, String.class)));
 			}
 		} catch (NoSuchMethodException | SecurityException | ClassNotFoundException | IllegalAccessException |
 				 NoSuchFieldException e) {
@@ -124,7 +124,7 @@ public final class ReflectionUtils {
 		CONSTRUCT_ID_FROM_STRINGS = h.get(10);
 	}
 
-	public static Packet<ClientCommonPacketListener> createS2CPacket(ResourceLocation channelName, FriendlyByteBuf buf) {
+	public static Packet<ClientCommonPacketListener> createS2CPacket(Identifier channelName, FriendlyByteBuf buf) {
 		try {
 			return (Packet<ClientCommonPacketListener>) CREATE_S2C_PACKET.invoke(channelName, buf);
 		} catch (final Throwable e) {
@@ -132,32 +132,32 @@ public final class ReflectionUtils {
 		}
 	}
 
-	public static ResourceLocation constructIdentifier(final String id) {
+	public static Identifier constructIdentifier(final String id) {
 		if (CONSTRUCT_ID_FROM_STRING != null) {
 			try {
-				return (ResourceLocation) CONSTRUCT_ID_FROM_STRING.invoke(id);
-			} catch (final ResourceLocationException e) {
+				return (Identifier) CONSTRUCT_ID_FROM_STRING.invoke(id);
+			} catch (final IdentifierException e) {
 				throw e;
 			} catch (final Throwable e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		return ResourceLocation.parse(id);
+		return Identifier.parse(id);
 	}
 
-	public static ResourceLocation constructIdentifier(final String namespace, final String path) {
+	public static Identifier constructIdentifier(final String namespace, final String path) {
 		if (CONSTRUCT_ID_FROM_STRINGS != null) {
 			try {
-				return (ResourceLocation) CONSTRUCT_ID_FROM_STRINGS.invoke(namespace, path);
-			} catch (final ResourceLocationException e) {
+				return (Identifier) CONSTRUCT_ID_FROM_STRINGS.invoke(namespace, path);
+			} catch (final IdentifierException e) {
 				throw e;
 			} catch (final Throwable e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		return ResourceLocation.fromNamespaceAndPath(namespace, path);
+		return Identifier.fromNamespaceAndPath(namespace, path);
 	}
 
 	public static @Nullable Entity getHoldingEntity(final Entity leashed) {

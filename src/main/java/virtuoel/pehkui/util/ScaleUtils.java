@@ -19,7 +19,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -71,7 +71,7 @@ public class ScaleUtils {
 		ScaleData sourceData;
 		ScaleData targetData;
 		SortedSet<ScaleModifier> targetModifiers;
-		for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
+		for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
 			type = entry.getValue();
 			sourceData = type.getScaleData(source);
 

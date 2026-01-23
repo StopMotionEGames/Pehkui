@@ -27,8 +27,9 @@ public abstract class PlayerMixin {
 		return scale != 1.0F ? scale * original : original;
 	}
 
-	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "doubleValue=9.0F"))
-	private double pehkui$attack$distance(double value) {
+	// todo: test if doesn't break!
+	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "floatValue=0.9F"))
+	private float pehkui$attack$distance(float value) {
 		final float scale = ScaleUtils.getEntityReachScale((Entity) (Object) this);
 
 		return scale > 1.0F ? scale * scale * value : value;
@@ -51,7 +52,8 @@ public abstract class PlayerMixin {
 		return original.call(obj, x, y, z);
 	}
 
-	@ModifyExpressionValue(method = "attack(Lnet/minecraft/world/entity/Entity;)V", at = {@At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 1), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 2), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 3)})
+	// todo: test this!
+	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
 	private float pehkui$attack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 
@@ -73,7 +75,7 @@ public abstract class PlayerMixin {
 	}
 
 
-	@WrapOperation(method = "attack(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))
+	@WrapOperation(method = "doSweepAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))
 	private AABB pehkui$attack$expand(AABB obj, double x, double y, double z, Operation<AABB> original, @Local(argsOnly = true) Entity target) {
 		final float widthScale = ScaleUtils.getBoundingBoxWidthScale(target);
 		final float heightScale = ScaleUtils.getBoundingBoxHeightScale(target);
@@ -97,7 +99,7 @@ public abstract class PlayerMixin {
 		return scale != 1.0F ? original * scale : original;
 	}
 
-	@ModifyExpressionValue(method = "attack(Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "CONSTANT", args = "doubleValue=0.4000000059604645D"))
+	@ModifyExpressionValue(method = "doSweepAttack", at = @At(value = "CONSTANT", args = "doubleValue=0.4000000059604645D"))
 	private double pehkui$attack$knockback(double value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 

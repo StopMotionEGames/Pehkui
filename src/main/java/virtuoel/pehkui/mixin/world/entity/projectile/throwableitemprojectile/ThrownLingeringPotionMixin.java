@@ -1,7 +1,7 @@
-package virtuoel.pehkui.mixin.world.entity.projectile;
+package virtuoel.pehkui.mixin.world.entity.projectile.throwableitemprojectile;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.projectile.ThrownLingeringPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownLingeringPotion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;

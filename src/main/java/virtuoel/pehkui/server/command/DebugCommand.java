@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -49,7 +51,7 @@ public class DebugCommand {
 	public static void register(final CommandDispatcher<CommandSourceStack> commandDispatcher) {
 		final LiteralArgumentBuilder<CommandSourceStack> builder =
 			Commands.literal("scale")
-				.requires(source -> source.hasPermission(2));
+				.requires(source -> source.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS)));
 
 		builder.then(Commands.literal("debug")
 			.then(ConfigSyncUtils.registerConfigCommands())

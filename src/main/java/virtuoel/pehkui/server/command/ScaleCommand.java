@@ -4,6 +4,9 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
+
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -52,7 +55,7 @@ public class ScaleCommand {
 
 		final LiteralArgumentBuilder<CommandSourceStack> builder =
 			Commands.literal("scale")
-				.requires(source -> source.hasPermission(2));
+				.requires(source -> source.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS)));
 
 		registerOperation(builder);
 		registerRandomize(builder);

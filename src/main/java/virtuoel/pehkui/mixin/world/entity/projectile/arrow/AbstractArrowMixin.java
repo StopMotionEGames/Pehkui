@@ -1,10 +1,9 @@
-package virtuoel.pehkui.mixin.world.entity.projectile;
+package virtuoel.pehkui.mixin.world.entity.projectile.arrow;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -18,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import virtuoel.pehkui.util.ScaleUtils;
-
-import java.util.function.Predicate;
 
 @Mixin(AbstractArrow.class)
 public abstract class AbstractArrowMixin {

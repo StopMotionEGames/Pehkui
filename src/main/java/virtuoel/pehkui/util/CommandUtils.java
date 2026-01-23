@@ -25,13 +25,13 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.command.argument.ScaleEasingArgumentType;
 import virtuoel.pehkui.command.argument.ScaleModifierArgumentType;
@@ -56,7 +56,7 @@ public class CommandUtils {
 		if (ModLoaderUtils.isModLoaded("fabric-command-api-v2") && ModLoaderUtils.isModLoaded("fabric-registry-sync-v0")) {
 			CommandUtils.registerArgumentTypes(new ArgumentTypeConsumer() {
 				@Override
-				public <T extends ArgumentType<?>> void register(ResourceLocation id, Class<T> argClass, Supplier<T> supplier) {
+				public <T extends ArgumentType<?>> void register(Identifier id, Class<T> argClass, Supplier<T> supplier) {
 					ArgumentTypeRegistry.registerArgumentType(id, argClass, SingletonArgumentInfo.contextFree(supplier));
 				}
 			});
@@ -111,7 +111,7 @@ public class CommandUtils {
 
 	@FunctionalInterface
 	public interface ArgumentTypeConsumer {
-		<T extends ArgumentType<?>> void register(ResourceLocation id, Class<T> argClass, Supplier<T> supplier);
+		<T extends ArgumentType<?>> void register(Identifier id, Class<T> argClass, Supplier<T> supplier);
 	}
 
 	public static final MethodHandle REGISTER_ARGUMENT_TYPE, TEST_FLOAT_RANGE, SEND_FEEDBACK;
@@ -184,7 +184,7 @@ public class CommandUtils {
 		return false;
 	}
 
-	public static <T extends ArgumentType<?>> void registerConstantArgumentType(ResourceLocation id, Class<? extends T> argClass, Supplier<T> supplier) {
+	public static <T extends ArgumentType<?>> void registerConstantArgumentType(Identifier id, Class<? extends T> argClass, Supplier<T> supplier) {
 		if (REGISTER_ARGUMENT_TYPE != null) {
 			try {
 				REGISTER_ARGUMENT_TYPE.invoke(id.toString(), argClass, SingletonArgumentInfo.class.getConstructor(Supplier.class).newInstance(supplier));
@@ -194,7 +194,7 @@ public class CommandUtils {
 		}
 	}
 
-	public static CompletableFuture<Suggestions> suggestIdentifiersIgnoringNamespace(String namespace, Iterable<ResourceLocation> candidates, SuggestionsBuilder builder) {
+	public static CompletableFuture<Suggestions> suggestIdentifiersIgnoringNamespace(String namespace, Iterable<Identifier> candidates, SuggestionsBuilder builder) {
 		forEachMatchingIgnoringNamespace(
 			namespace,
 			candidates,
@@ -206,10 +206,10 @@ public class CommandUtils {
 		return builder.buildFuture();
 	}
 
-	public static <T> void forEachMatchingIgnoringNamespace(String namespace, Iterable<T> candidates, String string, Function<T, ResourceLocation> idFunc, Consumer<T> action) {
+	public static <T> void forEachMatchingIgnoringNamespace(String namespace, Iterable<T> candidates, String string, Function<T, Identifier> idFunc, Consumer<T> action) {
 		final boolean hasColon = string.indexOf(':') > -1;
 
-		ResourceLocation id;
+		Identifier id;
 		for (final T object : candidates) {
 			id = idFunc.apply(object);
 			if (hasColon) {

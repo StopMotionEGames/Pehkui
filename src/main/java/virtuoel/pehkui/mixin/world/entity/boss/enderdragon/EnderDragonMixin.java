@@ -12,7 +12,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(EnderDragon.class)
 public class EnderDragonMixin {
-	@ModifyArg(method = "onCrystalDestroyed", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/boss/EnderDragonPart;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	@ModifyArg(method = "onCrystalDestroyed", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/boss/enderdragon/EnderDragonPart;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private float pehkui$crystalDestroyed$damagePart(float amount, @Local Entity attacker) {
 		if (attacker != null) {
 			final float scale = ScaleUtils.getAttackScale(attacker);

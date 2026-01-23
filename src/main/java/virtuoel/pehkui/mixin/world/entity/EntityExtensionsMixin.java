@@ -5,7 +5,7 @@ import java.util.Map;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -100,7 +100,7 @@ public abstract class EntityExtensionsMixin implements PehkuiEntityExtensions {
 		input.read(key, CompoundTag.CODEC).ifPresent(typeData -> {
 //			todo: See if nothing breaks
 //			if (nbt.contains(Pehkui.MOD_ID + ":scale_data_types") && !DebugCommand.unmarkEntityForScaleReset((Entity) (Object) this, nbt))
-			for (final Map.Entry<ResourceLocation, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
+			for (final Map.Entry<Identifier, ScaleType> entry : ScaleRegistries.SCALE_TYPES.entrySet()) {
 				String scaleKey = entry.getKey().toString();
 
 				if (typeData.contains(scaleKey)) {
