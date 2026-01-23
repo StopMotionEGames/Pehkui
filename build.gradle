@@ -135,8 +135,6 @@ dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	mappings loom.officialMojangMappings()
 
-//	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
-
 	if (project.hasProperty("neoforge_version") && !project.hasProperty("forge_version")) {
 		neoForge "net.neoforged:neoforge:${neoforge_version}"
 	} else if (project.hasProperty("forge_version")) {

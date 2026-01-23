@@ -16,7 +16,7 @@ import virtuoel.pehkui.util.PehkuiBlockStateExtensions;
 @Mixin(NetherPortalBlock.class)
 public abstract class NetherPortalBlockMixin {
 	@Inject(at = @At("HEAD"), method = "entityInside", cancellable = true)
-	private void pehkui$onEntityCollision(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier insideBlockEffectApplier, CallbackInfo ci) {
+	private void pehkui$onEntityCollision(BlockState blockState, Level level, BlockPos blockPos, Entity entity, InsideBlockEffectApplier insideBlockEffectApplier, boolean bl, CallbackInfo ci) {
 		if (PehkuiConfig.COMMON.accurateNetherPortals.get()) {
 			if (!entity.getBoundingBox().intersects(((PehkuiBlockStateExtensions) blockState).pehkui_getOutlineShape(level, blockPos).bounds().move(blockPos))) {
 				ci.cancel();
