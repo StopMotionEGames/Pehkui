@@ -5,6 +5,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -71,5 +73,27 @@ public abstract class InventoryScreenMixin {
 	}
 
 
+	@WrapOperation(
+		method = "renderEntityInInventoryFollowsMouse",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;extractRenderState(Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/client/renderer/entity/state/EntityRenderState;"
+		)
+	)
+	private static EntityRenderState modifyBoundingBoxWidth(LivingEntity livingEntity, Operation<EntityRenderState> original) {
+		EntityRenderState state = original.call(livingEntity);
+		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
+
+		for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
+			type.getScaleData(livingEntity).fromScale(scales.get(type), false);
+		}
+
+
+		if (state instanceof LivingEntityRenderState livingEntityRenderState) {
+			livingEntityRenderState.boundingBoxWidth /= ScaleUtils.getBoundingBoxWidthScale(livingEntity);
+			livingEntityRenderState.boundingBoxHeight /= ScaleUtils.getBoundingBoxHeightScale(livingEntity);
+		}
+
+		return state;
 	}
 }
