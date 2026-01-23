@@ -4,14 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.network.chat.Component;
@@ -109,7 +104,7 @@ public class CommandUtils {
 		source.sendSuccess(text, broadcastToOps);
 	}
 
-	public static CompletableFuture<Suggestions> suggestIdentifiersIgnoringNamespace(String namespace, Iterable<ResourceLocation> candidates, SuggestionsBuilder builder) {
+	public static CompletableFuture<Suggestions> suggestIdentifiersIgnoringNamespace(String namespace, Iterable<Identifier> candidates, SuggestionsBuilder builder) {
 		forEachMatchingIgnoringNamespace(
 			namespace,
 			candidates,
