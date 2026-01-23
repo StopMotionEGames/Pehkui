@@ -19,8 +19,6 @@ import virtuoel.pehkui.network.ScalePayload;
 import virtuoel.pehkui.server.command.DebugCommand;
 import virtuoel.pehkui.util.I18nUtils;
 import virtuoel.pehkui.util.ModLoaderUtils;
-import virtuoel.pehkui.util.ScaleRenderUtils;
-import virtuoel.pehkui.util.VersionUtils;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -38,20 +36,15 @@ public class PehkuiClient implements ClientModInitializer {
 			System.out.println(arg);
 		}
 		if (ModLoaderUtils.isModLoaded("fabric-networking-api-v1")) {
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-				ClientPlayNetworking.registerGlobalReceiver(ScalePayload.ID, (payload, context) ->
-					handleScalePacket(context.client(), payload));
+			ClientPlayNetworking.registerGlobalReceiver(ScalePayload.ID, (payload, context) ->
+				handleScalePacket(context.client(), payload));
 
-				ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPayload.ID, (payload, context) ->
-					context.client().execute(payload.action));
+			ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPayload.ID, (payload, context) ->
+				context.client().execute(payload.action));
 
-				ClientPlayNetworking.registerGlobalReceiver(DebugPayload.ID, (payload, context) ->
-					handleDebugPacket(context.client(), payload.type));
-			} else {
-				ScaleRenderUtils.registerPacketHandler(Pehkui.SCALE_PACKET, PehkuiClient.class, "handleScalePacket");
-				ScaleRenderUtils.registerPacketHandler(Pehkui.CONFIG_SYNC_PACKET, PehkuiClient.class, "handleConfigSyncPacket");
-				ScaleRenderUtils.registerPacketHandler(Pehkui.DEBUG_PACKET, PehkuiClient.class, "handleDebugPacket");
-			}
+			ClientPlayNetworking.registerGlobalReceiver(DebugPayload.ID, (payload, context) ->
+				handleDebugPacket(context.client(), payload.type));
+
 		} else {
 			Pehkui.LOGGER.error("Failed to register Pehkui's packet handlers! Is Fabric API's networking module missing?");
 		}

@@ -134,15 +134,7 @@ public class ConfigSyncUtils {
 	}
 
 	public static Packet<?> createConfigSyncPacket(final Collection<SyncableConfigEntry<?>> configEntries) {
-		if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-			return ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
-		} else {
-			final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-
-			new ConfigSyncPacket(configEntries).write(buffer);
-
-			return ReflectionUtils.createS2CPacket(Pehkui.CONFIG_SYNC_PACKET, buffer);
-		}
+		return ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
