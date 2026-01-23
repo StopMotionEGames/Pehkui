@@ -227,4 +227,13 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 		return entity;
 	}
+
+	// step height
+	@ModifyReturnValue(method = "maxUpStep()F", at = @At("RETURN"))
+	private float pehkui$getStepHeight(float original)
+	{
+		final float scale = ScaleUtils.getStepHeightScale((Entity) (Object) this);
+
+		return scale != 1.0F ? original * scale : original;
+	}
 }
