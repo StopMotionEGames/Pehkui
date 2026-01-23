@@ -1,21 +1,10 @@
 package virtuoel.pehkui.server.command;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,7 +12,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,16 +22,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import virtuoel.pehkui.Pehkui;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 import virtuoel.pehkui.api.PehkuiConfig;
-import virtuoel.pehkui.network.DebugPacket;
 import virtuoel.pehkui.network.DebugPayload;
-import virtuoel.pehkui.util.CommandUtils;
-import virtuoel.pehkui.util.ConfigSyncUtils;
-import virtuoel.pehkui.util.I18nUtils;
-import virtuoel.pehkui.util.CompoundTagExtensions;
-import virtuoel.pehkui.util.ReflectionUtils;
-import virtuoel.pehkui.util.VersionUtils;
+import virtuoel.pehkui.util.*;
+
+import java.util.*;
 
 public class DebugCommand {
 	public static void register(final CommandDispatcher<CommandSourceStack> commandDispatcher) {
@@ -92,18 +76,8 @@ public class DebugCommand {
 						{
 							final Packet<?> packet;
 
-							if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-								packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
-							} else {
-								final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-
-								new DebugPacket(PacketType.GARBAGE_COLLECT).write(buffer);
-
-								packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
-							}
-
+							packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
 							ReflectionUtils.sendPacket(context.getSource().getPlayerOrException().connection, packet);
-
 							System.gc();
 
 							return 1;
@@ -200,17 +174,7 @@ public class DebugCommand {
 		final Entity executor = context.getSource().getEntity();
 		if (executor instanceof ServerPlayer) {
 			final Packet<?> packet;
-
-			if (VersionUtils.MINOR > 20 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH >= 5)) {
-				packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
-			} else {
-				final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
-
-				new DebugPacket(PacketType.MIXIN_AUDIT).write(buffer);
-
-				packet = ReflectionUtils.createS2CPacket(Pehkui.DEBUG_PACKET, buffer);
-			}
-
+			packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
 			ReflectionUtils.sendPacket(((ServerPlayer) executor).connection, packet);
 		}
 
