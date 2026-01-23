@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "1.15+"
+	id "net.fabricmc.fabric-loom" version "1.15+"
 	id "eclipse"
 	id "maven-publish"
 	id "com.github.johnrengelman.shadow" version "8.1.1" apply false
@@ -31,7 +31,7 @@ repositories {
 		name = "JitPack"
 		url = "https://jitpack.io"
 		content {
-			includeGroup "com.github.Virtuoel"
+			includeGroup "com.github.StopMotionEGames"
 		}
 	}
 	maven {
@@ -90,29 +90,6 @@ if (project.hasProperty("neoforge_version") && !project.hasProperty("forge_versi
 			mixinConfig "${archives_base_name.replaceAll(/([a-z])([A-Z])/, /$1_$2/).replaceAll(/([A-Z])([A-Z][a-z])/, /$1_$2/).toLowerCase()}.mixins.json"
 		}
 	}
-
-	if (project.hasProperty("mixin_extras_version")) {
-		def minor = mcVer.minor
-		if (minor < 18) {
-			apply plugin: "com.github.johnrengelman.shadow"
-
-			configurations {
-				implementation.extendsFrom shadow
-			}
-
-			shadowJar {
-				configurations = [project.configurations.shadow]
-				relocate("com.llamalad7.mixinextras", "${project.group}.mixinextras")
-				mergeServiceFiles()
-				from "LICENSE"
-			}
-
-			remapJar {
-				inputFile shadowJar.archiveFile
-				dependsOn shadowJar
-			}
-		}
-	}
 }
 
 loom {
@@ -121,7 +98,6 @@ loom {
 		accessWidenerPath = access_widener_file
 	}
 }
-
 
 if (project.hasProperty("loader_version")) {
 	ext.fabric_loader_version = project.loader_version
@@ -133,7 +109,6 @@ if (project.hasProperty("fabric_version")) {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings loom.officialMojangMappings()
 
 	if (project.hasProperty("neoforge_version") && !project.hasProperty("forge_version")) {
 		neoForge "net.neoforged:neoforge:${neoforge_version}"
@@ -145,14 +120,10 @@ dependencies {
 		}
 
 		if (project.hasProperty("mixin_extras_version")) {
-			if (mcVer.minor >= 18) {
-				implementation(include("io.github.llamalad7:mixinextras-forge:${mixin_extras_version}"))
-			} else {
-				forgeRuntimeLibrary("io.github.llamalad7:mixinextras-common:${mixin_extras_version}")
-			}
+			forgeRuntimeLibrary("io.github.llamalad7:mixinextras-common:${mixin_extras_version}")
 		}
 	} else if (project.hasProperty("fabric_loader_version")) {
-		modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+		implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
 		def excludeLoader = {
 			exclude group: "net.fabricmc", module: "fabric-loader"
@@ -167,14 +138,14 @@ dependencies {
 
 		if (project.hasProperty("fabric_api_version")) {
 			if (!project.hasProperty("fabric_modules") && !project.hasProperty("api_fabric_modules") && !project.hasProperty("impl_fabric_modules")) {
-				modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
-				modLocalRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
+				compileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
+				localRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
 			}
 
 			if (project.hasProperty("fabric_modules")) {
 				project.fabric_modules.split(", ").each { String module ->
-					modCompileOnly fabricApi.module(module, project.fabric_api_version), excludeLoader
-					modLocalRuntime fabricApi.module(module, project.fabric_api_version), excludeLoader
+					compileOnly fabricApi.module(module, project.fabric_api_version), excludeLoader
+					localRuntime fabricApi.module(module, project.fabric_api_version), excludeLoader
 				}
 			}
 
@@ -186,7 +157,7 @@ dependencies {
 
 			if (project.hasProperty("impl_fabric_modules")) {
 				project.impl_fabric_modules.split(", ").each { String module ->
-					modImplementation fabricApi.module(module, project.fabric_api_version), excludeLoader
+					implementation fabricApi.module(module, project.fabric_api_version), excludeLoader
 				}
 			}
 
@@ -198,8 +169,8 @@ dependencies {
 		}
 
 		if (project.hasProperty("modmenu_version")) {
-			modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
-			modLocalRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
+			implementation "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
+			localRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
 		}
 	}
 }
@@ -248,7 +219,7 @@ tasks.withType(AbstractArchiveTask).configureEach {
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(targetJava)
-		vendor = JvmVendorSpec.ADOPTIUM
+		vendor = JvmVendorSpec.JETBRAINS
 	}
 	withSourcesJar()
 }
@@ -266,12 +237,8 @@ tasks.named({
 	it in ["runClient", "runServer"]
 }).configureEach {
 	javaLauncher = javaToolchains.launcherFor {
-		if (!proj.hasProperty("neoforge_version") && !proj.hasProperty("forge_version")) {
-			languageVersion = JavaLanguageVersion.of(21)
-		} else {
-			languageVersion = JavaLanguageVersion.of(targetJava)
-		}
-		vendor = JvmVendorSpec.ADOPTIUM
+		languageVersion = JavaLanguageVersion.of(targetJava)
+		vendor = JvmVendorSpec.JETBRAINS
 	}
 }
 
@@ -413,9 +380,8 @@ githubRelease {
 }
 
 tasks.named("githubRelease") {
-	dependsOn remapJar
+	dependsOn jar
 	dependsOn sourcesJar
-	dependsOn remapSourcesJar
 }
 
 curseforge {
@@ -453,7 +419,7 @@ curseforge {
 				display_name_prefix += "[NeoForge] "
 			}
 
-			mainArtifact(remapJar) {
+			mainArtifact(jar) {
 				it.displayName = "${display_name_prefix}${archives_base_name} ${project.mod_version}"
 
 				if (project.hasProperty("curseforge_required_dep_slugs") || project.hasProperty("curseforge_embedded_lib_slugs") || project.hasProperty("curseforge_optional_dep_slugs") || project.hasProperty("curseforge_compatible_tool_slugs") || project.hasProperty("curseforge_incompatible_slugs")) {
@@ -507,65 +473,64 @@ curseforge {
 if (project.hasProperty("curseforge_id")) {
 	afterEvaluate {
 		tasks.named("curseforge${project.curseforge_id}") {
-			dependsOn remapJar
-			dependsOn remapSourcesJar
+			dependsOn jar
 		}
 	}
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
+// import com.modrinth.minotaur.dependencies.ModDependency
 
-modrinth {
-	if (project.hasProperty("modrinth_token")) {
-		token = project.properties.modrinth_token
-	}
+// modrinth {
+// 	if (project.hasProperty("modrinth_token")) {
+// 		token = project.properties.modrinth_token
+// 	}
 
-	if (project.hasProperty("modrinth_id")) {
-		projectId = project.modrinth_id
+// 	if (project.hasProperty("modrinth_id")) {
+// 		projectId = project.modrinth_id
 
-		versionType = project.modrinth_version_type
+// 		versionType = project.modrinth_version_type
 
-		if (project.hasProperty("modrinth_mod_loaders")) {
-			loaders = project.modrinth_mod_loaders.split(", ") as List
-		}
+// 		if (project.hasProperty("modrinth_mod_loaders")) {
+// 			loaders = project.modrinth_mod_loaders.split(", ") as List
+// 		}
 
-		if (project.hasProperty("modrinth_release_versions")) {
-			gameVersions = project.modrinth_release_versions.split(", ") as List
-		}
+// 		if (project.hasProperty("modrinth_release_versions")) {
+// 			gameVersions = project.modrinth_release_versions.split(", ") as List
+// 		}
 
-		def deps = []
+// 		def deps = []
 
-		if (project.hasProperty("modrinth_required_dep_ids")) {
-			project.modrinth_required_dep_ids.split(", ").each { String slug ->
-				deps << new ModDependency(slug, "required")
-			}
-		}
+// 		if (project.hasProperty("modrinth_required_dep_ids")) {
+// 			project.modrinth_required_dep_ids.split(", ").each { String slug ->
+// 				deps << new ModDependency(slug, "required")
+// 			}
+// 		}
 
-		if (project.hasProperty("modrinth_optional_dep_ids")) {
-			project.modrinth_optional_dep_ids.split(", ").each { String slug ->
-				deps << new ModDependency(slug, "optional")
-			}
-		}
+// 		if (project.hasProperty("modrinth_optional_dep_ids")) {
+// 			project.modrinth_optional_dep_ids.split(", ").each { String slug ->
+// 				deps << new ModDependency(slug, "optional")
+// 			}
+// 		}
 
-		if (project.hasProperty("modrinth_incompatible_dep_ids")) {
-			project.modrinth_incompatible_dep_ids.split(", ").each { String slug ->
-				deps << new ModDependency(slug, "incompatible")
-			}
-		}
+// 		if (project.hasProperty("modrinth_incompatible_dep_ids")) {
+// 			project.modrinth_incompatible_dep_ids.split(", ").each { String slug ->
+// 				deps << new ModDependency(slug, "incompatible")
+// 			}
+// 		}
 
-		dependencies = deps
+// 		dependencies = deps
 
-		versionName = "${archives_base_name} ${project.mod_version}"
+// 		versionName = "${archives_base_name} ${project.mod_version}"
 
-		versionNumber = project.version
+// 		versionNumber = project.version
 
-		changelog = generateMarkdownChangelog()
+// 		changelog = generateMarkdownChangelog()
 
-		uploadFile = remapJar
-	}
-}
+// 		uploadFile = jar
+// 	}
+// }
 
-tasks.named("modrinth") {
-	dependsOn remapJar
-	dependsOn remapSourcesJar
-}
+// tasks.named("modrinth") {
+// 	dependsOn jar
+// 	dependsOn remapSourcesJar
+// }
