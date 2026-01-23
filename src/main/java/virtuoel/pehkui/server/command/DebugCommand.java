@@ -86,7 +86,7 @@ public class DebugCommand {
 						{
 							final Packet<?> packet;
 
-							packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
+							packet = ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new DebugPayload(PacketType.GARBAGE_COLLECT));
 							ReflectionUtils.sendPacket(context.getSource().getPlayerOrException().connection, packet);
 							System.gc();
 
@@ -184,7 +184,7 @@ public class DebugCommand {
 		final Entity executor = context.getSource().getEntity();
 		if (executor instanceof ServerPlayer) {
 			final Packet<?> packet;
-			packet = ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
+			packet = ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new DebugPayload(PacketType.MIXIN_AUDIT));
 			ReflectionUtils.sendPacket(((ServerPlayer) executor).connection, packet);
 		}
 

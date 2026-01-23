@@ -212,7 +212,7 @@ public class ScaleUtils {
 
 		if (!syncedScales.isEmpty()) {
 			if (NETWORKING_API_LOADED) {
-				packetSender.accept(ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
+				packetSender.accept(ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new ScalePayload(entity, syncedScales)));
 			}
 
 			syncedScales.clear();

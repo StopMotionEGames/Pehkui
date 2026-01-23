@@ -134,7 +134,7 @@ public class ConfigSyncUtils {
 	}
 
 	public static Packet<?> createConfigSyncPacket(final Collection<SyncableConfigEntry<?>> configEntries) {
-		return ServerPlayNetworking.createS2CPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
+		return ServerPlayNetworking.createClientboundPacket((CustomPacketPayload) new ConfigSyncPayload(configEntries));
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
