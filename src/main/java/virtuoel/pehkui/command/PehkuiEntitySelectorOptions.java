@@ -1,16 +1,15 @@
 package virtuoel.pehkui.command;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import net.minecraft.command.EntitySelectorReader;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.predicate.NumberRange;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.commands.arguments.selector.EntitySelectorParser;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.api.ScaleRegistries;
 import virtuoel.pehkui.api.ScaleType;
@@ -23,92 +22,87 @@ import virtuoel.pehkui.util.PehkuiEntityExtensions;
 import virtuoel.pehkui.util.PehkuiEntitySelectorReaderExtensions;
 import virtuoel.pehkui.util.ReflectionUtils;
 
-public class PehkuiEntitySelectorOptions
-{
-	public static final Text SCALE_RANGE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_range.description", "Entities with scale value");
-	public static final Text SCALE_TYPE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_type.description", "Entities with scale type");
-	public static final Text SCALE_NBT_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_nbt.description", "Entities with scale NBT");
-	
-	public static void register()
-	{
-		EntitySelectorOptionsInvoker.callPutOption(
+public class PehkuiEntitySelectorOptions {
+	public static final Component SCALE_RANGE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_range.description", "Entities with scale value");
+	public static final Component SCALE_TYPE_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_type.description", "Entities with scale type");
+	public static final Component SCALE_NBT_DESCRIPTION = I18nUtils.translate("argument.entity.options." + Pehkui.MOD_ID + ".scale_nbt.description", "Entities with scale NBT");
+
+	public static void register() {
+		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale").toString().replace(':', '.'),
-			r -> cast(r).pehkui_setScaleRange(NumberRange.DoubleRange.parse(r.getReader())),
+			r -> cast(r).pehkui_setScaleRange(MinMaxBounds.Doubles.fromReader(r.getReader())),
 			r -> ReflectionUtils.isDummy(cast(r).pehkui_getScaleRange()),
 			SCALE_RANGE_DESCRIPTION
 		);
-		
-		EntitySelectorOptionsInvoker.callPutOption(
+
+		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale_type").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setScaleType(parseScaleType(r)),
 			r -> cast(r).pehkui_getScaleType() == ScaleTypes.INVALID,
 			SCALE_TYPE_DESCRIPTION
 		);
-		
-		EntitySelectorOptionsInvoker.callPutOption(
+
+		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("computed_scale").toString().replace(':', '.'),
-			r -> cast(r).pehkui_setComputedScaleRange(NumberRange.DoubleRange.parse(r.getReader())),
+			r -> cast(r).pehkui_setComputedScaleRange(MinMaxBounds.Doubles.fromReader(r.getReader())),
 			r -> ReflectionUtils.isDummy(cast(r).pehkui_getComputedScaleRange()),
 			SCALE_RANGE_DESCRIPTION
 		);
-		
-		EntitySelectorOptionsInvoker.callPutOption(
+
+		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("computed_scale_type").toString().replace(':', '.'),
 			r -> cast(r).pehkui_setComputedScaleType(parseScaleType(r)),
 			r -> cast(r).pehkui_getComputedScaleType() == ScaleTypes.INVALID,
 			SCALE_TYPE_DESCRIPTION
 		);
-		
-		EntitySelectorOptionsInvoker.callPutOption(
+
+		EntitySelectorOptionsInvoker.callRegister(
 			Pehkui.id("scale_nbt").toString().replace(':', '.'),
 			r ->
 			{
-				final boolean negated = r.readNegationCharacter();
-				final NbtCompound parsed = (StringNbtReader.readCompoundAsArgument(r.getReader()));
+				final boolean negated = r.shouldInvertValue();
+				final CompoundTag parsed = (TagParser.parseCompoundAsArgument(r.getReader()));
 				r.addPredicate(entity ->
 				{
-					final NbtCompound nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(NbtWriteView.create((ErrorReporter) Pehkui.LOGGER));
-					
-					return NbtHelper.matches(parsed, nbt, true) != negated;
+					final CompoundTag nbt = ((PehkuiEntityExtensions) entity).pehkui_writeScaleNbt(TagValueOutput.createWithoutContext((ProblemReporter) Pehkui.LOGGER));
+
+					return NbtUtils.compareNbt(parsed, nbt, true) != negated;
 				});
 			},
 			reader -> true,
 			SCALE_NBT_DESCRIPTION
 		);
 	}
-	
-	private static PehkuiEntitySelectorReaderExtensions cast(EntitySelectorReader reader)
-	{
+
+	private static PehkuiEntitySelectorReaderExtensions cast(EntitySelectorParser reader) {
 		return ((PehkuiEntitySelectorReaderExtensions) reader);
 	}
-	
-	private static ScaleType parseScaleType(EntitySelectorReader reader) throws CommandSyntaxException
-	{
-		reader.setSuggestionProvider((builder, consumer) ->
+
+	private static ScaleType parseScaleType(EntitySelectorParser reader) throws CommandSyntaxException {
+		reader.setSuggestions((builder, consumer) ->
 		{
 			CommandUtils.suggestIdentifiersIgnoringNamespace(
 				Pehkui.MOD_ID,
 				ScaleRegistries.SCALE_TYPES.keySet(),
 				builder
 			);
-			
+
 			return builder.buildFuture();
 		});
-		
+
 		final int i = reader.getReader().getCursor();
-		
-		final Identifier id = Identifier.fromCommandInput(reader.getReader());
+
+		final ResourceLocation id = ResourceLocation.read(reader.getReader());
 		final ScaleType scaleType = ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, id);
-		
-		final Identifier defaultId = ScaleRegistries.getDefaultId(ScaleRegistries.SCALE_TYPES);
+
+		final ResourceLocation defaultId = ScaleRegistries.getDefaultId(ScaleRegistries.SCALE_TYPES);
 		final ScaleType defaultType = ScaleRegistries.getEntry(ScaleRegistries.SCALE_TYPES, defaultId);
-		
-		if (scaleType == null || (scaleType == defaultType && !id.equals(defaultId)))
-		{
+
+		if (scaleType == null || (scaleType == defaultType && !id.equals(defaultId))) {
 			reader.getReader().setCursor(i);
 			throw ScaleTypeArgumentType.INVALID_ENTRY_EXCEPTION.createWithContext(reader.getReader(), id.toString());
 		}
-		
+
 		return scaleType;
 	}
 }
