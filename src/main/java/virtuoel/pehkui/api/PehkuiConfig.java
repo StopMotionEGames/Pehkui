@@ -1,20 +1,17 @@
 package virtuoel.pehkui.api;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
-import virtuoel.pehkui.api.MutableConfigEntry;
+import org.jetbrains.annotations.ApiStatus;
 import virtuoel.pehkui.Pehkui;
 import virtuoel.pehkui.util.ClampingScaleModifier;
 import virtuoel.pehkui.util.ConfigSyncUtils;
 import virtuoel.pehkui.util.ScaleUtils;
-import virtuoel.pehkui.util.VersionUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PehkuiConfig
 {
@@ -30,21 +27,21 @@ public class PehkuiConfig
 			return ConfigSyncUtils.createConfigEntry(name, defaultValue, supplier, consumer);
 		}
 	};
-	
+
 	public static final Client CLIENT = new Client(BUILDER);
 	public static final Common COMMON = new Common(BUILDER);
 	public static final Server SERVER = new Server(BUILDER);
-	
+
 	public static final class Common
 	{
 		public final MutableConfigEntry<Boolean> keepAllScalesOnRespawn;
 		public final MutableConfigEntry<List<String>> scalesKeptOnRespawn;
-		
+
 		public final MutableConfigEntry<Boolean> accurateNetherPortals;
-		
+
 		public final MutableConfigEntry<Boolean> enableCommands;
 		public final MutableConfigEntry<Boolean> enableDebugCommands;
-		
+
 		public final MutableConfigEntry<Boolean> scaledFallDamage;
 		public final MutableConfigEntry<Boolean> scaledMotion;
 		public final MutableConfigEntry<Boolean> scaledReach;
@@ -54,17 +51,17 @@ public class PehkuiConfig
 		public final MutableConfigEntry<Boolean> scaledItemDrops;
 		public final MutableConfigEntry<Boolean> scaledProjectiles;
 		public final MutableConfigEntry<Boolean> scaledExplosions;
-		
+
 		private Common(final PehkuiConfigBuilder builder)
 		{
 			this.keepAllScalesOnRespawn = builder.booleanConfig(synced("keepAllScalesOnRespawn", "boolean"), false);
 			this.scalesKeptOnRespawn = builder.stringListConfig(synced("scalesKeptOnRespawn", "string_list"));
-			
+
 			this.accurateNetherPortals = builder.booleanConfig(synced("accurateNetherPortals", "boolean"), true);
-			
+
 			this.enableCommands = builder.booleanConfig("enableCommands", true);
 			this.enableDebugCommands = builder.booleanConfig("enableDebugCommands", false);
-			
+
 			this.scaledFallDamage = builder.booleanConfig(synced("scaledFallDamage", "boolean"), true);
 			this.scaledMotion = builder.booleanConfig(synced("scaledMotion", "boolean"), true);
 			this.scaledReach = builder.booleanConfig(synced("scaledReach", "boolean"), true);
@@ -83,21 +80,21 @@ public class PehkuiConfig
 			{
 				id = entry.getKey();
 				namespace = id.getNamespace();
-				
+
 				if (namespace.equals(Pehkui.MOD_ID))
 				{
 					type = entry.getValue();
-					
+
 					if (type == ScaleTypes.INVALID)
 					{
 						continue;
 					}
-					
+
 					path = id.getPath();
-					
+
 					min = builder.doubleConfig(synced(path + ".minimum", "double"), type.getAffectsDimensions() ? ScaleUtils.DEFAULT_MINIMUM_POSITIVE_SCALE : Float.MIN_VALUE);
-					max = builder.doubleConfig(synced(path + ".maximum", "double"), ((type == ScaleTypes.BLOCK_REACH || type == ScaleTypes.ENTITY_REACH) && VersionUtils.MINOR < 17) ? ScaleUtils.DEFAULT_MAXIMUM_REACH_BELOW_1_17 : Float.MAX_VALUE);
-					
+					max = builder.doubleConfig(synced(path + ".maximum", "double"), Float.MAX_VALUE);
+
 					type.getDefaultBaseValueModifiers().add(
 						ScaleRegistries.register(
 							ScaleRegistries.SCALE_MODIFIERS,
@@ -109,30 +106,30 @@ public class PehkuiConfig
 			}
 		}
 	}
-	
+
 	public static final class Client
 	{
 		public final Supplier<Double> minimumCameraDepth;
-		
+
 		private Client(final PehkuiConfigBuilder builder)
 		{
 			this.minimumCameraDepth = builder.doubleConfig("minimumCameraDepth", 1.0D / 32767.0D);
 		}
 	}
-	
+
 	public static final class Server
 	{
 		private Server(final PehkuiConfigBuilder builder)
 		{
-			
+
 		}
 	}
-	
+
 	private PehkuiConfig()
 	{
-		
+
 	}
-	
+
 	private static String synced(final String name, final String codecKey)
 	{
 		ConfigSyncUtils.setupSyncableConfig(name, codecKey);
