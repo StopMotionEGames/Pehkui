@@ -394,7 +394,7 @@ githubRelease {
 	}
 
 	if (project.hasProperty("fabric_loader_version")) {
-		tagName = "v${mod_version}-${metadata_minecraft_versions}"
+		tagName = "v${mod_version}+${metadata_minecraft_versions}"
 	}
 
 	targetCommitish = grgitService.service.get().grgit.branch.current().name
@@ -405,7 +405,7 @@ githubRelease {
 
 	prerelease = mod_version.contains("beta") || mod_version.contains("alpha")
 
-	releaseName = "v${mod_version}-${metadata_minecraft_versions}"
+	releaseName = "v${mod_version}+${metadata_minecraft_versions}"
 
 	releaseAssets = files(
 		layout.buildDirectory.dir("libs").get().file("${base.archivesName.get()}-${version}.jar").getAsFile(),
