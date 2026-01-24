@@ -46,7 +46,7 @@ TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
 group = project.maven_group
 base.archivesName = project.archives_base_name
-version = project.mod_version + "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}-" : "") + (project.hasProperty("metadata_minecraft_versions") ? project.metadata_minecraft_versions : project.minecraft_version)
+version = project.mod_version + "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}-" : "") + (project.hasProperty("metadata_minecraft_versions") ? metadata_minecraft_versions : minecraft_version)
 
 class McVersion implements Comparable<McVersion> {
 	final int major, minor, patch
@@ -355,8 +355,7 @@ String generateMarkdownChangelog() {
 		changelog_text += "&nbsp;  \n"
 	}
 
-	changelog_text += "Last successfully tested on:  \n"
-	changelog_text += "Minecraft version " + '`' + "${minecraft_version}" + '`' + "  \n"
+	changelog_text += "Minecraft version " + '`' + "${metadata_minecraft_versions}" + '`' + "  \n"
 
 	if (project.hasProperty("neoforge_version")) {
 		changelog_text += "NeoForge " + '`' + "${neoforge_version}" + '`' + "  \n"
@@ -381,11 +380,11 @@ githubRelease {
 	token = project.hasProperty("github_releases_token") ? project.github_releases_token : ""
 
 	if (project.hasProperty("github_repository_owner")) {
-		owner = project.github_repository_owner
+		owner = github_repository_owner
 	}
 
 	if (project.hasProperty("github_repository")) {
-		repo = project.github_repository
+		repo = github_repository
 	}
 
 	if (project.hasProperty("forge_version")) {
@@ -395,7 +394,7 @@ githubRelease {
 	}
 
 	if (project.hasProperty("fabric_loader_version")) {
-		tagName = project.mod_version
+		tagName = "v${mod_version}-${metadata_minecraft_versions}"
 	}
 
 	targetCommitish = grgitService.service.get().grgit.branch.current().name
@@ -404,7 +403,9 @@ githubRelease {
 
 	overwrite = true
 
-	releaseName = project.version
+	prerelease = mod_version.contains("beta") || mod_version.contains("alpha")
+
+	releaseName = "v${mod_version}-${metadata_minecraft_versions}"
 
 	releaseAssets = files(
 		layout.buildDirectory.dir("libs").get().file("${base.archivesName.get()}-${version}.jar").getAsFile(),
