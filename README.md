@@ -47,19 +47,7 @@ Here a list of required mods for each supported platform:
 
 ## What changed in this project
 
-#### Branching
-
-- **Version-specific Branches**: Each update for a new Minecraft version now has its own branch;
-- **Stability Flow:** Features are developed in `dev` branches and merged into `main` only after reaching high
-  stability.
-- **Critical Bug Fixing**: Critical bug fixes (if done) will be merged into main branch and development
-
-#### Config System
-
-Replacing the external *Kanos Config* dependency with a **built-in implementation** for handling configurations,
-reducing the number of required dependencies.
-
-## Roadmap to Pehkui 5.0
+### Roadmap for Minecraft 26.1
 
 Minecraft 26.1 is a big change for the mod community. The transition to newer Minecraft versions requires
 a significant refactor of the compatibility system. **Pehkui: Continued** is moving away from the
@@ -69,24 +57,35 @@ bug fixes (specially for versions 1.21.2 to 1.21.11)
 
 ### Technical info
 
+#### Branching
+
+- **Version-specific Branches**: Each update for a new Minecraft version now has its own branch;
+- **Stability Flow:** Features are developed in separated branches (for the feature development) and merged into
+`<suppoerted minecraft verion>` only after reaching high stability.
+
+#### Config System
+
+Replaced the external *Kanos Config* dependency with a **built-in implementation** for handling configurations,
+reducing the number of required dependencies.
+
 #### Minecraft compatibility workflow
 
-Starting from version 5.0.0 for Pehkui, the internal Minecraft compatibility system for Mixins using
-"compat-packages" (e.g. compat1205plus, compat115minus, compat116) is going to be removed. These changes
-make the update workflow for newer Minecraft versions easier, because you won't need to add new Mixins for
-the newer version and keeping an outdated mixin in the project. And this prevents to fail the build process
-if a package or class got renamed. This also brings initialization performance
+Starting from version 4.0.0 (Minecraft 1.21.2+) for Pehkui, the internal Minecraft compatibility system
+for Mixins using "compat-packages" (e.g. compat1205plus, compat115minus, compat116) is removed.
+These changes make the update workflow for newer Minecraft versions easier, because you won't need to add
+new Mixins for the newer version and keeping an outdated mixin in the project. And this prevents to fail
+the build process if a package or class got renamed. This also brings initialization performance (even if
+very small)
 
 #### Mixins Architectural Refactor
 
-The "compat-packages" system (e.g., `compat1205plus`, `compat115minus`) is going to be removed.
-Mixins is going to be **mirrored to Minecraft's internal package structure**. _This approach
+The "compat-packages" system (e.g., `compat1205plus`, `compat115minus`) is removed.
+Mixins is now **mirrored to Minecraft's internal package structure**. _This approach
 also improves initialization performance._
 
 *Example:* A Mixin targeting `net.minecraft.world.entity.Entity` is now located at
 `virtuoel.pehkui.mixins.world.entity.EntityMixin`. This makes the code easier to maintain against
 Mojang's renames.
-
 
 ## For developers
 
