@@ -1,15 +1,12 @@
 package virtuoel.pehkui.mixin.world.entity;
 
-import net.minecraft.world.entity.ConversionParams;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -54,8 +51,8 @@ public abstract class MobMixin {
 		return original.call(obj, x, y, z);
 	}
 
-	@Inject(at = @At("RETURN"), method = "convertTo(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/ConversionParams;Lnet/minecraft/world/entity/ConversionParams$AfterConversion;)Lnet/minecraft/world/entity/Mob;")
-	private <T extends Mob> void pehkui$convertTo(EntityType<T> entityType, ConversionParams context, ConversionParams.AfterConversion<T> finalizer, CallbackInfoReturnable<T> cir) {
+	@Inject(at = @At("RETURN"), method = "convertTo(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/ConversionParams;Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/ConversionParams$AfterConversion;)Lnet/minecraft/world/entity/Mob;")
+	private <T extends Mob> void pehkui$convertTo(EntityType<T> entityType, ConversionParams conversionParams, EntitySpawnReason entitySpawnReason, ConversionParams.AfterConversion<T> afterConversion, CallbackInfoReturnable<T> cir) {
 		final Mob e = cir.getReturnValue();
 
 		if (e != null) {
