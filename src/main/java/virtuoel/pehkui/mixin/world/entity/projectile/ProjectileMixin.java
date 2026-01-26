@@ -5,19 +5,18 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Projectile.class)
 public abstract class ProjectileMixin {
 	@ModifyExpressionValue(method = "checkLeftOwner", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(D)Lnet/minecraft/world/phys/AABB;"))
-	private AABB pehkui$shouldLeaveOwner$expand(AABB value) {
+	private AABB pehkui$checkLeftOwner$expand(AABB value) {
 		final Entity self = (Entity) (Object) this;
 		final float width = ScaleUtils.getBoundingBoxWidthScale(self);
 		final float height = ScaleUtils.getBoundingBoxHeightScale((self));
@@ -29,31 +28,22 @@ public abstract class ProjectileMixin {
 		return value;
 	}
 
-	@ModifyVariable(method = "shoot(DDDFF)V", ordinal = 0, argsOnly = true, at = @At("HEAD"))
-	private float pehkui$setVelocity$power(float value) {
+	@ModifyArg(method = "shoot(DDDFF)V", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;getMovementToShoot(DDDFF)Lnet/minecraft/world/phys/Vec3;"))
+	private float pehkui$shoot$power(float g) {
 		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
 
-		return scale != 1.0F ? value * scale : value;
+		return scale != 1.0F ? g * scale : g;
 	}
 
 	@Inject(at = @At("HEAD"), method = "setOwner(Lnet/minecraft/world/entity/Entity;)V")
-	private void pehkui$setOwner(@Nullable Entity entity, CallbackInfo ci) {
+	private void pehkui$setOwner$head(@Nullable Entity entity, CallbackInfo ci) {
 		if (entity != null) {
 			ScaleUtils.setScaleOfProjectile((Entity) (Object) this, entity);
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "setOwner(Lnet/minecraft/world/entity/Entity;)V")
-	private void pehkui$construct(Entity entity, CallbackInfo ci, @Local(argsOnly = true) Entity owner) {
-		final float heightScale = ScaleUtils.getEyeHeightScale(owner);
-		if (heightScale != 1.0F) {
-			final Entity self = ((Entity) (Object) this);
-
-			final Vec3 pos = self.position();
-
-			self.setPos(pos.x, pos.y + ((1.0F - heightScale) * 0.1D), pos.z);
-		}
-
+	private void pehkui$setOwner$return(Entity entity, CallbackInfo ci, @Local(argsOnly = true) Entity owner) {
 		ScaleUtils.setScaleOfProjectile((Entity) (Object) this, owner);
 	}
 }
