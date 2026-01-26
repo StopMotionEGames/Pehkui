@@ -52,7 +52,6 @@ public abstract class PlayerMixin {
 		return original.call(obj, x, y, z);
 	}
 
-	// todo: test this!
 	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
 	private float pehkui$attack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);

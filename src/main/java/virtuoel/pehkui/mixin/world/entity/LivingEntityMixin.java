@@ -236,7 +236,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@ModifyReturnValue(method = "getAttackRangeWith", at = @At(value = "RETURN"))
 	private AttackRange pehkui$entityAttackRange$return(AttackRange original) {
 		LivingEntity self = (LivingEntity) (Object) this;
-		float scale  = ScaleUtils.getEntityReachScale(self);
+		float scale = ScaleUtils.getEntityReachScale(self);
 		return new AttackRange(
 			original.minReach(),
 			original.maxReach() * scale,
