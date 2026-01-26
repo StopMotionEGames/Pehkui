@@ -6,10 +6,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.world.entity.Entity;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import virtuoel.pehkui.api.PehkuiConfig;
 import virtuoel.pehkui.util.ScaleUtils;
 
@@ -46,7 +48,7 @@ public abstract class EntityMixin {
 		return scale < 1.0F ? value * scale : value;
 	}
 
-	@ModifyArg(method = "checkFallDamage",index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;D)V"))
+	@ModifyArg(method = "checkFallDamage", index = 4, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;D)V"))
 	private double pehkui$fall$fallDistance(double distance) {
 		final float scale = ScaleUtils.getFallingScale((Entity) (Object) this);
 
@@ -59,7 +61,10 @@ public abstract class EntityMixin {
 		return distance;
 	}
 
-
+	@ModifyConstant(method = "checkSlowFallDistance", constant = @Constant(doubleValue = 1.0D))
+	private double pehkui$checkFallDistanceAccumulation(double constant) {
+		return constant * ScaleUtils.getMotionScale((Entity) (Object) this);
+	}
 	// todo: maybe these can cause a weird bug. Down below there is another todo, that can be the solution... but may cause a weird bug... idk
 	//	@ModifyExpressionValue(method = "move", at = @At(value = "CONSTANT", ordinal = 0, args = "doubleValue=0.6D"))
 	//	private double pehkui$move$flapping(double value)
@@ -86,28 +91,4 @@ public abstract class EntityMixin {
 	//
 	//		return value;
 	//	}
-	//
-	//	@ModifyExpressionValue(method = "move", at = @At(value = "CONSTANT", ordinal = 1, args = "floatValue=0.6F"))
-	//	private float pehkui$move$step(float value)
-	//	{
-	//		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
-	//
-	//		if (scale != 1.0F)
-	//		{
-	//			return value / scale;
-	//		}
-	//
-	//		return value;
-	//	}
-// todo: you got to look at this.
-// @ModifyVariable(
-//    method = "move",
-//    at = @At(value = "STORE"),
-//    ordinal = 0
-//)
-//private float pehkui$scaleVelocityMultiplier(float value)
-//{
-//    float scale = ScaleUtils.getMotionScale((Entity)(Object)this);
-//    return scale != 1.0F ? value / scale : value;
-//}
 }
