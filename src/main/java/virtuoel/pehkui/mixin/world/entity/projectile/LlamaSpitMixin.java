@@ -1,15 +1,14 @@
 package virtuoel.pehkui.mixin.world.entity.projectile;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.projectile.LlamaSpit;
 import net.minecraft.world.level.Level;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(LlamaSpit.class)
