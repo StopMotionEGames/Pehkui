@@ -1,5 +1,6 @@
 package virtuoel.pehkui.mixin.world.entity.projectile;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -84,5 +85,12 @@ public class ThrownPotionMixin {
 		final float scale = ScaleUtils.getBoundingBoxWidthScale((Entity) (Object) this);
 
 		return scale != 1.0F ? scale * scale * value : value;
+	}
+
+	@ModifyReturnValue(method = "getDefaultGravity", at = @At("RETURN"))
+	private double pehkui$getDefaultGravity(double gravity) {
+		final float scale = ScaleUtils.getMotionScale((Entity) (Object) this);
+
+		return scale != 1.0F ? scale * gravity: gravity;
 	}
 }
