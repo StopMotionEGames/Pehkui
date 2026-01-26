@@ -27,8 +27,9 @@ public abstract class PlayerMixin {
 		return scale != 1.0F ? scale * original : original;
 	}
 
-	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "doubleValue=9.0F"))
-	private double pehkui$attack$distance(double value) {
+	// todo: test if doesn't break!
+	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "floatValue=0.9F"))
+	private float pehkui$attack$distance(float value) {
 		final float scale = ScaleUtils.getEntityReachScale((Entity) (Object) this);
 
 		return scale > 1.0F ? scale * scale * value : value;
@@ -51,7 +52,7 @@ public abstract class PlayerMixin {
 		return original.call(obj, x, y, z);
 	}
 
-	@ModifyExpressionValue(method = "attack(Lnet/minecraft/world/entity/Entity;)V", at = {@At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 1), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 2), @At(value = "CONSTANT", args = "floatValue=0.5F", ordinal = 3)})
+	@ModifyExpressionValue(method = "attack", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
 	private float pehkui$attack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 
