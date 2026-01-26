@@ -1,17 +1,5 @@
 package virtuoel.pehkui.mixin.world.entity;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityDimensions;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -20,11 +8,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ScaffoldingBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import virtuoel.pehkui.util.MulticonnectCompatibility;
 import virtuoel.pehkui.util.PehkuiBlockStateExtensions;
 import virtuoel.pehkui.util.ScaleUtils;
@@ -91,15 +88,16 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		return original;
 	}
 
-	@ModifyExpressionValue(method = "hurtServer", at = @At(value = "CONSTANT", args = "doubleValue=0.4000000059604645D"))
-	private double pehkui$damage$knockback(double value, ServerLevel world, DamageSource source, float amount) {
+	@ModifyArg(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
+	private double pehkui$damage$knockback(double strength, @Local(argsOnly = true) DamageSource source) {
 		final float scale = ScaleUtils.getKnockbackScale(source.getEntity());
 
-		return scale != 1.0F ? scale * value : value;
+		return scale != 1.0F ? scale * strength : strength;
 	}
 
-	@ModifyExpressionValue(method = "blockedByShield(Lnet/minecraft/world/entity/LivingEntity;)V", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
-	private double pehkui$knockback$knockback(double value, LivingEntity target) {
+	@ModifyArg(method = "blockedByShield", at = @At(value = "INVOKE", args = "floatValue=0.5F", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
+	private double pehkui$knockback$knockback(double value, @Local(argsOnly = true) LivingEntity target)
+	{
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 
 		return scale != 1.0F ? scale * value : value;
@@ -228,8 +226,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	// step height
 	@ModifyReturnValue(method = "maxUpStep()F", at = @At("RETURN"))
-	private float pehkui$getStepHeight(float original)
-	{
+	private float pehkui$getStepHeight(float original) {
 		final float scale = ScaleUtils.getStepHeightScale((Entity) (Object) this);
 
 		return scale != 1.0F ? original * scale : original;
