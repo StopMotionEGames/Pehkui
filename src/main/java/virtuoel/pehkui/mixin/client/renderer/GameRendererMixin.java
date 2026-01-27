@@ -54,8 +54,7 @@ public class GameRendererMixin {
 
 	@ModifyVariable(
 		method = "bobView",
-		at = @At(value = "STORE"),
-		ordinal = 2)
+		at = @At(value = "STORE"), ordinal = 1)
 	private float pehkui$bobView$strength(float value, @Local(argsOnly = true) float tickDelta) {
 		return value / ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity(), tickDelta);
 	}
