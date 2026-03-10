@@ -1,34 +1,24 @@
 package virtuoel.pehkui.mixin.client.renderer.entity;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.HitboxRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import virtuoel.pehkui.util.PehkuiEntityRenderStateExtensions;
 import virtuoel.pehkui.util.ScaleRenderUtils;
-import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin<S extends EntityRenderState> {
-	@Inject(method = "submit", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V"))
-	private void pehkui$render$before(S entityRenderState, CameraRenderState cameraRenderState, double d, double e, double f, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
+	@Inject(method = "submit", at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V"))
+	private void pehkui$render$before(S renderState, net.minecraft.client.renderer.state.level.CameraRenderState camera, double x, double y, double z, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
 		ScaleRenderUtils.logIfEntityRenderCancelled();
 
-		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) entityRenderState;
+		PehkuiEntityRenderStateExtensions ext = (PehkuiEntityRenderStateExtensions) renderState;
 
 		final float widthScale = ext.pehkui$getModelWidthScale();
 		final float heightScale = ext.pehkui$getModelHeighScale();
@@ -37,11 +27,11 @@ public class EntityRenderDispatcherMixin<S extends EntityRenderState> {
 		poseStack.scale(widthScale, heightScale, widthScale);
 		poseStack.pushPose();
 
-		ScaleRenderUtils.saveLastRenderedEntity(entityRenderState.entityType);
+		ScaleRenderUtils.saveLastRenderedEntity(renderState.entityType);
 	}
 
-	@Inject(method = "submit", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V"))
-	private void pehkui$render$after(S entityRenderState, CameraRenderState cameraRenderState, double d, double e, double f, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
+	@Inject(method = "submit", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;submit(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V"))
+	private void pehkui$render$after(S renderState, net.minecraft.client.renderer.state.level.CameraRenderState camera, double x, double y, double z, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
 		ScaleRenderUtils.clearLastRenderedEntity();
 
 		poseStack.popPose();

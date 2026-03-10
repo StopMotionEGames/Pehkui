@@ -26,12 +26,12 @@ public class GameRendererMixin {
 	@Unique
 	boolean pehkui$isBobbing = false;
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
+	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void pehkui$renderWorld$before(DeltaTracker tickCounter, CallbackInfo info) {
 		pehkui$isBobbing = true;
 	}
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
+	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void pehkui$renderWorld$after(DeltaTracker tickCounter, CallbackInfo info) {
 		pehkui$isBobbing = false;
 	}
