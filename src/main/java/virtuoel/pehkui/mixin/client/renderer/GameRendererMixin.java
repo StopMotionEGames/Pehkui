@@ -2,7 +2,6 @@ package virtuoel.pehkui.mixin.client.renderer;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.DeltaTracker;
 import org.spongepowered.asm.mixin.*;
@@ -27,12 +26,12 @@ public class GameRendererMixin {
 	@Unique
 	boolean pehkui$isBobbing = false;
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lcom/mojang/blaze3d/vertex/PoseStack;F)V"))
+	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.BEFORE, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void pehkui$renderWorld$before(DeltaTracker tickCounter, CallbackInfo info) {
 		pehkui$isBobbing = true;
 	}
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lcom/mojang/blaze3d/vertex/PoseStack;F)V"))
+	@Inject(method = "renderLevel", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void pehkui$renderWorld$after(DeltaTracker tickCounter, CallbackInfo info) {
 		pehkui$isBobbing = false;
 	}
@@ -54,13 +53,13 @@ public class GameRendererMixin {
 
 	@ModifyVariable(
 		method = "bobView",
-		at = @At(value = "STORE"), ordinal = 1)
-	private float pehkui$bobView$strength(float value, @Local(argsOnly = true) float tickDelta) {
-		return value / ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity(), tickDelta);
+		at = @At(value = "STORE"), name = "bob")
+	private float pehkui$bobView$strength(float value) {
+		return value / ScaleUtils.getViewBobbingScale(minecraft.getCameraEntity());
 	}
 
-	@ModifyExpressionValue(method = "getProjectionMatrix", at = @At(value = "CONSTANT", args = "floatValue=0.05F"))
+	@ModifyExpressionValue(method = "bobView", at = @At(value = "CONSTANT", args = "floatValue=0.5F"))
 	private float pehkui$getBasicProjectionMatrix$depth(float value) {
-		return ScaleRenderUtils.modifyProjectionMatrixDepth(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickDelta(minecraft));
+		return ScaleRenderUtils.modifyProjectionMatrixDepth(value, minecraft.getCameraEntity(), ScaleRenderUtils.getTickDelta(Minecraft.getInstance()));
 	}
 }
