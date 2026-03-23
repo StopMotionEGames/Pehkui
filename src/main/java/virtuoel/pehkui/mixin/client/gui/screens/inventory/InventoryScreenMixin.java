@@ -3,7 +3,7 @@ package virtuoel.pehkui.mixin.client.gui.screens.inventory;
 import java.util.Map;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -34,8 +34,8 @@ public abstract class InventoryScreenMixin {
 	@Unique
 	private static final ScaleData pehkui$IDENTITY = ScaleData.Builder.create().build();
 
-	@Inject(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "HEAD"))
-	private static void pehkui$drawEntity$head(GuiGraphics guiGraphics, int i, int j, int k, int l, int m, float f, float g, float h, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
+	@Inject(method = "extractEntityInInventoryFollowsMouse", at = @At(value = "HEAD"))
+	private static void pehkui$drawEntity$head(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int size, float offsetY, float mouseX, float mouseY, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 
 		ScaleData data;
@@ -61,8 +61,8 @@ public abstract class InventoryScreenMixin {
 		livingEntity.setBoundingBox(box);
 	}
 
-	@Inject(method = "renderEntityInInventoryFollowsMouse", at = @At(value = "RETURN"))
-	private static void pehkui$drawEntity$return(GuiGraphics guiGraphics, int i, int j, int k, int l, int m, float f, float g, float h, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
+	@Inject(method = "extractEntityInInventoryFollowsMouse", at = @At(value = "RETURN"))
+	private static void pehkui$drawEntity$return(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, int size, float offsetY, float mouseX, float mouseY, LivingEntity livingEntity, CallbackInfo ci, @Share("bounds") LocalRef<AABB> bounds) {
 		final Map<ScaleType, ScaleData> scales = pehkui$SCALES.get();
 
 		for (final ScaleType type : ScaleRegistries.SCALE_TYPES.values()) {
@@ -74,7 +74,7 @@ public abstract class InventoryScreenMixin {
 
 
 	@WrapOperation(
-		method = "renderEntityInInventoryFollowsMouse",
+		method = "extractEntityInInventoryFollowsMouse",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/gui/screens/inventory/InventoryScreen;extractRenderState(Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/client/renderer/entity/state/EntityRenderState;"

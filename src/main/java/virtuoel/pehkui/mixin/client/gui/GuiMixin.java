@@ -15,14 +15,14 @@ import virtuoel.pehkui.util.ScaleUtils;
 @Mixin(Gui.class)
 public abstract class GuiMixin {
 	@Shadow
-	abstract Player getCameraPlayer();
+	protected abstract Player getCameraPlayer();
 
 	@Shadow
 	@Final
 	@Mutable
-	Minecraft minecraft;
+	private Minecraft minecraft;
 
-	@ModifyArg(method = "renderPlayerHealth", index = 0, at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
+	@ModifyArg(method = "extractPlayerHealth", index = 0, at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
 	private float pehkui$renderStatusBars(float value) {
 		final float healthScale = ScaleUtils.getHealthScale(getCameraPlayer(), ScaleRenderUtils.getTickDelta(minecraft));
 

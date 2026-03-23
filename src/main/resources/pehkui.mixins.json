@@ -86,7 +86,6 @@
 		"client.renderer.entity.EntityRenderDispatcherMixin",
 		"client.renderer.entity.EntityRendererMixin",
 		"client.renderer.entity.ItemFrameRendererMixin",
-		"client.renderer.entity.ItemRendererMixin",
 		"client.renderer.entity.ShulkerRendererMixin",
 		"client.renderer.entity.player.AvatarRendererMixin",
 		"client.renderer.entity.state.EntityRenderStateMixin"
