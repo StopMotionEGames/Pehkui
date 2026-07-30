@@ -1,4 +1,4 @@
-package virtuoel.pehkui.mixin.advancements.criterion;
+package virtuoel.pehkui.mixin.advancements.predicates;
 
 import net.minecraft.advancements.predicates.NbtPredicate;
 import net.minecraft.nbt.CompoundTag;
