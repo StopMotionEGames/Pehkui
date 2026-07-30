@@ -4,7 +4,6 @@ import net.minecraft.world.entity.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.phys.AABB;
@@ -15,7 +14,7 @@ import virtuoel.pehkui.util.ScaleUtils;
 
 @Mixin(Mob.class)
 public abstract class MobMixin {
-	@ModifyArg(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;causeExtraKnockback(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/phys/Vec3;)V"))
+	@ModifyArg(method = "doHurtTarget", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;causeExtraKnockback(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/damagesource/DamageSource;FZ)V"))
 	private float pehkui$tryAttack$knockback(float value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 

@@ -5,13 +5,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
 import virtuoel.pehkui.util.ScaleUtils;
 
-@Mixin(Slime.class)
+@Mixin(AbstractCubeMob.class)
 public class SlimeMixin
 {
-	@ModifyExpressionValue(method = "lambda$remove$0", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
+	@ModifyExpressionValue(method = "setUpSplitCube", at = @At(value = "CONSTANT", args = "doubleValue=0.5D"))
 	private double pehkui$remove$verticalOffset(double value)
 	{
 		final double scale = ScaleUtils.getBoundingBoxHeightScale((Entity) (Object) this);

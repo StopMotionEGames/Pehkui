@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.world.entity.EntityTypes;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -125,10 +126,10 @@ public class DebugCommand {
 	}
 
 	private static final List<EntityType<? extends Entity>> TYPES = Arrays.asList(
-		EntityType.ZOMBIE,
-		EntityType.CREEPER,
-		EntityType.END_CRYSTAL,
-		EntityType.BLAZE
+		EntityTypes.ZOMBIE,
+		EntityTypes.CREEPER,
+		EntityTypes.END_CRYSTAL,
+		EntityTypes.BLAZE
 	);
 
 	private static int runTests(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

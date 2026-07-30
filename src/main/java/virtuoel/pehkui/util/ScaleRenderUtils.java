@@ -1,17 +1,17 @@
 package virtuoel.pehkui.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
+//import com.mojang.blaze3d.vertex.PoseStack;
+//import com.mojang.blaze3d.vertex.VertexConsumer;
+//import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+//import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+//import net.fabricmc.api.EnvType;
+//import net.fabricmc.loader.api.FabricLoader;
+//import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.client.renderer.ShapeRenderer;
+//import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import net.minecraft.resources.Identifier;

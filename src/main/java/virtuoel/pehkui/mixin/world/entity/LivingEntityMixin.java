@@ -89,15 +89,15 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		return original;
 	}
 
-	@ModifyArg(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
+	@ModifyArg(method = "dealDefaultKnockback", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDDLnet/minecraft/world/damagesource/DamageSource;F)V"), index = 0)
 	private double pehkui$damage$knockback(double strength, @Local(argsOnly = true) DamageSource source) {
 		final float scale = ScaleUtils.getKnockbackScale(source.getEntity());
 
 		return scale != 1.0F ? scale * strength : strength;
 	}
 
-	@ModifyArg(method = "blockedByItem", at = @At(value = "INVOKE", args = "floatValue=0.5F", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
-	private double pehkui$knockback$knockback(double value, @Local(argsOnly = true) LivingEntity target) {
+	@ModifyArg(method = "blockedByItem", at = @At(value = "INVOKE", args = "floatValue=0.5F", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDDLnet/minecraft/world/damagesource/DamageSource;F)V"), index = 0)
+	private double pehkui$knockback$knockback(double value) {
 		final float scale = ScaleUtils.getKnockbackScale((Entity) (Object) this);
 
 		return scale != 1.0F ? scale * value : value;
